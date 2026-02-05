@@ -1,0 +1,15 @@
+node_modules
+.output
+.nuxt
+.nitro
+.cache
+dist
+.env
+.git
+.github
+.agent
+_.sqlite
+_.sqlite-journal
+README.md
+ARCHITECTURE.md
+tests

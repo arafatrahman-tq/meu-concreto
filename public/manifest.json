@@ -1,0 +1,32 @@
+{
+  "name": "Meu Concreto - Vendedores",
+  "short_name": "Concrete Vendas",
+  "description": "Sistema de gestão de orçamentos mobile para vendedores.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ff7a3d",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64",
+      "type": "image/x-icon"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Novo Orçamento",
+      "url": "/orcamentos/vendedor",
+      "description": "Criar um novo orçamento rapidamente"
+    },
+    {
+      "name": "Entregas",
+      "short_name": "Entregas",
+      "description": "Controle de Cargas Logística",
+      "url": "/entregas",
+      "icons": [{ "src": "/img/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+services:
+  meu-concreto:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: meu-concreto
+    restart: always
+    # Garante o schema (push), executa seed mínimo e inicia a aplicação
+    command: >
+      sh -c "bunx drizzle-kit push && 
+             bun server/database/seed-minimal.ts && 
+             bun .output/server/index.mjs"
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - DB_FILE_NAME=/app/data/database.sqlite
+      # As chaves abaixo devem ser configuradas no painel do Coolify
+      # - NUXT_PUBLIC_API_BASE=
+      # - AUTH_SECRET=
+      # - WHATSAPP_API_KEY=
+    volumes:
+      - meu-concreto-data:/app/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  meu-concreto-data:
+    driver: local

@@ -1,0 +1,13 @@
+{
+	"servers": {
+		"nuxt": {
+			"url": "https://nuxt.com/mcp",
+			"type": "http"
+		},
+		"bun": {
+			"url": "https://bun.com/docs/mcp",
+			"type": "http"
+		}
+	},
+	"inputs": []
+}
