@@ -73,7 +73,7 @@
               <div class="space-y-1.5">
                 <label
                   class="text-[9px] font-bold uppercase tracking-widest text-secondary opacity-40 ml-2"
-                  >Volume (m³)</label
+                  >Volume (m³) <span class="text-brand">*</span></label
                 >
                 <BaseInput
                   v-model.number="form.qtd"
@@ -99,7 +99,7 @@
             <div class="space-y-1.5">
               <label
                 class="text-[9px] font-bold uppercase tracking-widest text-secondary opacity-40 ml-2"
-                >Motorista</label
+                >Motorista <span class="text-brand">*</span></label
               >
               <BaseSelect
                 v-model="form.idMotorista"
@@ -112,7 +112,7 @@
             <div class="space-y-1.5">
               <label
                 class="text-[9px] font-bold uppercase tracking-widest text-secondary opacity-40 ml-2"
-                >Caminhão (Betoneira)</label
+                >Caminhão (Betoneira) <span class="text-brand">*</span></label
               >
               <BaseSelect
                 v-model="form.idCaminhao"

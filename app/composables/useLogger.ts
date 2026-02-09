@@ -17,6 +17,7 @@ export const useLogger = () => {
         dados: data.dados ? JSON.stringify(data.dados) : undefined,
         idUsuario: user.value?.id,
         idEmpresa: user.value?.idEmpresa,
+        origem: "WEB",
       };
 
       await $fetch("/api/system-logs", {

@@ -611,13 +611,18 @@ import {
 } from "lucide-vue-next";
 import { useFetch, navigateTo } from "#imports";
 import { useToast } from "~/composables/useToast";
+import { useLogger } from "~/composables/useLogger";
 
 definePageMeta({ layout: "default" });
 
 const { add: addToast } = useToast();
+const { info, error: logError } = useLogger();
 const currentView = ref("Calendário");
 const statusFilter = ref("Todos");
-const selectedDate = ref(new Date().toISOString().split("T")[0]);
+const selectedDate = useState(
+  "agenda_selected_date",
+  () => new Date().toISOString().split("T")[0],
+);
 const weekOffset = ref(0);
 const showLogisticaModal = ref(false);
 const orcamentoSelecionado = ref(null);
@@ -628,7 +633,17 @@ const handleExecutar = async (event) => {
     const data = await $fetch(`/api/orcamentos/${event.id}`);
     orcamentoSelecionado.value = data;
     showLogisticaModal.value = true;
+    info("LOGISTICA", `Iniciando controle logístico para #${event.id}`, {
+      cliente: event.nomeCliente,
+    });
   } catch (e) {
+    logError(
+      "LOGISTICA",
+      `Falha ao carregar orçamento #${event.id} na agenda`,
+      {
+        error: e.message,
+      },
+    );
     addToast({
       title: "Erro",
       description: "Não foi possível carregar os dados do orçamento.",
@@ -803,6 +818,10 @@ const updateEntregaDate = async (id, date) => {
       body: { dataEntrega: date },
     });
 
+    info("LOGISTICA", `Entrega reprogramada para orçamento #${id}`, {
+      nova_data: date,
+    });
+
     addToast({
       title: "Agenda Atualizada",
       description: "Horário de entrega reprogramado com sucesso.",
@@ -811,6 +830,9 @@ const updateEntregaDate = async (id, date) => {
 
     await refresh();
   } catch (e) {
+    logError("LOGISTICA", `Erro ao reprogramar entrega #${id}`, {
+      error: e.message,
+    });
     addToast({
       title: "Erro ao mover",
       description: "Não foi possível atualizar a data da entrega.",

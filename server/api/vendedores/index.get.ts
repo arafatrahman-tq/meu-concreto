@@ -7,13 +7,10 @@ export default defineEventHandler(async (event) => {
   const user = requireAuth(event);
 
   try {
-    const whereConditions = [isNull(vendedores.deletedAt)];
-
-    if (user.idEmpresasAcesso && user.idEmpresasAcesso.length > 0) {
-      whereConditions.push(inArray(vendedores.idEmpresa, user.idEmpresasAcesso));
-    } else {
-      whereConditions.push(eq(vendedores.idEmpresa, user.idEmpresa));
-    }
+    const whereConditions = [
+      isNull(vendedores.deletedAt),
+      eq(vendedores.idEmpresa, user.idEmpresa),
+    ];
 
     const result = await db.query.vendedores.findMany({
       where: and(...whereConditions),

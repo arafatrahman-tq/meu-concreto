@@ -16,9 +16,12 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    // Buscar usuÃ¡rio
+    // Buscar usuário
     const user = await db.query.usuarios.findFirst({
       where: eq(usuarios.usuario, username),
+      with: {
+        acessoEmpresas: true,
+      },
     });
 
     if (!user || user.ativo === 0 || user.deletedAt) {

@@ -15,7 +15,7 @@
       </div>
       <button
         @click="openModal()"
-        class="bg-brand text-white px-8 py-4 rounded-2xl text-xs font-black uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-3 shadow-xl shadow-brand/20"
+        class="bg-brand text-white px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-3 shadow-xl shadow-brand/20 outline-none"
       >
         <Plus size="20" />
         Nova Variável
@@ -99,7 +99,8 @@
         <div>
           <label
             class="block text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 mb-2 ml-1"
-            >Chave (Identificador Único)</label
+            >Chave (Identificador Único)
+            <span class="text-brand">*</span></label
           >
           <BaseInput
             v-model="form.chave"
@@ -169,14 +170,14 @@
           <button
             type="button"
             @click="showModal = false"
-            class="px-8 py-4 rounded-2xl border border-border text-xs font-black uppercase tracking-widest text-secondary hover:bg-primary/2 transition-all"
+            class="px-8 py-4 rounded-2xl border border-border text-[10px] font-black uppercase tracking-widest text-secondary hover:bg-primary/2 transition-all outline-none"
           >
             Cancelar
           </button>
           <button
             type="submit"
             :disabled="saving"
-            class="bg-brand text-background px-8 py-4 rounded-2xl text-xs font-black uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 shadow-xl shadow-brand/20 disabled:opacity-50"
+            class="bg-brand text-background px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 shadow-xl shadow-brand/20 disabled:opacity-50 outline-none"
           >
             <RefreshCw v-if="saving" size="18" class="animate-spin" />
             <Save v-else size="18" />

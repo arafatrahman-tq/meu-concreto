@@ -1,10 +1,10 @@
 import { db } from "../../database/db";
 import { logs, usuarios } from "../../database/schema";
 import { eq, and, desc } from "drizzle-orm";
-import { requireAuth } from "../../utils/auth";
+import { requireAdmin } from "../../utils/auth";
 
 export default defineEventHandler(async (event) => {
-  const user = requireAuth(event);
+  const user = requireAdmin(event);
   try {
     const idEmpresa = user.idEmpresa;
 
@@ -35,7 +35,7 @@ export default defineEventHandler(async (event) => {
 
     return result;
   } catch (error: any) {
-    // Preservar o status code se jÃ¡ for um erro do Nuxt
+    // Preservar o status code se já for um erro do Nuxt
     const statusCode = error.statusCode || 500;
     throw createError({
       statusCode,

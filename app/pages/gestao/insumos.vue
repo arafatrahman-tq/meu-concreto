@@ -207,8 +207,9 @@
       <form @submit.prevent="saveInsumo" class="space-y-4">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="col-span-2">
-            <label class="text-sm font-bold text-primary mb-1.5 block"
-              >Nome do Material</label
+            <label
+              class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 mb-2 ml-1 block"
+              >Nome do Material <span class="text-brand">*</span></label
             >
             <BaseInput
               v-model="form.nome"
@@ -218,8 +219,9 @@
             />
           </div>
           <div>
-            <label class="text-sm font-bold text-primary mb-1.5 block"
-              >Unidade</label
+            <label
+              class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 mb-2 ml-1 block"
+              >Unidade <span class="text-brand">*</span></label
             >
             <BaseSelect
               v-model="form.unidadeMedida"
@@ -229,7 +231,8 @@
             />
           </div>
           <div>
-            <label class="text-sm font-bold text-primary mb-1.5 block"
+            <label
+              class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 mb-2 ml-1 block"
               >Custo Unitário (R$)</label
             >
             <BaseInput
@@ -239,7 +242,8 @@
             />
           </div>
           <div>
-            <label class="text-sm font-bold text-primary mb-1.5 block"
+            <label
+              class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 mb-2 ml-1 block"
               >Estoque Atual</label
             >
             <BaseInput
@@ -250,7 +254,8 @@
             />
           </div>
           <div>
-            <label class="text-sm font-bold text-primary mb-1.5 block"
+            <label
+              class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 mb-2 ml-1 block"
               >Estoque Mínimo</label
             >
             <BaseInput
@@ -266,14 +271,14 @@
           <button
             type="button"
             @click="showModal = false"
-            class="px-5 py-2.5 rounded-2xl font-bold text-sm text-secondary hover:bg-secondary/5 transition-colors"
+            class="px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest text-secondary hover:bg-primary/5 transition-all outline-none"
           >
             Cancelar
           </button>
           <button
             type="submit"
             :disabled="saving"
-            class="bg-brand hover:bg-brand-dark text-white px-8 py-2.5 rounded-2xl font-bold text-sm transition-all shadow-lg shadow-brand/20 disabled:opacity-50"
+            class="bg-brand text-background px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-brand/20 disabled:opacity-50 outline-none"
           >
             {{ saving ? "Salvando..." : "Salvar Insumo" }}
           </button>
@@ -301,8 +306,9 @@
       <form @submit.prevent="saveAjuste" class="space-y-4">
         <div class="space-y-4">
           <div>
-            <label class="text-sm font-bold text-primary mb-1.5 block"
-              >Selecione o Material</label
+            <label
+              class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 mb-2 ml-1 block"
+              >Selecione o Material <span class="text-brand">*</span></label
             >
             <BaseSelect
               v-model="ajusteForm.idInsumo"
@@ -314,8 +320,9 @@
 
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="text-sm font-bold text-primary mb-1.5 block"
-                >Tipo de Ajuste</label
+              <label
+                class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 mb-2 ml-1 block"
+                >Tipo de Ajuste <span class="text-brand">*</span></label
               >
               <BaseSelect
                 v-model="ajusteForm.tipo"
@@ -324,12 +331,15 @@
               />
             </div>
             <div>
-              <label class="text-sm font-bold text-primary mb-1.5 block">
+              <label
+                class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 mb-2 ml-1 block"
+              >
                 {{
                   ajusteForm.tipo === "AJUSTE"
                     ? "Nova Quantidade Real"
                     : "Quantidade do Ajuste"
                 }}
+                <span class="text-brand">*</span>
               </label>
               <BaseInput
                 v-model.number="ajusteForm.quantidade"
@@ -342,7 +352,8 @@
           </div>
 
           <div>
-            <label class="text-sm font-bold text-primary mb-1.5 block"
+            <label
+              class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 mb-2 ml-1 block"
               >Observação (Motivo)</label
             >
             <BaseInput
@@ -357,14 +368,14 @@
           <button
             type="button"
             @click="showAjusteModal = false"
-            class="px-5 py-2.5 rounded-2xl font-bold text-sm text-secondary hover:bg-secondary/5 transition-colors"
+            class="px-8 py-4 rounded-2xl border border-border text-[10px] font-black uppercase tracking-widest text-secondary hover:bg-primary/2 transition-all outline-none"
           >
             Cancelar
           </button>
           <button
             type="submit"
             :disabled="savingAjuste"
-            class="bg-brand hover:bg-brand-dark text-white px-8 py-2.5 rounded-2xl font-bold text-sm transition-all shadow-lg shadow-brand/20 disabled:opacity-50"
+            class="bg-brand text-background px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-brand/20 disabled:opacity-50 outline-none"
           >
             {{ savingAjuste ? "Processando..." : "Confirmar Ajuste" }}
           </button>
@@ -462,7 +473,9 @@ const insumosBaixos = computed(
   () =>
     insumos.value?.filter((i) => i.estoqueAtual <= i.estoqueMinimo).length || 0,
 );
-const ultimaAtualizacao = ref(new Date().toLocaleTimeString());
+const ultimaAtualizacao = useState("ultima_atualizacao_insumos", () =>
+  new Date().toLocaleTimeString("pt-BR"),
+);
 
 const formatCurrency = (val) => {
   return new Intl.NumberFormat("pt-BR", {

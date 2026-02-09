@@ -7,13 +7,13 @@ export const useAuth = () => {
 
   const isAuthenticated = computed(() => !!user.value);
 
-  const fetchUser = async () => {
-    // Se o estado já estiver populado (via SSR), não buscamos novamente no cliente
-    if (user.value) return user.value;
+  const fetchUser = async (force = false) => {
+    // Se o estado já estiver populado (via SSR), não buscamos novamente no cliente (a menos que seja forçado)
+    if (user.value && !force) return user.value;
 
     try {
       const { data } = await useFetch("/api/auth/me", {
-        key: 'auth-user',
+        key: "auth-user-" + (force ? Date.now() : "static"),
         // O useFetch garante que se o dado veio do servidor, ele não faz o request no cliente
       });
       if (data.value) {

@@ -29,7 +29,7 @@
         </div>
         <button
           @click="openAddModal"
-          class="bg-brand text-white px-8 py-4 rounded-2xl text-xs font-black uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-3 shadow-xl shadow-brand/20"
+          class="bg-brand text-white px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-3 shadow-xl shadow-brand/20 outline-none"
         >
           <Plus size="20" />
           Novo Usuário
@@ -148,8 +148,12 @@
         >
           <Users size="32" class="text-secondary opacity-20" />
         </div>
-        <h3 class="text-lg font-black uppercase tracking-tight text-primary">Nenhum usuário encontrado</h3>
-        <p class="text-secondary text-[10px] font-black uppercase tracking-[0.2em] mt-2 opacity-50">
+        <h3 class="text-lg font-black uppercase tracking-tight text-primary">
+          Nenhum usuário encontrado
+        </h3>
+        <p
+          class="text-secondary text-[10px] font-black uppercase tracking-[0.2em] mt-2 opacity-50"
+        >
           Experimente mudar o termo da busca ou adicionar um novo membro.
         </p>
       </div>
@@ -182,7 +186,7 @@
               <label
                 class="block text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 mb-2 ml-1"
               >
-                Nome Completo
+                Nome Completo <span class="text-brand">*</span>
               </label>
               <BaseInput
                 v-model="form.nome"
@@ -194,7 +198,7 @@
               <label
                 class="block text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 mb-2 ml-1"
               >
-                Nome de Usuário
+                Nome de Usuário <span class="text-brand">*</span>
               </label>
               <BaseInput
                 v-model="form.usuario"
@@ -221,7 +225,7 @@
             <label
               class="block text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 mb-2 ml-1"
             >
-              Endereço de E-mail
+              Endereço de E-mail <span class="text-brand">*</span>
             </label>
             <BaseInput
               v-model="form.email"
@@ -235,7 +239,7 @@
             <label
               class="block text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 mb-2 ml-1"
             >
-              Senha de Acesso
+              Senha de Acesso <span class="text-brand">*</span>
             </label>
             <BaseInput
               v-model="form.senha"
@@ -320,13 +324,13 @@
         <div class="flex gap-3">
           <button
             @click="showUserModal = false"
-            class="flex-1 px-6 py-3.5 rounded-2xl border border-border text-secondary font-bold text-sm hover:bg-primary/3 transition-all outline-none"
+            class="flex-1 px-6 py-4 rounded-2xl border border-border text-secondary text-[10px] font-black uppercase tracking-widest hover:bg-primary/3 transition-all outline-none"
           >
             Cancelar
           </button>
           <button
             @click="saveUser"
-            class="flex-2 bg-brand hover:bg-brand-hover text-background px-6 py-3.5 rounded-2xl font-bold text-sm transition-all shadow-lg shadow-brand/20 active:scale-95 flex items-center justify-center gap-2 outline-none disabled:opacity-50"
+            class="flex-2 bg-brand hover:bg-brand-hover text-background px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all shadow-xl shadow-brand/20 active:scale-95 flex items-center justify-center gap-2 outline-none disabled:opacity-50"
             :disabled="loading"
           >
             <template v-if="loading">
@@ -512,12 +516,13 @@ const saveUser = async () => {
     showUserModal.value = false;
     refresh();
   } catch (err) {
-    addToast(err.message, "error");
-    error.value = err.message;
+    const msg = err.data?.message || err.message || "Erro ao salvar usuário.";
+    addToast(msg, "error");
+    error.value = msg;
     logError(
       "USUARIOS",
       `Erro ao ${isEditing.value ? "editar" : "cadastrar"} usuário`,
-      { error: err.message, form },
+      { error: msg, form },
     );
   } finally {
     loading.value = false;
@@ -542,11 +547,12 @@ const handleDelete = async () => {
     showDeleteDialog.value = false;
     refresh();
   } catch (err) {
-    addToast(err.message, "error");
+    const msg = err.data?.message || err.message || "Erro ao excluir usuário.";
+    addToast(msg, "error");
     logError(
       "USUARIOS",
       `Erro ao excluir usuário: ${userToDelete.value?.usuario}`,
-      { error: err.message, id: userToDelete.value?.id },
+      { error: msg, id: userToDelete.value?.id },
     );
   }
 };

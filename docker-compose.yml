@@ -1,15 +1,27 @@
 services:
+  # Serviço para inicializar o banco de dados e aplicar o schema antes do app iniciar
+  db-init:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: db-init
+    environment:
+      - DB_FILE_NAME=/app/data/database.sqlite
+    volumes:
+      - meu-concreto-data:/app/data
+    command: sh -c "bunx drizzle-kit generate && bunx drizzle-kit push && bun server/database/seed-minimal.ts"
+    restart: "no"
+
   meu-concreto:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: meu-concreto
     restart: always
-    # Garante o schema (push), executa seed mínimo e inicia a aplicação
-    command: >
-      sh -c "bunx drizzle-kit push && 
-             bun server/database/seed-minimal.ts && 
-             bun .output/server/index.mjs"
+    # O app agora aguarda a conclusão bem-sucedida da inicialização do DB/Push
+    depends_on:
+      db-init:
+        condition: service_completed_successfully
     ports:
       - "3000:3000"
     environment:

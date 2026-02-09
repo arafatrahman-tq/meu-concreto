@@ -1,7 +1,5 @@
 ﻿<template>
-  <div
-    class="min-h-screen bg-background pb-32 transition-colors duration-500"
-  >
+  <div class="min-h-screen bg-background pb-32 transition-colors duration-500">
     <!-- Header Executivo - Ultra Glassmorphism -->
     <header
       class="sticky top-0 z-50 bg-surface/70 backdrop-blur-2xl border-b border-border px-6 py-6"
@@ -124,9 +122,7 @@
           >
             Caixa Hoje
           </p>
-          <p
-            class="text-xl font-black text-primary tracking-tighter"
-          >
+          <p class="text-xl font-black text-primary tracking-tighter">
             {{ formatCurrency(data.stats?.vendasHoje?.valor || 0) }}
           </p>
           <div class="mt-3 flex flex-wrap gap-1.5">
@@ -157,9 +153,7 @@
           >
             Pendente
           </p>
-          <p
-            class="text-xl font-black text-primary tracking-tighter"
-          >
+          <p class="text-xl font-black text-primary tracking-tighter">
             {{ formatCurrency(data.stats?.orcamentosPendentes?.valor || 0) }}
           </p>
           <div class="mt-3">
@@ -185,10 +179,9 @@
           >
             Logística
           </p>
-          <p
-            class="text-xl font-black text-primary tracking-tighter"
-          >
-            {{ data.stats?.frota?.emRota || 0 }}<span class="text-xs text-secondary/40 font-bold"
+          <p class="text-xl font-black text-primary tracking-tighter">
+            {{ data.stats?.frota?.emRota || 0
+            }}<span class="text-xs text-secondary/40 font-bold"
               >/{{ data.stats?.frota?.total || 0 }}</span
             >
           </p>
@@ -266,9 +259,7 @@
 
         <div class="relative pl-4 space-y-6">
           <!-- Timeline Line -->
-          <div
-            class="absolute left-5.75 top-2 bottom-2 w-px bg-border"
-          ></div>
+          <div class="absolute left-5.75 top-2 bottom-2 w-px bg-border"></div>
 
           <div
             v-for="evento in data.eventos || []"
@@ -318,10 +309,7 @@
             v-if="!data.eventos?.length"
             class="py-16 text-center bg-surface rounded-3xl border border-dashed border-border"
           >
-            <Package
-              size="32"
-              class="mx-auto mb-3 text-secondary/20"
-            />
+            <Package size="32" class="mx-auto mb-3 text-secondary/20" />
             <p
               class="text-[9px] font-black uppercase tracking-[0.3em] text-secondary/40"
             >
@@ -443,6 +431,10 @@
 </template>
 
 <script setup>
+definePageMeta({
+  layout: "default",
+  middleware: ["admin"],
+});
 import { ref, onMounted, onUnmounted } from "vue";
 import {
   User,
@@ -462,13 +454,10 @@ import {
   ChevronDown,
   Building2,
 } from "lucide-vue-next";
-import { useAuth, useFetch, navigateTo, computed } from "#imports";
-
-definePageMeta({
-  layout: false, // Mobile view personalizada
-});
+import { useAuth, useFetch, navigateTo, computed, useLogger } from "#imports";
 
 const { user, logout } = useAuth();
+const { info } = useLogger();
 
 const selectedEmpresaId = ref(user.value?.idEmpresa);
 
@@ -489,8 +478,20 @@ const toggleDropdown = () => {
 };
 
 const selectEmpresa = (id) => {
+  const de = currentEmpresaLabel.value;
   selectedEmpresaId.value = id;
   isDropdownOpen.value = false;
+
+  const emp = availableEmpresas.value.find((e) => e.id === id);
+  const para = emp
+    ? `${emp.empresa} ${emp.filial ? `• ${emp.filial}` : ""}`
+    : id;
+
+  info("SISTEMA", "Unidade de visualização alterada no Dashboard", {
+    de,
+    para,
+    idEmpresa: id,
+  });
 };
 
 const availableEmpresas = computed(() => {
@@ -526,6 +527,7 @@ const { data, pending, refresh } = await useFetch("/api/gestao/live", {
 
 const handleLogout = async () => {
   if (confirm("Deseja realmente sair?")) {
+    info("USUARIO", "Logout realizado via Dashboard Mobile");
     await logout();
     navigateTo("/login");
   }

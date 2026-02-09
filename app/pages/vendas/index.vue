@@ -413,7 +413,7 @@
         <!-- Itens da Venda (origem orçamento) -->
         <div class="space-y-4">
           <div class="flex items-center gap-2">
-            <div class="w-1.5 h-4 bg-primary rounded-full"></div>
+            <div class="w-1.5 h-4 bg-brand rounded-full"></div>
             <h4
               class="text-[10px] font-black uppercase tracking-[0.2em] text-primary"
             >
@@ -427,22 +427,22 @@
               <thead class="bg-primary/3">
                 <tr>
                   <th
-                    class="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-secondary"
+                    class="px-6 py-4 text-[9px] font-black uppercase tracking-widest text-secondary opacity-40"
                   >
                     Produto
                   </th>
                   <th
-                    class="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-secondary text-center"
+                    class="px-6 py-4 text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 text-center"
                   >
                     Quantidade
                   </th>
                   <th
-                    class="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-secondary text-right"
+                    class="px-6 py-4 text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 text-right"
                   >
                     Valor Unit.
                   </th>
                   <th
-                    class="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-secondary text-right"
+                    class="px-6 py-4 text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 text-right"
                   >
                     Subtotal
                   </th>
@@ -454,10 +454,9 @@
                   :key="item.id"
                 >
                   <td class="px-6 py-4">
-                    <span
-                      class="text-xs font-black uppercase text-primary tracking-tight"
-                      >{{ item.produtoNome }}</span
-                    >
+                    <span class="text-xs font-black uppercase text-primary">{{
+                      item.produtoNome
+                    }}</span>
                   </td>
                   <td class="px-6 py-4 text-center">
                     <span class="text-xs font-black text-secondary tabular-nums"
@@ -481,8 +480,7 @@
                 <tr v-if="selectedVenda.orcamento?.bombaNecessaria">
                   <td class="px-6 py-4">
                     <div class="flex items-center gap-2">
-                      <span
-                        class="text-xs font-black uppercase text-primary tracking-tight"
+                      <span class="text-xs font-black uppercase text-primary"
                         >Serviço de Bombeamento</span
                       >
                       <span
@@ -516,8 +514,7 @@
                 <!-- Linha Extra: Desconto (se houver) -->
                 <tr v-if="selectedVenda.orcamento?.valorDesconto > 0">
                   <td class="px-6 py-4" colspan="3">
-                    <span
-                      class="text-xs font-black uppercase text-rose-500 tracking-tight"
+                    <span class="text-xs font-black uppercase text-rose-500"
                       >Desconto Aplicado</span
                     >
                   </td>
@@ -554,14 +551,14 @@
           <div class="flex items-center gap-3">
             <button
               @click="printVenda(selectedVenda)"
-              class="flex items-center gap-2 px-8 py-4 bg-brand text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-lg shadow-brand/20"
+              class="flex items-center gap-2 px-8 py-4 bg-brand text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-xl shadow-brand/20 outline-none"
             >
               <Printer size="14" />
               Imprimir Comprovante
             </button>
             <button
               @click="showViewModal = false"
-              class="px-8 py-4 bg-primary text-background rounded-2xl text-[10px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all"
+              class="px-8 py-4 bg-primary text-background rounded-2xl text-[10px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all outline-none"
             >
               Fechar Detalhes
             </button>
@@ -590,14 +587,14 @@
         <div class="flex gap-3 pt-6">
           <button
             @click="showDeleteDialog = false"
-            class="flex-1 py-4 bg-primary/2 border border-border rounded-2xl text-[10px] font-black uppercase tracking-widest text-secondary hover:bg-primary/5 transition-all"
+            class="flex-1 py-4 bg-primary/2 border border-border rounded-2xl text-[10px] font-black uppercase tracking-widest text-secondary hover:bg-primary/5 transition-all outline-none"
           >
             Cancelar
           </button>
           <button
             @click="handleDelete"
             :disabled="loading"
-            class="flex-1 py-4 bg-rose-500 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-rose-600 transition-all flex justify-center items-center gap-2"
+            class="flex-1 py-4 bg-rose-500 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-rose-600 transition-all flex justify-center items-center gap-2 outline-none"
           >
             <span
               v-if="loading"
@@ -626,7 +623,7 @@
                 Cobrança de Venda
               </h4>
               <p
-                class="text-[10px] font-bold text-secondary uppercase opacity-60"
+                class="text-[10px] font-black text-secondary uppercase opacity-40 mt-0.5 tracking-widest"
               >
                 Venda #{{ String(selectedVenda?.id).padStart(4, "0") }}
               </p>
@@ -643,7 +640,7 @@
                 v-for="type in ['PIX', 'BOLETO', 'CREDIT_CARD']"
                 :key="type"
                 @click="paymentType = type"
-                class="flex items-center justify-between px-6 py-4 rounded-2xl border transition-all text-xs font-black uppercase tracking-widest"
+                class="flex items-center justify-between px-6 py-4 rounded-2xl border transition-all text-[10px] font-black uppercase tracking-widest outline-none"
                 :class="
                   paymentType === type
                     ? 'bg-brand text-white border-brand shadow-lg shadow-brand/20'
@@ -667,7 +664,9 @@
             <div class="p-2 bg-emerald-500/20 text-emerald-500 rounded-xl">
               <MessageSquare size="16" />
             </div>
-            <p class="text-[9px] font-bold text-emerald-600 uppercase">
+            <p
+              class="text-[9px] font-black text-emerald-600 uppercase tracking-tight"
+            >
               O link de pagamento será enviado automaticamente para o WhatsApp
               do cliente.
             </p>
@@ -677,16 +676,16 @@
         <div class="flex gap-3">
           <button
             @click="showPaymentModal = false"
-            class="flex-1 py-4 bg-primary/2 border border-border rounded-2xl text-[10px] font-black uppercase tracking-widest text-secondary"
+            class="flex-1 py-4 bg-primary/2 border border-border rounded-2xl text-[10px] font-black uppercase tracking-widest text-secondary outline-none hover:bg-primary/5 transition-all"
           >
             Cancelar
           </button>
           <button
             @click="handlePaymentEmission"
             :disabled="loading"
-            class="flex-1 py-4 bg-brand text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all flex justify-center items-center gap-3 shadow-xl shadow-brand/20"
+            class="flex-1 py-4 bg-brand text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all flex justify-center items-center gap-3 shadow-xl shadow-brand/20 outline-none"
           >
-            <Send size="18" v-if="!loading" />
+            <Send size="16" v-if="!loading" />
             <span
               v-else
               class="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"
@@ -866,13 +865,14 @@ const handleDelete = async () => {
     refresh();
     showDeleteDialog.value = false;
   } catch (err) {
+    const msg = err.data?.message || err.message || "Erro ao remover venda.";
     addToast({
       title: "Erro",
-      description: "Erro ao remover venda.",
+      description: msg,
       type: "error",
     });
     logError("VENDAS", `Erro ao remover venda #${vendaToDelete.value?.id}`, {
-      error: err.message,
+      error: msg,
     });
   } finally {
     loading.value = false;
@@ -993,7 +993,7 @@ const sendWhatsAppVenda = async (venda) => {
   const doubleLine = "════════════════════════";
 
   const empresaNome = user.value?.empresa?.empresa
-    ? String(user.value.empresa.empresa).toUpperCase()
+    ? `${user.value.empresa.empresa}${user.value.empresa.filial ? ` - ${user.value.empresa.filial}` : ""}`.toUpperCase()
     : "SISTEMA MEU CONCRETO";
   const codVenda = String(venda.id).padStart(4, "0");
   const dataVenda = new Intl.DateTimeFormat("pt-BR").format(

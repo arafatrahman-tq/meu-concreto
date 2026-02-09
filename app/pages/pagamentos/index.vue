@@ -256,7 +256,9 @@
             {{ formatCurrency(selectedPgto.valor) }}
           </p>
           <div class="mt-4 pt-4 border-t border-border/50">
-            <p class="text-[11px] font-bold text-primary uppercase">
+            <p
+              class="text-[10px] font-black text-primary uppercase tracking-tight"
+            >
               {{ selectedPgto.venda?.orcamento?.nomeCliente }}
             </p>
             <p
@@ -270,7 +272,7 @@
         <div class="space-y-4">
           <div class="space-y-2">
             <label
-              class="text-[10px] font-black uppercase tracking-widest text-secondary opacity-60 ml-1"
+              class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-1 block"
               >Método de Pagamento</label
             >
             <BaseSelect
@@ -280,7 +282,7 @@
           </div>
           <div class="space-y-2">
             <label
-              class="text-[10px] font-black uppercase tracking-widest text-secondary opacity-60 ml-1"
+              class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-1 block"
               >Data do Recebimento</label
             >
             <BaseInput v-model="paymentForm.dataPagamento" type="date" />
@@ -290,14 +292,14 @@
         <div class="flex gap-3 pt-4">
           <button
             @click="showPaymentModal = false"
-            class="flex-1 py-4 bg-primary/2 rounded-2xl text-[10px] font-black uppercase tracking-widest text-secondary hover:bg-primary/5 transition-all"
+            class="flex-1 py-4 border border-border rounded-2xl text-[10px] font-black uppercase tracking-widest text-secondary hover:bg-primary/2 transition-all outline-none"
           >
             Cancelar
           </button>
           <button
             @click="confirmPayment"
             :disabled="submitting"
-            class="flex-2 py-4 bg-brand text-background rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-brand/20 hover:scale-105 active:scale-95 transition-all disabled:opacity-50"
+            class="flex-2 py-4 bg-brand text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-brand/20 hover:scale-105 active:scale-95 transition-all disabled:opacity-50 outline-none"
           >
             {{ submitting ? "Processando..." : "Confirmar Recebimento" }}
           </button>
@@ -627,6 +629,7 @@ import { useRoute } from "vue-router";
 definePageMeta({ layout: "default" });
 
 const { user } = useAuth();
+const now = useState("payment_now", () => new Date()).value;
 const { add: addToast } = useToast();
 const route = useRoute();
 const searchTerm = ref("");
@@ -678,7 +681,7 @@ const pgtoToDelete = ref(null);
 
 const paymentForm = ref({
   metodo: "PIX",
-  dataPagamento: new Date().toISOString().split("T")[0],
+  dataPagamento: now.toISOString().split("T")[0],
 });
 
 const paymentMethods = [
@@ -700,7 +703,7 @@ const stats = computed(() => {
   const totalReceber = pendentesNormal.reduce((acc, p) => acc + p.valor, 0);
 
   const atrasadosList = pendentesNormal.filter(
-    (p) => new Date(p.dataVencimento) < new Date(),
+    (p) => new Date(p.dataVencimento) < now,
   );
   const totalAtrasado = atrasadosList.reduce((acc, p) => acc + p.valor, 0);
 
@@ -771,7 +774,7 @@ const formatDate = (date) => {
 
 const isOverdue = (pgto) => {
   if (pgto.status !== "PENDENTE") return false;
-  return new Date(pgto.dataVencimento) < new Date();
+  return new Date(pgto.dataVencimento) < now;
 };
 
 const getDisplayStatus = (pgto) => {

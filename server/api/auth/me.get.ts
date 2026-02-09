@@ -34,7 +34,21 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    const { senha, ...userWithoutPassword } = user;
+    const { senha, ...userWithoutPassword } = user as any;
+
+    // Se a empresa na sessão for diferente da empresa principal do usuário,
+    // precisamos ajustar o objeto 'empresa' no retorno para refletir a unidade ativa
+    if (sessionUser.idEmpresa !== user.idEmpresa) {
+      // Tenta encontrar a empresa ativa na lista de acessos
+      const activeAccess = user.acessoEmpresas.find(
+        (a) => a.idEmpresa === sessionUser.idEmpresa,
+      );
+
+      if (activeAccess) {
+        userWithoutPassword.empresa = activeAccess.empresa;
+      }
+    }
+
     return userWithoutPassword;
   } catch (e) {
     deleteCookie(event, "auth_session");

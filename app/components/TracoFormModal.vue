@@ -16,8 +16,8 @@
 
           <div>
             <label
-              class="text-[10px] font-black uppercase tracking-widest text-secondary opacity-40 mb-2 block"
-              >Nome do Traço</label
+              class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 mb-2 block"
+              >Nome do Traço <span class="text-brand">*</span></label
             >
             <BaseInput
               v-model="form.nome"
@@ -28,8 +28,8 @@
 
           <div>
             <label
-              class="text-[10px] font-black uppercase tracking-widest text-secondary opacity-40 mb-2 block"
-              >Produto Vinculado</label
+              class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 mb-2 block"
+              >Produto Vinculado <span class="text-brand">*</span></label
             >
             <BaseSelect
               v-model="form.idProduto"
@@ -41,7 +41,7 @@
 
           <div>
             <label
-              class="text-[10px] font-black uppercase tracking-widest text-secondary opacity-40 mb-2 block"
+              class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 mb-2 block"
               >Descrição Técnica</label
             >
             <BaseInput
@@ -132,14 +132,14 @@
         <button
           type="button"
           @click="isOpen = false"
-          class="px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest text-secondary hover:bg-primary/3 transition-all"
+          class="px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest text-secondary hover:bg-primary/3 border border-border transition-all outline-none"
         >
           Cancelar
         </button>
         <button
           type="submit"
           :disabled="loading"
-          class="bg-brand text-white px-10 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-brand/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2"
+          class="bg-brand text-white px-10 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-brand/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2 outline-none"
         >
           {{
             loading ? "Salvando..." : traco ? "Atualizar Traço" : "Criar Traço"

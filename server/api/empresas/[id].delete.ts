@@ -1,8 +1,11 @@
 import { db } from '../../database/db';
 import { empresas } from '../../database/schema';
 import { eq, and, isNull } from 'drizzle-orm';
+import { requireAdmin } from '../../utils/auth';
 
 export default defineEventHandler(async (event) => {
+    requireAdmin(event);
+    
     try {
         const id = getRouterParam(event, 'id');
         if (!id) throw createError({ statusCode: 400, message: 'ID não fornecido' });

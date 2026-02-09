@@ -18,15 +18,8 @@ export default defineEventHandler(async (event) => {
       isNotNull(orcamentos.dataEntrega),
       gte(orcamentos.dataEntrega, start),
       lte(orcamentos.dataEntrega, end),
+      eq(orcamentos.idEmpresa, user.idEmpresa),
     ];
-
-    if (user.idEmpresasAcesso && user.idEmpresasAcesso.length > 0) {
-      whereConditions.push(
-        inArray(orcamentos.idEmpresa, user.idEmpresasAcesso),
-      );
-    } else {
-      whereConditions.push(eq(orcamentos.idEmpresa, user.idEmpresa));
-    }
 
     const result = await db.query.orcamentos.findMany({
       where: and(...whereConditions),

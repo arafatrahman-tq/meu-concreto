@@ -1,8 +1,11 @@
 import { db } from '../../database/db';
 import { empresas } from '../../database/schema';
 import { empresaSchema } from '../../utils/validador';
+import { requireAdmin } from '../../utils/auth';
 
 export default defineEventHandler(async (event) => {
+    requireAdmin(event);
+    
     try {
         const body = await readBody(event);
         const validatedData = empresaSchema.parse(body);

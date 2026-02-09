@@ -13,7 +13,12 @@ export const useToast = () => {
   const add = (
     message:
       | string
-      | { title?: string; description?: string; message?: string; type?: Toast["type"] | "warn" },
+      | {
+          title?: string;
+          description?: string;
+          message?: string;
+          type?: Toast["type"] | "warn";
+        },
     type: Toast["type"] | "warn" = "success",
   ) => {
     const id = ++counter;
@@ -30,9 +35,28 @@ export const useToast = () => {
       if (message.type) type = message.type as any;
     }
 
-    // Map "warn" to "info" for visual consistency if "warn" isn't a primary type, 
-    // or keep it if the UI component handles it.
-    const finalType = type === "warn" ? "info" : type;
+    // Map types for internal logic
+    const finalType = type;
+
+    // Sanitiza mensagens de erro genéricas do servidor para o usuário
+    if (finalType === "error") {
+      const genericTerms = [
+        "internal server error",
+        "fetch error",
+        "500",
+        "network error",
+        "undefined",
+        "object object",
+      ];
+      const isGeneric = genericTerms.some((term) =>
+        finalMessage.toLowerCase().includes(term),
+      );
+
+      if (isGeneric || !finalMessage) {
+        finalMessage =
+          "Não foi possível completar a operação. O servidor encontrou uma instabilidade temporária.";
+      }
+    }
 
     toasts.value.push({ id, message: finalMessage, type: finalType as any });
     setTimeout(() => {

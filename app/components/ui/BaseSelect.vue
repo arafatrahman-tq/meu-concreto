@@ -12,8 +12,11 @@
       type="button"
       @click="toggleDropdown"
       ref="buttonRef"
-      class="w-full bg-primary/2 border border-border rounded-2xl py-3.5 text-sm font-black uppercase tracking-widest text-primary text-left transition-all font-sans outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand/30 flex items-center justify-between"
-      :class="[icon ? 'pl-12 pr-4' : 'px-5']"
+      class="w-full bg-primary/2 border rounded-2xl py-3.5 text-sm font-black uppercase tracking-widest text-primary text-left transition-all font-sans outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand/30 flex items-center justify-between"
+      :class="[
+        icon ? 'pl-12 pr-4' : 'px-5',
+        error ? 'border-rose-500/50 bg-rose-500/5' : 'border-border'
+      ]"
     >
       <span :class="{ 'opacity-40': !modelValue }">
         {{ selectedLabel || placeholder || "Selecione..." }}
@@ -24,6 +27,17 @@
         :class="{ 'rotate-180': isOpen }"
       />
     </button>
+    
+    <!-- Error Message -->
+    <Transition
+      enter-active-class="transition duration-200 ease-out"
+      enter-from-class="opacity-0 -translate-y-1"
+      enter-to-class="opacity-100 translate-y-0"
+    >
+      <span v-if="error" class="absolute left-4 -bottom-5 text-[9px] font-black uppercase tracking-widest text-rose-500">
+        {{ error }}
+      </span>
+    </Transition>
 
     <!-- Dropdown List -->
     <Teleport to="body">
@@ -93,6 +107,7 @@ const props = defineProps({
   options: { type: Array, default: () => [] },
   icon: [Object, Function],
   placeholder: String,
+  error: String,
 });
 
 const emit = defineEmits(["update:modelValue"]);

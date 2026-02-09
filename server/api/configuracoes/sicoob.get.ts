@@ -1,10 +1,10 @@
 import { db } from "../../database/db";
 import { configuracoesSicoob } from "../../database/schema";
-import { requireAuth } from "../../utils/auth";
+import { requireAdmin } from "../../utils/auth";
 import { eq } from "drizzle-orm";
 
 export default defineEventHandler(async (event) => {
-  const user = requireAuth(event);
+  const user = requireAdmin(event);
 
   try {
     const config = await db.query.configuracoesSicoob.findFirst({

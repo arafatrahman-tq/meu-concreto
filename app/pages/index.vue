@@ -34,6 +34,8 @@
       </div>
     </div>
 
+    <SetupWizard :id-empresa="selectedEmpresa" />
+
     <!-- Summary Row -->
     <div
       class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 overflow-visible! py-2"
@@ -128,19 +130,31 @@
             </p>
 
             <!-- Fiscal Compliance Progress -->
-            <div class="mt-8 bg-white/5 border border-white/10 p-5 rounded-2xl backdrop-blur-md">
+            <div
+              class="mt-8 bg-white/5 border border-white/10 p-5 rounded-2xl backdrop-blur-md"
+            >
               <div class="flex justify-between items-end mb-2">
-                <span class="text-[9px] font-black uppercase tracking-widest text-white/60">Conformidade Fiscal</span>
-                <span class="text-xs font-black text-white tabular-nums">{{ dashboard.stats.fiscal.percentual }}%</span>
+                <span
+                  class="text-[9px] font-black uppercase tracking-widest text-white/60"
+                  >Conformidade Fiscal</span
+                >
+                <span class="text-xs font-black text-white tabular-nums"
+                  >{{ dashboard.stats.fiscal.percentual }}%</span
+                >
               </div>
-              <div class="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
-                <div 
+              <div
+                class="h-1.5 w-full bg-white/10 rounded-full overflow-hidden"
+              >
+                <div
                   class="h-full bg-white transition-all duration-1000 ease-out"
                   :style="{ width: `${dashboard.stats.fiscal.percentual}%` }"
                 ></div>
               </div>
-              <p class="text-[8px] font-bold text-white/40 uppercase tracking-tighter mt-2">
-                {{ dashboard.stats.fiscal.emitidas }} de {{ dashboard.stats.fiscal.total }} notas emitidas
+              <p
+                class="text-[8px] font-bold text-white/40 uppercase tracking-tighter mt-2"
+              >
+                {{ dashboard.stats.fiscal.emitidas }} de
+                {{ dashboard.stats.fiscal.total }} notas emitidas
               </p>
             </div>
           </div>
@@ -289,7 +303,8 @@ const formattedChartData = computed(() => {
   const rawData = dashboard.value.chart;
   let fullData = [];
 
-  const now = new Date();
+  // Usamos useState para garantir que 'now' seja idêntico entre server e client na hidratação
+  const now = useState("dashboard_now", () => new Date()).value;
 
   if (period === "daily") {
     // Gerar últimos 7 dias
@@ -376,8 +391,16 @@ const formattedEvents = computed(() => {
       0,
       30,
     ),
-    tag: d.vendaStatus === "NF_EMITIDA" ? "DOC. EMITIDO" : (d.status === "APROVADO" ? "CONCLUÍDO" : "AGENDADO"),
-    status: d.vendaStatus === "NF_EMITIDA" || d.status === "APROVADO" ? "done" : "pending",
+    tag:
+      d.vendaStatus === "NF_EMITIDA"
+        ? "DOC. EMITIDO"
+        : d.status === "APROVADO"
+          ? "CONCLUÍDO"
+          : "AGENDADO",
+    status:
+      d.vendaStatus === "NF_EMITIDA" || d.status === "APROVADO"
+        ? "done"
+        : "pending",
     hasNf: !!d.vendaNfse,
   }));
 });

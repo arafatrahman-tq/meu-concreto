@@ -1,15 +1,13 @@
 import { db } from '../../database/db';
 import { configuracoesAsaas } from '../../database/schema';
-import { requireAuth } from '../../utils/auth';
+import { requireAdmin } from '../../utils/auth';
 import { eq } from 'drizzle-orm';
 
 export default defineEventHandler(async (event) => {
-    const user = requireAuth(event);
+    const user = requireAdmin(event);
 
     try {
-        // Se for admin, pode ver global ou da sua empresa
-        // Por enquanto, vamos buscar a configuração associada à empresa do usuário
-        // ou a primeira disponível se idEmpresa for nulo (global)
+        // Buscar configuração associada à empresa do usuário
         const config = await db.query.configuracoesAsaas.findFirst({
             where: user.idEmpresa ? eq(configuracoesAsaas.idEmpresa, user.idEmpresa) : undefined
         });

@@ -7,13 +7,11 @@ export default defineEventHandler(async (event) => {
   const user = requireAdmin(event);
 
   try {
-    const whereConditions = [isNull(usuarios.deletedAt)];
-
-    if (user.idEmpresasAcesso && user.idEmpresasAcesso.length > 0) {
-      whereConditions.push(inArray(usuarios.idEmpresa, user.idEmpresasAcesso));
-    } else {
-      whereConditions.push(eq(usuarios.idEmpresa, user.idEmpresa));
-    }
+    // Filtragem estrita por Unidade Ativa
+    const whereConditions = [
+      isNull(usuarios.deletedAt),
+      eq(usuarios.idEmpresa, user.idEmpresa),
+    ];
 
     const result = await db.query.usuarios.findMany({
       where: and(...whereConditions),

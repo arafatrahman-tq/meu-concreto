@@ -16,14 +16,14 @@
       <div class="flex items-center gap-3 w-full md:w-auto">
         <button
           @click="showAjusteModal = true"
-          class="bg-primary/5 text-primary px-6 py-4 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-primary/10 transition-all flex items-center gap-2"
+          class="px-8 py-4 rounded-2xl border border-border text-secondary text-[10px] font-black uppercase tracking-widest hover:bg-primary/2 transition-all outline-none"
         >
           <Settings2 size="18" />
           Ajustar Estoque
         </button>
         <button
           @click="showAddModal = true"
-          class="bg-brand text-white px-8 py-4 rounded-2xl text-xs font-black uppercase tracking-widest shadow-xl shadow-brand/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2"
+          class="bg-brand text-white px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-brand/20 hover:scale-105 active:scale-95 transition-all flex items-center gap-2 outline-none"
         >
           <Plus size="20" />
           Novo Insumo

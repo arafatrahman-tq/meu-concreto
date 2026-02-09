@@ -21,20 +21,30 @@ export default defineEventHandler(async (event) => {
     const user = await db.query.usuarios.findFirst({
       where: eq(usuarios.id, sessionUser.id),
       with: {
-        acessoEmpresas: true
-      }
+        acessoEmpresas: true,
+      },
     });
 
     if (user && user.ativo !== 0 && !user.deletedAt) {
       const authUser: any = {
         ...user,
+        // Mantém o idEmpresa da sessão (unidade ativa) se o usuário tiver acesso a ela
+        idEmpresa:
+          user.idEmpresa === sessionUser.idEmpresa ||
+          user.acessoEmpresas?.some(
+            (ae) => ae.idEmpresa === sessionUser.idEmpresa,
+          )
+            ? sessionUser.idEmpresa
+            : user.idEmpresa,
         idEmpresasAcesso: [
           user.idEmpresa,
           ...(user.acessoEmpresas?.map((e) => e.idEmpresa) || []),
         ],
       };
       // Garantir IDs únicos
-      authUser.idEmpresasAcesso = Array.from(new Set(authUser.idEmpresasAcesso));
+      authUser.idEmpresasAcesso = Array.from(
+        new Set(authUser.idEmpresasAcesso),
+      );
 
       event.context.user = authUser;
     }

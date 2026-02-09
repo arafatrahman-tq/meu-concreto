@@ -10,13 +10,10 @@ export default defineEventHandler(async (event) => {
     const query = getQuery(event);
     const status = query.status as string;
 
-    const whereConditions = [isNull(pagamentos.deletedAt)];
-
-    if (user.idEmpresasAcesso && user.idEmpresasAcesso.length > 0) {
-      whereConditions.push(inArray(pagamentos.idEmpresa, user.idEmpresasAcesso));
-    } else {
-      whereConditions.push(eq(pagamentos.idEmpresa, user.idEmpresa));
-    }
+    const whereConditions = [
+      isNull(pagamentos.deletedAt),
+      eq(pagamentos.idEmpresa, user.idEmpresa),
+    ];
 
     if (status) {
       whereConditions.push(eq(pagamentos.status, status));
@@ -31,13 +28,13 @@ export default defineEventHandler(async (event) => {
           },
         },
       },
-            orderBy: (pagamentos, { desc }) => [desc(pagamentos.dataVencimento)],
-        });
-        return result;
-    } catch (error: any) {
-        throw createError({
-            statusCode: error.statusCode || 500,
-            message: error.message,
-        });
-    }
+      orderBy: (pagamentos, { desc }) => [desc(pagamentos.dataVencimento)],
+    });
+    return result;
+  } catch (error: any) {
+    throw createError({
+      statusCode: error.statusCode || 500,
+      message: error.message,
+    });
+  }
 });

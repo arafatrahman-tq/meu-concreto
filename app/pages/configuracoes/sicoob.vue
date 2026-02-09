@@ -365,6 +365,10 @@
 </template>
 
 <script setup>
+definePageMeta({
+  layout: "default",
+  middleware: ["admin"],
+});
 import {
   Building2,
   Settings,

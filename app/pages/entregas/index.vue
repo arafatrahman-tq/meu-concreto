@@ -160,10 +160,12 @@
 <script setup>
 import { Truck, MapPin, Package, ChevronRight, LogOut } from "lucide-vue-next";
 import { useToast } from "~/composables/useToast";
+import { useLogger } from "~/composables/useLogger";
 
 definePageMeta({ layout: false });
 
 const toast = useToast();
+const { info, error: logError } = useLogger();
 const loading = ref(false);
 const motorista = ref(null);
 const cargas = ref([]);
@@ -196,12 +198,18 @@ const validatePin = async () => {
     });
     motorista.value = data.motorista;
     cargas.value = data.cargas;
+
+    info("ENTREGAS", `Motorista ${data.motorista.nome} logou via PIN`, {
+      motorista: data.motorista.id,
+    });
+
     toast.add({
       title: "Acesso Liberado",
       description: `Olá, ${data.motorista.nome}`,
       type: "success",
     });
   } catch (e) {
+    logError("ENTREGAS", "Falha de acesso via PIN", { error: e.message });
     toast.add({
       title: "Erro de Acesso",
       description: e.data?.statusMessage || "PIN inválido",
@@ -215,6 +223,9 @@ const validatePin = async () => {
 };
 
 const logout = () => {
+  if (motorista.value) {
+    info("ENTREGAS", `Motorista ${motorista.value.nome} desconectou-se`);
+  }
   motorista.value = null;
   cargas.value = [];
   pinDigits.value = ["", "", "", ""];

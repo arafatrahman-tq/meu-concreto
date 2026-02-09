@@ -21,10 +21,9 @@
       <div
         class="mt-12 text-[10px] font-bold text-secondary uppercase tracking-[0.2em] opacity-40"
       >
-        <ClientOnly>
-          {{ new Date().toLocaleDateString() }}
-          <template #fallback>--/--/----</template>
-        </ClientOnly>
+        {{
+          useState("maint_date", () => new Date().toLocaleDateString()).value
+        }}
         • Central de Operações
       </div>
     </div>

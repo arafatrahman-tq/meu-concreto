@@ -10,17 +10,17 @@
                 <div v-for="toast in toasts" :key="toast.id"
                     class="pointer-events-auto flex items-center gap-4 px-6 py-4 rounded-3xl shadow-2xl border border-gray-100 dark:border-white/5 min-w-[20rem] backdrop-blur-xl transition-all"
                     :class="[
-                        toast.type === 'success' ? 'bg-emerald-500 text-white' :
-                            toast.type === 'error' ? 'bg-rose-500 text-white' :
-                                'bg-surface text-primary'
+                        toast.type === 'success' ? 'bg-emerald-500 text-white border-emerald-400' :
+                            toast.type === 'error' ? 'bg-rose-500 text-white border-rose-400' :
+                                toast.type === 'warn' ? 'bg-amber-500 text-white border-amber-400' :
+                                    'bg-surface text-primary border-border'
                     ]">
                     <div class="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0" :class="[
-                        toast.type === 'success' ? 'bg-white/20' :
-                            toast.type === 'error' ? 'bg-white/20' :
+                        toast.type === 'success' || toast.type === 'error' || toast.type === 'warn' ? 'bg-white/20' :
                                 'bg-brand/10 text-brand'
                     ]">
                         <CheckCircle2 v-if="toast.type === 'success'" size="20" />
-                        <AlertTriangle v-else-if="toast.type === 'error'" size="20" />
+                        <AlertTriangle v-else-if="toast.type === 'error' || toast.type === 'warn'" size="20" />
                         <Info v-else size="20" />
                     </div>
                     <div class="flex-1">

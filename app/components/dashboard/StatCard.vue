@@ -70,7 +70,7 @@
         v-for="i in 8"
         :key="i"
         :style="{
-          height: `${30 + Math.random() * 70}%`,
+          height: `${30 + ((i * 13) % 70)}%`,
           transitionDelay: `${i * 50}ms`,
         }"
         class="flex-1 bg-primary rounded-t-lg transition-all duration-1000"
