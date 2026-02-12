@@ -648,7 +648,7 @@ const removeItem = (index) => {
 };
 
 const { data: produtos } = useFetch("/api/produtos");
-const { data: formasPgto } = useFetch("/api/forma-pgto");
+const { data: formasPgto } = useFetch("/api/formas-pagamento");
 const { data: vendedores } = useFetch("/api/vendedores");
 
 const autocompleteClienteOptions = computed(() =>

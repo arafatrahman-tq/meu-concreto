@@ -201,7 +201,7 @@
       :title="isEditing ? 'Editar Produto' : 'Novo Produto'"
       size="lg"
     >
-      <form @submit.prevent="saveProduto" class="space-y-6 pt-4">
+      <form @submit.prevent="onSubmit" class="space-y-6 pt-4">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="space-y-1.5 col-span-2">
             <label
@@ -212,7 +212,8 @@
               v-model="form.produto"
               placeholder="Ex: Concreto FCK 25 Mpa"
               :icon="Package"
-              required
+              :error="errors.produto"
+              @blur="validateField('produto', form.produto)"
             />
           </div>
 
@@ -221,13 +222,13 @@
               class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2 block"
               >Valor Unitário Venda <span class="text-brand">*</span></label
             >
-            <BaseInput
-              v-model.number="form.valorVenda"
-              type="number"
-              step="0.01"
-              placeholder="0.00"
+            <BaseCurrency
+              v-model="form.valorVenda"
+              :centavos="true"
+              placeholder="R$ 0,00"
               :icon="DollarSign"
-              required
+              :error="errors.valorVenda"
+              @blur="validateField('valorVenda', form.valorVenda)"
             />
           </div>
 
@@ -236,12 +237,13 @@
               class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2 block"
               >Valor Unitário Custo</label
             >
-            <BaseInput
-              v-model.number="form.valorCusto"
-              type="number"
-              step="0.01"
-              placeholder="0.00"
+            <BaseCurrency
+              v-model="form.valorCusto"
+              :centavos="true"
+              placeholder="R$ 0,00"
               :icon="TrendingDown"
+              :error="errors.valorCusto"
+              @blur="validateField('valorCusto', form.valorCusto)"
             />
           </div>
 
@@ -266,6 +268,7 @@
               v-model="form.fck"
               placeholder="Ex: 30"
               :icon="Activity"
+              :error="errors.fck"
             />
           </div>
 
@@ -279,6 +282,7 @@
               type="number"
               placeholder="Ex: 100"
               :icon="Layers"
+              :error="errors.slump"
             />
           </div>
 
@@ -331,27 +335,17 @@
                 >Disponível para novos orçamentos</span
               >
             </div>
-            <label class="relative inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                v-model="form.ativo"
-                class="sr-only peer"
-              />
-              <div
-                class="w-11 h-6 bg-primary/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand"
-              ></div>
-            </label>
+            <BaseToggle v-model="form.ativo" />
           </div>
         </div>
 
+        <!-- Validation Summary -->
         <div
-          v-if="error"
-          class="bg-rose-500/10 p-4 rounded-2xl border border-rose-500/20"
+          v-if="hasErrors"
+          class="bg-rose-50 dark:bg-rose-500/10 p-4 rounded-2xl border border-rose-100 dark:border-rose-500/20"
         >
-          <p
-            class="text-rose-600 dark:text-rose-400 text-[10px] font-black text-center uppercase tracking-[0.2em]"
-          >
-            {{ error }}
+          <p class="text-rose-600 dark:text-rose-400 text-[10px] font-black uppercase tracking-widest">
+            Corrija os erros acima antes de salvar
           </p>
         </div>
 
@@ -568,8 +562,8 @@
   </div>
 </template>
 
-<script setup>
-import { ref, reactive, computed, onMounted } from "vue";
+<script setup lang="ts">
+import { ref, reactive, computed, onMounted, watch } from "vue";
 import {
   Package,
   Package as PackageIcon,
@@ -586,16 +580,19 @@ import {
   RefreshCw,
   FlaskConical,
   X,
-  ChevronRight,
-  Search as SearchIcon,
 } from "lucide-vue-next";
 import { useToast } from "~/composables/useToast";
 import { useLogger } from "~/composables/useLogger";
+import { useValidation, useCurrencyFormat } from "~/composables/useValidation";
+import { produtoSharedSchema } from "../../../shared/schemas";
 
 definePageMeta({ layout: "default" });
 
 const { add: addToast } = useToast();
 const { info, error: logError } = useLogger();
+const { validate, errors, validateField, clearError, hasErrors, clearAllErrors } = useValidation(produtoSharedSchema);
+const { formatarCentavos } = useCurrencyFormat();
+
 const {
   data: produtos,
   refresh,
@@ -613,7 +610,6 @@ watch(
 
 const searchTerm = ref("");
 const itemsToShow = ref(20);
-const error = ref("");
 const showModal = ref(false);
 const isEditing = ref(false);
 const showDeleteDialog = ref(false);
@@ -631,7 +627,50 @@ const tracoForm = reactive({
 });
 const loadingMix = ref(false);
 
-const openMixDesignModal = async (produto) => {
+const form = reactive({
+  id: undefined,
+  produto: "",
+  valorVenda: 0,
+  valorCusto: 0,
+  unidadeMedida: "m³",
+  fck: "",
+  slump: null,
+  britaTipo: "",
+  aditivo: "",
+  descricao: "",
+  ativo: true,
+});
+
+const unidadeOptions = [
+  { label: "Metro Cúbico (m³)", value: "m³" },
+  { label: "Unidade (un)", value: "un" },
+  { label: "Quilo (kg)", value: "kg" },
+  { label: "Tonelada (t)", value: "t" },
+];
+
+// Auto-fill search from URL query (Global Search integration)
+const route = useRoute();
+onMounted(() => {
+  if (route.query.q) {
+    searchTerm.value = String(route.query.q);
+  }
+});
+
+const filteredProdutos = computed(() => {
+  if (!produtos.value) return [];
+  const term = searchTerm.value.toLowerCase();
+  return produtos.value.filter(
+    (p: any) =>
+      p.produto.toLowerCase().includes(term) ||
+      (p.fck && p.fck.toLowerCase().includes(term)),
+  );
+});
+
+const displayedProdutos = computed(() => {
+  return filteredProdutos.value.slice(0, itemsToShow.value);
+});
+
+const openMixDesignModal = async (produto: any) => {
   selectedProduto.value = produto;
   tracoForm.nome = `Traço - ${produto.produto}`;
   tracoForm.descricao = `Composição padrão para ${produto.produto}`;
@@ -644,16 +683,16 @@ const openMixDesignModal = async (produto) => {
   try {
     // Buscar insumos para o select
     const insumosData = await $fetch("/api/insumos");
-    insumosDisponiveis.value = insumosData;
+    insumosDisponiveis.value = insumosData as any[];
 
     // Buscar traço existente para este produto
     const tracos = await $fetch(`/api/tracos?idProduto=${produto.id}`);
-    if (tracos && tracos.length > 0) {
-      const t = tracos[0];
+    if (tracos && Array.isArray(tracos) && tracos.length > 0) {
+      const t = tracos[0] as any;
       tracoForm.id = t.id;
       tracoForm.nome = t.nome;
       tracoForm.descricao = t.descricao;
-      tracoForm.itens = t.itens.map((it) => ({
+      tracoForm.itens = t.itens.map((it: any) => ({
         idInsumo: it.idInsumo,
         quantidade: it.quantidade,
       }));
@@ -672,10 +711,10 @@ const openMixDesignModal = async (produto) => {
 };
 
 const addInsumoAoTraco = () => {
-  tracoForm.itens.push({ idInsumo: null, quantidade: 0 });
+  tracoForm.itens.push({ idInsumo: null as any, quantidade: 0 });
 };
 
-const removeInsumoDoTraco = (index) => {
+const removeInsumoDoTraco = (index: number) => {
   tracoForm.itens.splice(index, 1);
 };
 
@@ -713,7 +752,7 @@ const saveMixDesign = async () => {
       type: "success",
     });
     showMixModal.value = false;
-  } catch (err) {
+  } catch (err: any) {
     addToast({
       title: "Erro",
       description:
@@ -725,53 +764,11 @@ const saveMixDesign = async () => {
   }
 };
 
-const form = reactive({
-  id: null,
-  produto: "",
-  valorVenda: 0,
-  valorCusto: 0,
-  unidadeMedida: "m³",
-  fck: "",
-  slump: null,
-  britaTipo: "",
-  aditivo: "",
-  descricao: "",
-  ativo: true,
-});
-
-const unidadeOptions = [
-  { label: "Metro Cúbico (m³)", value: "m³" },
-  { label: "Unidade (un)", value: "un" },
-  { label: "Quilo (kg)", value: "kg" },
-  { label: "Tonelada (t)", value: "t" },
-];
-
-// Auto-fill search from URL query (Global Search integration)
-const route = useRoute();
-onMounted(() => {
-  if (route.query.q) {
-    searchTerm.value = String(route.query.q);
-  }
-});
-
-const filteredProdutos = computed(() => {
-  if (!produtos.value) return [];
-  const term = searchTerm.value.toLowerCase();
-  return produtos.value.filter(
-    (p) =>
-      p.produto.toLowerCase().includes(term) ||
-      (p.fck && p.fck.toLowerCase().includes(term)),
-  );
-});
-
-const displayedProdutos = computed(() => {
-  return filteredProdutos.value.slice(0, itemsToShow.value);
-});
-
 const openAddModal = () => {
   isEditing.value = false;
+  clearAllErrors();
   Object.assign(form, {
-    id: null,
+    id: undefined,
     produto: "",
     valorVenda: 0,
     valorCusto: 0,
@@ -784,34 +781,38 @@ const openAddModal = () => {
     ativo: true,
   });
   showModal.value = true;
-  error.value = "";
 };
 
-const openEditModal = (p) => {
+const openEditModal = (p: any) => {
   isEditing.value = true;
-  // Converter de centavos para unidade (se o backend usar centavos)
-  // Assumindo que o banco de dados armazena em inteiros (centavos)
+  clearAllErrors();
+  // O backend retorna valores em centavos, o BaseCurrency lida com isso
   Object.assign(form, {
     ...p,
-    valorVenda: p.valorVenda / 100,
-    valorCusto: p.valorCusto ? p.valorCusto / 100 : 0,
     ativo: !!p.ativo,
   });
   showModal.value = true;
-  error.value = "";
 };
 
-const saveProduto = async () => {
+const onSubmit = async () => {
   loading.value = true;
-  error.value = "";
+
+  // Validar formulário
+  const result = validate(form);
+  if (!result.success) {
+    loading.value = false;
+    addToast({
+      title: "Erro de Validação",
+      description: "Corrija os campos destacados",
+      type: "error",
+    });
+    return;
+  }
 
   try {
     const payload = {
-      ...form,
-      valorVenda: Math.round(form.valorVenda * 100),
-      valorCusto: form.valorCusto ? Math.round(form.valorCusto * 100) : 0,
+      ...result.data,
       ativo: !!form.ativo,
-      slump: form.slump ? parseInt(form.slump) : undefined,
     };
 
     const url = isEditing.value ? `/api/produtos/${form.id}` : "/api/produtos";
@@ -835,14 +836,22 @@ const saveProduto = async () => {
 
     showModal.value = false;
     refresh();
-  } catch (err) {
-    error.value =
-      err.data?.message ||
-      err.data?.statusMessage ||
-      "Não foi possível salvar os dados do produto. Verifique as informações e tente novamente.";
+  } catch (err: any) {
+    // Tratar erros de validação do backend
+    if (err.data?.data) {
+      const backendErrors = err.data.data;
+      if (Array.isArray(backendErrors)) {
+        backendErrors.forEach((e: any) => {
+          if (e.path) {
+            errors.value[e.path[0]] = e.message;
+          }
+        });
+      }
+    }
+
     addToast({
       title: "Erro",
-      description: error.value,
+      description: err.data?.message || err.message || "Erro ao salvar produto",
       type: "error",
     });
     logError(
@@ -855,7 +864,7 @@ const saveProduto = async () => {
   }
 };
 
-const confirmDelete = (p) => {
+const confirmDelete = (p: any) => {
   produtoToDelete.value = p;
   showDeleteDialog.value = true;
 };
@@ -874,7 +883,7 @@ const handleDelete = async () => {
       id: produtoToDelete.value.id,
     });
     refresh();
-  } catch (err) {
+  } catch (err: any) {
     addToast({
       title: "Erro",
       description:
@@ -892,12 +901,8 @@ const handleDelete = async () => {
   }
 };
 
-const formatCurrency = (value) => {
-  if (!value) return "R$ 0,00";
-  return new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  }).format(value / 100);
+const formatCurrency = (value?: number) => {
+  return formatarCentavos(value);
 };
 </script>
 

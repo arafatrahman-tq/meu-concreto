@@ -232,6 +232,27 @@
       "when": 1770228949337,
       "tag": "0032_needy_drax",
       "breakpoints": true
+    },
+    {
+      "idx": 33,
+      "version": "6",
+      "when": 1770832585800,
+      "tag": "0033_bored_aaron_stack",
+      "breakpoints": true
+    },
+    {
+      "idx": 34,
+      "version": "6",
+      "when": 1770897358443,
+      "tag": "0034_nasty_lily_hollister",
+      "breakpoints": true
+    },
+    {
+      "idx": 35,
+      "version": "6",
+      "when": 1770898944935,
+      "tag": "0035_sweet_rawhide_kid",
+      "breakpoints": true
     }
   ]
 }

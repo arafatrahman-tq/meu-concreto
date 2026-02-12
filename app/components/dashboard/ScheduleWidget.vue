@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-surface rounded-3xl p-10 shadow-sm border border-border h-full flex flex-col"
+    class="bg-surface rounded-[2rem] p-6 sm:p-10 shadow-sm border border-border h-full flex flex-col"
   >
     <div class="flex justify-between items-center mb-10">
       <div>
@@ -9,7 +9,7 @@
         >
           Logística em Tempo Real
         </h3>
-        <p class="text-3xl font-black tracking-tighter uppercase text-primary">
+        <p class="text-xl sm:text-3xl font-black tracking-tighter uppercase text-primary">
           Agenda de Entregas
         </p>
       </div>
@@ -49,7 +49,7 @@
     </div>
 
     <!-- Event List -->
-    <div class="space-y-8 overflow-y-auto flex-1 pr-2 custom-scrollbar">
+    <div class="space-y-10 overflow-y-auto flex-1 pr-2 custom-scrollbar">
       <div
         v-if="filteredEvents.length === 0"
         class="flex flex-col items-center justify-center h-full opacity-20"

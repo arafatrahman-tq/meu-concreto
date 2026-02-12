@@ -7,8 +7,9 @@ import {
   entregaEventos,
   logs,
   usuarios,
+  insumos,
 } from "../../database/schema";
-import { eq, sql, and, isNull, gte, desc, inArray } from "drizzle-orm";
+import { eq, sql, and, isNull, gte, desc, inArray, lte } from "drizzle-orm";
 
 export default defineEventHandler(async (event) => {
   const user = event.context.user;
@@ -31,6 +32,8 @@ export default defineEventHandler(async (event) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
+    const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+
     // 1. Vendas de Hoje
     const vendasHoje = await db
       .select({
@@ -45,6 +48,20 @@ export default defineEventHandler(async (event) => {
           eq(vendas.idEmpresa, idEmpresa),
           isNull(vendas.deletedAt),
           gte(vendas.createdAt, today),
+        ),
+      );
+
+    // 1.1 Faturamento Mensal
+    const faturamentoMensal = await db
+      .select({
+        total: sql<number>`sum(${vendas.valorTotal})`,
+      })
+      .from(vendas)
+      .where(
+        and(
+          eq(vendas.idEmpresa, idEmpresa),
+          isNull(vendas.deletedAt),
+          gte(vendas.createdAt, firstDayOfMonth),
         ),
       );
 
@@ -69,6 +86,24 @@ export default defineEventHandler(async (event) => {
       .select({ count: sql<number>`count(*)` })
       .from(caminhoes)
       .where(and(eq(caminhoes.idEmpresa, idEmpresa), eq(caminhoes.ativo, 1)));
+
+    // 3.1 Insumos Críticos (Abaixo do mínimo)
+    const insumosCriticos = await db
+      .select({
+        id: insumos.id,
+        nome: insumos.nome,
+        estoqueAtual: insumos.estoqueAtual,
+        estoqueMinimo: insumos.estoqueMinimo,
+        unidadeMedida: insumos.unidadeMedida,
+      })
+      .from(insumos)
+      .where(
+        and(
+          eq(insumos.idEmpresa, idEmpresa),
+          isNull(insumos.deletedAt),
+          sql`${insumos.estoqueAtual} <= ${insumos.estoqueMinimo}`,
+        ),
+      );
 
     // 4. Atividade Recente e Cálculo de Frota em Rota
     // Pegamos os eventos de hoje da empresa usando Join para performance e tipagem correta
@@ -137,6 +172,9 @@ export default defineEventHandler(async (event) => {
           qtd: Number(vendasHoje[0]?.count) || 0,
           volume: Number(vendasHoje[0]?.volume) || 0,
         },
+        faturamentoMensal: {
+          valor: Number(faturamentoMensal[0]?.total) || 0,
+        },
         orcamentosPendentes: {
           valor: Number(orcamentosHoje[0]?.total) || 0,
           qtd: Number(orcamentosHoje[0]?.count) || 0,
@@ -145,6 +183,8 @@ export default defineEventHandler(async (event) => {
           total: Number(frotaTotal[0]?.count) || 0,
           emRota: emRotaCount,
         },
+        insumosCriticos: insumosCriticos.length,
+        listaInsumosCriticos: insumosCriticos,
         statusUsina: teveAtividadeRecente ? "OPERACIONAL" : "OCIOSA",
       },
       eventos: eventosFiltrados.slice(0, 10),

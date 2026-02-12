@@ -18,9 +18,12 @@ export default defineEventHandler(async (event) => {
       return []; // Retorna lista vazia em vez de erro para não quebrar o layout
     }
 
-    // Busca os últimos 10 logs importantes
+    // Busca os últimos 10 logs importantes filtrados por empresa
     const recentLogs = await db.query.logs.findMany({
-      where: or(eq(logs.nivel, "WARN"), eq(logs.nivel, "ERROR")),
+      where: and(
+        or(eq(logs.nivel, "WARN"), eq(logs.nivel, "ERROR")),
+        eq(logs.idEmpresa, user.idEmpresa),
+      ),
       orderBy: [desc(logs.timestamp)],
       limit: 10,
       with: {

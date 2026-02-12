@@ -1,46 +1,80 @@
 import { db } from "../../database/db";
 import { bombas } from "../../database/schema";
-import { bombaSchema } from "../../utils/validador";
+import { bombaSharedSchema } from "#shared/schemas";
 import { and, eq } from "drizzle-orm";
 import { requireAuth } from "../../utils/auth";
 import { serverLog } from "../../utils/logger";
 
 export default defineEventHandler(async (event) => {
+  const user = requireAuth(event);
+  
   try {
-    const user = requireAuth(event);
-    const id = Number(event.context.params?.id);
+    const id = Number(getRouterParam(event, "id"));
     const body = await readBody(event);
-    const validatedData = bombaSchema.parse(body);
+    
+    // Validação com schema compartilhado (parcial para atualizações)
+    const result = bombaSharedSchema.partial().safeParse(body);
+    
+    if (!result.success) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: "Erro de Validação",
+        message: "Dados inválidos",
+        data: result.error.errors.map((e) => ({
+          path: e.path,
+          message: e.message,
+        })),
+      });
+    }
 
-    const result = await db.update(bombas)
-      .set({
-        ...validatedData,
-        ativo: validatedData.ativo !== undefined ? (validatedData.ativo ? 1 : 0) : undefined,
-        updatedAt: new Date(),
-      })
+    const data = result.data;
+    const updateData: any = {
+      ...data,
+      updatedAt: new Date(),
+    };
+    
+    // Converte ativo boolean para integer se presente
+    if (data.ativo !== undefined) {
+      updateData.ativo = data.ativo ? 1 : 0;
+    }
+    
+    // Remove idEmpresa das atualizações (não deve ser alterado)
+    delete updateData.idEmpresa;
+
+    const [bomba] = await db
+      .update(bombas)
+      .set(updateData)
       .where(and(
         eq(bombas.id, id),
         eq(bombas.idEmpresa, user.idEmpresa)
       ))
       .returning();
 
-    if (!result.length || !result[0]) {
-      throw createError({ statusCode: 404, message: 'Bomba não encontrada' });
-    }
-
-    await serverLog.info(event, 'BOMBAS', `Bomba atualizada: ${result[0].nome}`, { id });
-
-    return result[0];
-  } catch (error: any) {
-    if (error.name === 'ZodError') {
+    if (!bomba) {
       throw createError({
-        statusCode: 400,
-        message: 'Erro de validação: ' + error.issues.map((i: any) => i.message).join(', '),
+        statusCode: 404,
+        statusMessage: "Não Encontrado",
+        message: "Bomba não encontrada",
       });
     }
+
+    await serverLog.info(event, "BOMBAS", "Bomba atualizada", {
+      id: bomba.id,
+      nome: bomba.nome,
+    });
+
+    return bomba;
+  } catch (error: any) {
+    if (error.statusCode) throw error;
+
+    await serverLog.error(event, "BOMBAS", "Erro ao atualizar bomba", {
+      error: error.message,
+    });
+
     throw createError({
-      statusCode: error.statusCode || 500,
-      message: error.message || 'Erro ao atualizar bomba',
+      statusCode: 500,
+      statusMessage: "Erro Interno",
+      message: "Erro ao atualizar bomba",
     });
   }
 });

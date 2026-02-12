@@ -231,7 +231,150 @@
             </p>
           </div>
         </div>
+
+        <!-- Faturamento Mensal -->
+        <div
+          class="bg-surface p-6 rounded-3xl border border-border shadow-xl shadow-black/2 group active:scale-95 transition-all duration-300"
+        >
+          <div
+            class="w-11 h-11 bg-indigo-500/10 text-indigo-500 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform"
+          >
+            <BarChart3 size="22" stroke-width="2.5" />
+          </div>
+          <p
+            class="text-[8px] font-black uppercase tracking-[0.2em] text-secondary mb-2"
+          >
+            Faturamento Mês
+          </p>
+          <p class="text-xl font-black text-primary tracking-tighter">
+            {{ formatCurrency(data.stats?.faturamentoMensal?.valor || 0) }}
+          </p>
+          <p class="text-[8px] font-black text-indigo-500 uppercase mt-2">
+            Acumulado Mensal
+          </p>
+        </div>
+
+        <!-- Alerta de Insumos -->
+        <NuxtLink
+          to="/gestao/insumos"
+          class="p-6 rounded-3xl shadow-xl flex flex-col justify-between transition-all duration-300 group active:scale-95 border border-border"
+          :class="[
+            data.stats?.insumosCriticos > 0
+              ? 'bg-rose-500/5 border-rose-500/20'
+              : 'bg-surface',
+          ]"
+        >
+          <div
+            :class="[
+              'w-11 h-11 rounded-2xl flex items-center justify-center transition-all group-hover:scale-110',
+              data.stats?.insumosCriticos > 0
+                ? 'bg-rose-500/10 text-rose-500'
+                : 'bg-secondary/10 text-secondary',
+            ]"
+          >
+            <AlertTriangle
+              v-if="data.stats?.insumosCriticos > 0"
+              size="22"
+              stroke-width="2.5"
+              class="animate-pulse"
+            />
+            <Package v-else size="22" stroke-width="2.5" />
+          </div>
+          <div>
+            <p
+              class="text-[8px] font-black uppercase tracking-[0.2em] text-secondary mb-2"
+            >
+              Estoque Crítico
+            </p>
+            <p
+              :class="[
+                'text-xl font-black tracking-tighter',
+                data.stats?.insumosCriticos > 0
+                  ? 'text-rose-500'
+                  : 'text-primary',
+              ]"
+            >
+              {{ data.stats?.insumosCriticos || 0 }}
+            </p>
+            <p
+              class="text-[8px] font-black uppercase mt-2"
+              :class="
+                data.stats?.insumosCriticos > 0
+                  ? 'text-rose-500'
+                  : 'text-secondary/40'
+              "
+            >
+              {{
+                data.stats?.insumosCriticos > 0
+                  ? "Atenção Necessária"
+                  : "Estoque em dia"
+              }}
+            </p>
+          </div>
+        </NuxtLink>
       </div>
+
+      <!-- Alerta de Estoque Crítico - Visão Imediata -->
+      <section v-if="data.stats?.insumosCriticos > 0" class="animate-bounce-in">
+        <div
+          class="bg-rose-500 rounded-3xl p-6 shadow-2xl shadow-rose-500/20 border border-white/20 relative overflow-hidden"
+        >
+          <!-- Background Decoration -->
+          <div
+            class="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full blur-3xl"
+          ></div>
+
+          <div class="flex items-center gap-4 mb-6 relative z-10">
+            <div
+              class="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center text-white"
+            >
+              <AlertTriangle size="24" stroke-width="2.5" />
+            </div>
+            <div>
+              <h2 class="text-white font-black uppercase italic tracking-tight">
+                Alerta de Suprimentos
+              </h2>
+              <p class="text-white/60 text-[8px] font-black uppercase tracking-[0.2em]">
+                {{ data.stats.insumosCriticos }} materiais abaixo do mínimo
+              </p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 gap-3 relative z-10">
+            <div
+              v-for="insumo in data.stats.listaInsumosCriticos"
+              :key="insumo.id"
+              class="bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl p-4 flex items-center justify-between"
+            >
+              <div class="flex flex-col">
+                <span class="text-[10px] font-black text-white uppercase">{{
+                  insumo.nome
+                }}</span>
+                <span class="text-[8px] font-bold text-white/50 uppercase"
+                  >Estoque: {{ insumo.estoqueAtual }}{{ insumo.unidadeMedida }} /
+                  Min: {{ insumo.estoqueMinimo }}{{ insumo.unidadeMedida }}</span
+                >
+              </div>
+              <div class="h-1.5 w-16 bg-white/10 rounded-full overflow-hidden">
+                <div
+                  class="h-full bg-white rounded-full"
+                  :style="{
+                    width: `${Math.min((insumo.estoqueAtual / insumo.estoqueMinimo) * 100, 100)}%`,
+                  }"
+                ></div>
+              </div>
+            </div>
+          </div>
+
+          <NuxtLink
+            to="/gestao/insumos"
+            class="mt-6 w-full py-4 bg-white text-rose-500 rounded-2xl text-[9px] font-black uppercase tracking-[0.2em] flex items-center justify-center gap-2 hover:bg-white/90 transition-colors"
+          >
+            Gerenciar Suprimentos
+            <ChevronRight size="14" stroke-width="3" />
+          </NuxtLink>
+        </div>
+      </section>
 
       <!-- Atividade Recente - Estilo Timeline iOS -->
       <section class="space-y-6">
@@ -452,7 +595,10 @@ import {
   DollarSign,
   Users,
   ChevronDown,
+  ChevronRight,
   Building2,
+  AlertTriangle,
+  BarChart3,
 } from "lucide-vue-next";
 import { useAuth, useFetch, navigateTo, computed, useLogger } from "#imports";
 
@@ -558,6 +704,8 @@ const formatTime = (date) => {
 
 const getEventoLabel = (tipo) => {
   const labels = {
+    PEDIDO_CRIADO: "Novo pedido registrado",
+    ORCAMENTO_APROVADO: "Orçamento aprovado",
     SAIDA_USINA: "Caminhão saiu da usina",
     CHEGADA_OBRA: "Chegada na obra",
     INICIO_DESCARGA: "Início da descarga",
@@ -569,6 +717,8 @@ const getEventoLabel = (tipo) => {
 
 const getEventoStyle = (tipo) => {
   const styles = {
+    PEDIDO_CRIADO: { bg: "bg-blue-500/10 text-blue-500", icon: FileText },
+    ORCAMENTO_APROVADO: { bg: "bg-emerald-500/10 text-emerald-500", icon: CheckCircle },
     SAIDA_USINA: { bg: "bg-blue-500/10 text-blue-500", icon: Truck },
     CHEGADA_OBRA: { bg: "bg-amber-500/10 text-amber-500", icon: MapPin },
     INICIO_DESCARGA: {

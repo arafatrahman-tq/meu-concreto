@@ -48,10 +48,10 @@ describe("Frontend: UI Toast System Consistency", () => {
     expect(exists).toBe(true);
 
     const content = await Bun.file(filePath).text();
-    // Verify it handles success/error classes
+    // Verify it handles success/error classes with theme variables
     expect(content.includes("toast.type === 'success'")).toBe(true);
     expect(content.includes("toast.type === 'error'")).toBe(true);
-    expect(content.includes("bg-rose-500")).toBe(true); // Error color
-    expect(content.includes("bg-emerald-500")).toBe(true); // Success color
+    expect(content.includes("bg-danger")).toBe(true); // Error color (theme variable)
+    expect(content.includes("bg-success")).toBe(true); // Success color (theme variable)
   });
 });

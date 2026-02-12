@@ -199,24 +199,11 @@
           class="p-8 py-6 border-t-2 border-primary/5 bg-primary/2 flex flex-col md:flex-row items-center justify-between gap-6"
         >
           <div class="flex items-center gap-8">
-            <label class="flex items-center gap-3 cursor-pointer group">
-              <div class="relative flex items-center justify-center w-5 h-5">
-                <input
-                  type="checkbox"
-                  v-model="dontShowAgain"
-                  class="peer appearance-none w-5 h-5 rounded-none border-2 border-primary/10 checked:bg-brand checked:border-brand transition-all cursor-pointer"
-                />
-                <Check
-                  size="12"
-                  class="absolute text-white opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none"
-                />
-              </div>
-              <span
-                class="text-[10px] font-black uppercase tracking-[0.15em] text-secondary/40 group-hover:text-brand transition-colors"
-              >
-                IGNORAR NAS PRÓXIMAS SESSÕES
-              </span>
-            </label>
+            <BaseCheckbox
+              v-model="dontShowAgain"
+              label="Ignorar nas próximas sessões"
+              size="sm"
+            />
 
             <button
               @click="refreshStatus"

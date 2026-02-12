@@ -1,9 +1,11 @@
 import { H3Event } from "h3";
 import { createHmac, timingSafeEqual } from "crypto";
 
-const AUTH_SECRET =
-  process.env.AUTH_SECRET ||
-  "fallback-secret-para-desenvolvimento-muito-seguro";
+const AUTH_SECRET = process.env.AUTH_SECRET;
+
+if (!AUTH_SECRET) {
+  throw new Error("AUTH_SECRET não configurado nas variáveis de ambiente.");
+}
 
 export interface AuthUser {
   id: string;
@@ -12,6 +14,7 @@ export interface AuthUser {
   admin: number;
   idEmpresa: number;
   idEmpresasAcesso?: number[];
+  exp?: number; // Expiração da sessão (timestamp em ms)
 }
 
 /**
@@ -65,7 +68,15 @@ export const getAuthenticatedUser = (event: H3Event): AuthUser | null => {
   try {
     const verifiedData = verifyData(session);
     if (!verifiedData) return null;
-    return JSON.parse(verifiedData) as AuthUser;
+
+    const user = JSON.parse(verifiedData) as AuthUser;
+
+    // Verificar se a sessão expirou
+    if (user.exp && Date.now() > user.exp) {
+      return null;
+    }
+
+    return user;
   } catch (e) {
     return null;
   }

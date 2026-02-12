@@ -120,6 +120,14 @@
           </td>
           <td class="px-6 py-4">
             <div class="flex items-center justify-end gap-2">
+              <BaseTooltip text="Permissões de Menu">
+                <button
+                  @click="openMenuPermissionsModal(user)"
+                  class="p-2.5 rounded-xl text-secondary hover:text-brand hover:bg-primary/3 hover:scale-110 transition-all"
+                >
+                  <Menu size="16" />
+                </button>
+              </BaseTooltip>
               <BaseTooltip text="Editar">
                 <button
                   @click="openEditModal(user)"
@@ -346,6 +354,199 @@
       </template>
     </BaseModal>
 
+    <!-- Modal de Permissões de Menu -->
+    <BaseModal
+      :show="showMenuPermissionsModal"
+      :title="`Permissões de Menu - ${selectedUser?.nome}`"
+      size="lg"
+      @close="showMenuPermissionsModal = false"
+    >
+      <template #default>
+        <div v-if="menuLoading" class="py-12 flex justify-center">
+          <div class="w-8 h-8 border-2 border-brand/20 border-t-brand rounded-full animate-spin"></div>
+        </div>
+        <div v-else class="py-4">
+          <!-- Abas -->
+          <div class="flex items-center gap-1 p-1 bg-primary/3 rounded-xl mb-6">
+            <button
+              @click="permissionsTab = 'permissions'"
+              class="flex-1 py-2.5 px-4 rounded-lg text-[11px] font-black uppercase tracking-wider transition-all"
+              :class="permissionsTab === 'permissions' ? 'bg-surface text-brand shadow-sm' : 'text-secondary hover:text-primary'"
+            >
+              Permissões
+            </button>
+            <button
+              @click="permissionsTab = 'history'; loadAuditoria()"
+              class="flex-1 py-2.5 px-4 rounded-lg text-[11px] font-black uppercase tracking-wider transition-all"
+              :class="permissionsTab === 'history' ? 'bg-surface text-brand shadow-sm' : 'text-secondary hover:text-primary'"
+            >
+              Histórico
+            </button>
+          </div>
+
+          <!-- Conteúdo: Permissões -->
+          <div v-if="permissionsTab === 'permissions'" class="space-y-6 max-h-[60vh] overflow-y-auto custom-scrollbar pr-2">
+            <!-- Alerta para usuários admin -->
+            <div v-if="selectedUser?.admin" class="p-4 bg-brand/10 border border-brand/20 rounded-xl">
+              <p class="text-xs font-bold text-brand uppercase tracking-wider">
+                <span class="inline-block w-2 h-2 bg-brand rounded-full mr-2"></span>
+                Este usuário é Administrador e tem acesso irrestrito a todos os menus
+              </p>
+            </div>
+            
+            <!-- Grupos de Menu -->
+            <div v-else class="space-y-6">
+              <div 
+                v-for="group in menuGroups" 
+                :key="group.id"
+                class="border border-border/50 rounded-2xl p-4 bg-primary/2"
+              >
+                <div class="flex items-center justify-between mb-4">
+                  <h4 class="text-xs font-black uppercase tracking-widest text-primary">
+                    {{ group.title }}
+                  </h4>
+                  <button
+                    @click="toggleGroup(group.id)"
+                    class="text-[10px] font-bold text-brand hover:underline uppercase tracking-wider"
+                  >
+                    {{ isGroupFullySelected(group.id) ? 'Desmarcar Todos' : 'Selecionar Todos' }}
+                  </button>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <BaseCheckbox
+                    v-for="item in getGroupItems(group.id)"
+                    :key="item.id"
+                    v-model="selectedPermissions"
+                    :value="item.id"
+                    :label="item.name"
+                    :description="item.description"
+                    size="sm"
+                    class="p-3 rounded-xl border border-border/50 hover:border-brand/30 hover:bg-surface transition-all"
+                    :class="{ 'border-brand/50 bg-brand/5': selectedPermissions.includes(item.id) }"
+                  />
+                </div>
+              </div>
+            </div>
+            
+            <!-- Resumo -->
+            <div class="p-4 bg-primary/3 rounded-xl border border-border/50">
+              <p class="text-[10px] font-bold text-secondary uppercase tracking-wider">
+                {{ selectedPermissions.length }} de {{ availableMenuItems.length }} itens selecionados
+              </p>
+            </div>
+          </div>
+
+          <!-- Conteúdo: Histórico -->
+          <div v-else class="space-y-4 max-h-[60vh] overflow-y-auto custom-scrollbar pr-2">
+            <div v-if="auditoriaLoading" class="py-12 flex justify-center">
+              <div class="w-8 h-8 border-2 border-brand/20 border-t-brand rounded-full animate-spin"></div>
+            </div>
+            
+            <div v-else-if="auditoriaData?.auditoria?.length === 0" class="py-12 text-center">
+              <History size="32" class="text-secondary/20 mx-auto mb-3" />
+              <p class="text-xs font-bold text-secondary uppercase tracking-wider">
+                Nenhum histórico encontrado
+              </p>
+            </div>
+            
+            <div v-else class="space-y-3">
+              <div
+                v-for="reg in auditoriaData?.auditoria"
+                :key="reg.id"
+                class="p-4 border border-border/50 rounded-2xl bg-primary/2"
+              >
+                <div class="flex items-center justify-between mb-3">
+                  <div class="flex items-center gap-2">
+                    <span 
+                      class="px-2 py-1 rounded-lg text-[9px] font-black uppercase tracking-wider"
+                      :class="reg.tipoAlteracao === 'CREATE' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-brand/10 text-brand'"
+                    >
+                      {{ reg.tipoAlteracao === 'CREATE' ? 'Criação' : 'Alteração' }}
+                    </span>
+                    <span class="text-[10px] text-secondary/60">
+                      {{ new Date(reg.createdAt).toLocaleString('pt-BR') }}
+                    </span>
+                  </div>
+                </div>
+                
+                <div class="space-y-2">
+                  <p class="text-xs text-secondary">
+                    <span class="font-bold text-primary">Por:</span> 
+                    {{ reg.alteradoPor?.nome }}
+                  </p>
+                  
+                  <div class="flex items-center gap-4 text-[10px]">
+                    <span class="text-secondary">
+                      <span class="font-bold">{{ reg.totalAntes }}</span> antes
+                    </span>
+                    <span class="text-secondary/30">→</span>
+                    <span class="text-brand font-bold">
+                      {{ reg.totalDepois }} depois
+                    </span>
+                  </div>
+
+                  <!-- Diferenças -->
+                  <div v-if="reg.diferencas?.adicionadas?.length > 0" class="mt-2">
+                    <p class="text-[9px] font-bold text-emerald-500 uppercase tracking-wider mb-1">
+                      Adicionadas
+                    </p>
+                    <div class="flex flex-wrap gap-1">
+                      <span
+                        v-for="perm in reg.diferencas.adicionadas"
+                        :key="perm"
+                        class="px-1.5 py-0.5 bg-emerald-500/10 text-emerald-600 rounded text-[9px] font-bold"
+                      >
+                        {{ perm }}
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <div v-if="reg.diferencas?.removidas?.length > 0" class="mt-2">
+                    <p class="text-[9px] font-bold text-rose-500 uppercase tracking-wider mb-1">
+                      Removidas
+                    </p>
+                    <div class="flex flex-wrap gap-1">
+                      <span
+                        v-for="perm in reg.diferencas.removidas"
+                        :key="perm"
+                        class="px-1.5 py-0.5 bg-rose-500/10 text-rose-600 rounded text-[9px] font-bold"
+                      >
+                        {{ perm }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex gap-3">
+          <button
+            @click="showMenuPermissionsModal = false"
+            class="flex-1 px-6 py-4 rounded-2xl border border-border text-secondary text-[10px] font-black uppercase tracking-widest hover:bg-primary/3 transition-all outline-none"
+          >
+            Fechar
+          </button>
+          <button
+            v-if="permissionsTab === 'permissions'"
+            @click="saveMenuPermissions"
+            class="flex-2 bg-brand hover:bg-brand-hover text-background px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all shadow-xl shadow-brand/20 active:scale-95 flex items-center justify-center gap-2 outline-none disabled:opacity-50"
+            :disabled="menuLoading || selectedUser?.admin"
+          >
+            <template v-if="menuLoading">
+              <div class="w-5 h-5 border-2 border-background/30 border-t-background rounded-full animate-spin"></div>
+            </template>
+            <template v-else>
+              Salvar Permissões
+            </template>
+          </button>
+        </div>
+      </template>
+    </BaseModal>
+
     <!-- Diálogo de Exclusão -->
     <BaseDialog
       :show="showDeleteDialog"
@@ -375,9 +576,12 @@ import {
   Users,
   Building2,
   RefreshCw,
+  Menu,
+  History,
 } from "lucide-vue-next";
 import { useToast } from "~/composables/useToast";
 import { useLogger } from "~/composables/useLogger";
+import { useMenuPermissions } from "~/composables/useMenuPermissions";
 
 definePageMeta({
   layout: "default",
@@ -554,6 +758,115 @@ const handleDelete = async () => {
       `Erro ao excluir usuário: ${userToDelete.value?.usuario}`,
       { error: msg, id: userToDelete.value?.id },
     );
+  }
+};
+
+// === PERMISSÕES DE MENU ===
+const showMenuPermissionsModal = ref(false);
+const selectedUser = ref(null);
+const selectedPermissions = ref([]);
+const menuLoading = ref(false);
+const availableMenuItems = ref([]);
+const menuGroups = ref([]);
+const permissionsTab = ref('permissions');
+const auditoriaLoading = ref(false);
+const auditoriaData = ref(null);
+
+const { fetchUserPermissions, updateUserPermissions, fetchPermissionsAuditoria } = useMenuPermissions();
+
+const openMenuPermissionsModal = async (user) => {
+  selectedUser.value = user;
+  showMenuPermissionsModal.value = true;
+  menuLoading.value = true;
+  permissionsTab.value = 'permissions';
+  auditoriaData.value = null;
+  
+  try {
+    const data = await fetchUserPermissions(user.id);
+    if (data) {
+      selectedPermissions.value = [...data.permissions];
+      availableMenuItems.value = data.availableItems || [];
+      menuGroups.value = data.groups || [];
+    }
+  } catch (err) {
+    addToast("Erro ao carregar permissões de menu", "error");
+  } finally {
+    menuLoading.value = false;
+  }
+};
+
+const getGroupItems = (groupId) => {
+  return availableMenuItems.value.filter(item => item.group === groupId);
+};
+
+const isGroupFullySelected = (groupId) => {
+  const groupItems = getGroupItems(groupId);
+  if (groupItems.length === 0) return false;
+  return groupItems.every(item => selectedPermissions.value.includes(item.id));
+};
+
+const toggleGroup = (groupId) => {
+  const groupItems = getGroupItems(groupId);
+  const groupItemIds = groupItems.map(item => item.id);
+  
+  if (isGroupFullySelected(groupId)) {
+    // Desmarcar todos do grupo
+    selectedPermissions.value = selectedPermissions.value.filter(
+      id => !groupItemIds.includes(id)
+    );
+  } else {
+    // Selecionar todos do grupo
+    const newPermissions = [...selectedPermissions.value];
+    groupItemIds.forEach(id => {
+      if (!newPermissions.includes(id)) {
+        newPermissions.push(id);
+      }
+    });
+    selectedPermissions.value = newPermissions;
+  }
+};
+
+const saveMenuPermissions = async () => {
+  if (!selectedUser.value || selectedUser.value.admin) return;
+  
+  menuLoading.value = true;
+  
+  try {
+    await updateUserPermissions(selectedUser.value.id, selectedPermissions.value);
+    
+    addToast("Permissões de menu atualizadas com sucesso!", "success");
+    info(
+      "USUARIOS",
+      `Permissões de menu atualizadas para: ${selectedUser.value.nome}`,
+      { userId: selectedUser.value.id, permissions: selectedPermissions.value }
+    );
+    
+    showMenuPermissionsModal.value = false;
+    refresh();
+  } catch (err) {
+    const msg = err.data?.message || err.message || "Erro ao salvar permissões.";
+    addToast(msg, "error");
+    logError(
+      "USUARIOS",
+      `Erro ao atualizar permissões de menu: ${selectedUser.value?.nome}`,
+      { error: msg, userId: selectedUser.value?.id }
+    );
+  } finally {
+    menuLoading.value = false;
+  }
+};
+
+const loadAuditoria = async () => {
+  if (!selectedUser.value || auditoriaData.value) return;
+  
+  auditoriaLoading.value = true;
+  try {
+    const data = await fetchPermissionsAuditoria(selectedUser.value.id);
+    auditoriaData.value = data;
+  } catch (err) {
+    console.error("Erro ao carregar auditoria:", err);
+  } finally {
+    auditoriaLoading.value = false;
   }
 };
 </script>

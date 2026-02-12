@@ -47,9 +47,17 @@ export const serverLog = {
         timestamp: new Date(),
       });
     } catch (err) {
-      // Falha silenciosa no log para não quebrar a execução principal,
-      // mas imprime no console do servidor
-      console.error("CRITICAL: Erro ao registrar log no servidor:", err);
+      // Se falhar ao persistir no banco, tenta ao menos imprimir no console com o payload original
+      console.error("CRITICAL: Erro ao registrar log no banco de dados:", {
+        error: err instanceof Error ? err.message : String(err),
+        originalPayload: data,
+        stack: err instanceof Error ? err.stack : undefined
+      });
+      
+      // Se for um erro de validação do Zod, loga os detalhes
+      if (err instanceof Error && "issues" in err) {
+        console.error("Zod Validation Issues:", (err as any).issues);
+      }
     }
   },
 

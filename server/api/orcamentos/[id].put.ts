@@ -1,32 +1,51 @@
 import { db } from "../../database/db";
 import { orcamentos, orcamentoItens } from "../../database/schema";
-import { orcamentoSchema } from "../../utils/validador";
+import { orcamentoSharedSchema } from "#shared/schemas";
 import { eq, and, isNull } from "drizzle-orm";
 import { requireAuth } from "../../utils/auth";
+import { serverLog } from "../../utils/logger";
 
 export default defineEventHandler(async (event) => {
   const user = requireAuth(event);
 
   try {
     const id = getRouterParam(event, "id");
-    if (!id)
+    if (!id) {
       throw createError({ statusCode: 400, message: "ID não fornecido" });
+    }
 
     const body = await readBody(event);
-    const { itens, ...validatedData } = orcamentoSchema.partial().parse(body);
+    
+    // Validar com schema compartilhado (partial para updates)
+    const result = orcamentoSharedSchema.partial().safeParse(body);
+    
+    if (!result.success) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: "Erro de Validação",
+        message: "Dados do orçamento inválidos",
+        data: result.error.errors.map((e) => ({
+          path: e.path,
+          message: e.message,
+        })),
+      });
+    }
 
-    // Impedir alteração de campos sensíveis via body
-    delete (validatedData as any).id;
-    delete (validatedData as any).idEmpresa;
-    delete (validatedData as any).idUsuario;
+    const data = result.data;
+    const { itens, ...orcamentoData } = data;
 
-    const result = await db
+    // Impedir alteração de campos sensíveis
+    delete (orcamentoData as any).id;
+    delete (orcamentoData as any).idEmpresa;
+    delete (orcamentoData as any).idUsuario;
+
+    const [orcamento] = await db
       .update(orcamentos)
       .set({
-        ...validatedData,
+        ...orcamentoData,
         bombaNecessaria:
-          validatedData.bombaNecessaria !== undefined
-            ? validatedData.bombaNecessaria
+          orcamentoData.bombaNecessaria !== undefined
+            ? orcamentoData.bombaNecessaria
               ? 1
               : 0
             : undefined,
@@ -41,14 +60,12 @@ export default defineEventHandler(async (event) => {
       )
       .returning();
 
-    if (result.length === 0) {
+    if (!orcamento) {
       throw createError({
         statusCode: 404,
         message: "Orçamento não encontrado",
       });
     }
-
-    const orcamento = result[0];
 
     // Sincronizar Itens (Simples: Deleta e insere novamente)
     if (itens) {
@@ -65,22 +82,29 @@ export default defineEventHandler(async (event) => {
       }
     }
 
+    // Registrar atualização
+    await serverLog.info(event, "ORCAMENTOS", `Orçamento atualizado: #${orcamento.id}`, {
+      id: orcamento.id,
+      idEmpresa: user.idEmpresa,
+      cliente: orcamento.nomeCliente,
+    });
+
     return orcamento;
   } catch (error: any) {
-    if (error.name === "ZodError") {
-      const messages = error.issues
-        .map((e: any) => `${e.path.join(".")}: ${e.message}`)
-        .join(", ");
-      throw createError({
-        statusCode: 400,
-        statusMessage: "Erro de Validação",
-        message: messages,
-      });
+    // Se já é um erro do createError, apenas repassa
+    if (error.statusCode) {
+      throw error;
     }
+
+    // Log de erro inesperado
+    await serverLog.error(event, "ORCAMENTOS", "Erro inesperado ao atualizar orçamento", {
+      error: error.message,
+    });
+
     throw createError({
-      statusCode: error.statusCode || 500,
-      statusMessage: error.statusMessage || "Erro Interno",
-      message: error.message,
+      statusCode: 500,
+      statusMessage: "Erro Interno",
+      message: "Erro ao processar a solicitação",
     });
   }
 });

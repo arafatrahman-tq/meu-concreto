@@ -2,6 +2,7 @@ import { db } from "../../database/db";
 import { usuarios, usuariosEmpresas } from "../../database/schema";
 import { usuarioSchema } from "../../utils/validador";
 import { requireAdmin } from "../../utils/auth";
+import { getDefaultMenuPermissions } from "../../utils/menu-items";
 
 export default defineEventHandler(async (event) => {
   requireAdmin(event);
@@ -13,13 +14,18 @@ export default defineEventHandler(async (event) => {
     // Hash da senha usando Bun.password
     const hashedPassword = await Bun.password.hash(userData.senha || "");
 
+    // Definir permissões de menu padrão baseadas no tipo de usuário
+    const isAdmin = userData.admin ? 1 : 0;
+    const defaultPermissions = getDefaultMenuPermissions(isAdmin === 1);
+
     const result = await db
       .insert(usuarios)
       .values({
         ...userData,
         senha: hashedPassword,
-        admin: userData.admin ? 1 : 0,
+        admin: isAdmin,
         ativo: userData.ativo ? 1 : 0,
+        menuPermissions: JSON.stringify(defaultPermissions),
         createdAt: new Date(),
       })
       .returning();

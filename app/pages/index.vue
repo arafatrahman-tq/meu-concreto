@@ -1,35 +1,95 @@
 <template>
-  <div class="flex flex-col gap-6 pb-12" v-if="dashboard">
-    <!-- Empresa Selector -->
+  <div class="flex flex-col gap-10 pb-16" v-if="dashboard">
+    <!-- Visão Consolidada Header -->
     <div
       v-if="hasMultipleCompanies"
-      class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-primary/2 p-6 rounded-3xl border border-border"
+      class="relative overflow-hidden group bg-surface rounded-3xl border border-border shadow-[0_20px_50px_rgba(0,0,0,0.02)] transition-all duration-500 hover:shadow-[0_30px_70px_rgba(0,0,0,0.04)]"
     >
-      <div>
-        <h2
-          class="text-2xl font-black text-primary tracking-tighter uppercase leading-none"
-        >
-          Visão Consolidada
-        </h2>
-        <p
-          class="text-[9px] font-black uppercase tracking-[0.2em] opacity-30 mt-1"
-        >
-          Alternar entre unidades do grupo
-        </p>
-      </div>
+      <!-- Background Elements -->
+      <div
+        class="absolute top-0 right-0 w-1/2 h-full bg-linear-to-l from-brand/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000"
+      ></div>
+      <div
+        class="absolute -right-20 -top-20 w-64 h-64 bg-brand/5 rounded-full blur-[80px]"
+      ></div>
 
-      <div class="flex items-center gap-4 w-full md:w-auto">
-        <label
-          class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 hidden md:block"
-          >Unidade:</label
+      <div
+        class="relative z-10 flex flex-col lg:flex-row justify-between items-stretch lg:items-center"
+      >
+        <!-- Text Section -->
+        <div
+          class="p-8 sm:p-10 lg:pr-0 flex-1 border-b lg:border-b-0 lg:border-r border-border/50"
         >
-        <div class="w-full md:w-80">
-          <BaseSelect
-            v-model="selectedEmpresa"
-            :options="empresaOptions"
-            placeholder="Selecione a Empresa"
-            :icon="Building2"
-          />
+          <div class="flex items-center gap-4 mb-4">
+            <div
+              class="w-12 h-12 rounded-2xl bg-brand/10 flex items-center justify-center text-brand shadow-sm border border-brand/10"
+            >
+              <Globe2 size="24" stroke-width="2.5" />
+            </div>
+            <div>
+              <h2
+                class="text-2xl sm:text-4xl font-black text-primary tracking-tighter uppercase leading-none mt-1"
+              >
+                Visão Consolidada
+              </h2>
+            </div>
+          </div>
+          <p
+            class="text-secondary/60 text-xs font-medium max-w-md leading-relaxed"
+          >
+            Monitore o desempenho global do seu grupo econômico e alterne entre
+            unidades para uma gestão estratégica e unificada.
+          </p>
+        </div>
+
+        <!-- Action Section -->
+        <div
+          class="p-8 sm:p-10 bg-primary/1 flex flex-col sm:flex-row items-stretch sm:items-center gap-8 min-w-fit lg:min-w-112.5"
+        >
+          <div class="flex flex-col gap-1">
+            <span
+              class="text-[10px] font-black uppercase tracking-widest text-secondary/40"
+              >Selecione a Unidade</span
+            >
+            <div class="relative group/select">
+              <BaseSelect
+                v-model="selectedEmpresa"
+                :options="empresaOptions"
+                placeholder="Selecione a Unidade Operacional"
+                :icon="Building2"
+                class="bg-surface! border-border/60! hover:border-brand/30! transition-all h-14! rounded-2xl! text-sm! font-bold! shadow-sm"
+              />
+            </div>
+          </div>
+
+          <!-- Summary Mini Stats -->
+          <div
+            class="hidden sm:flex items-center gap-6 pl-6 border-l border-border/50"
+          >
+            <div class="flex flex-col">
+              <span
+                class="text-[10px] font-black uppercase tracking-widest text-secondary/30"
+                >Unidades</span
+              >
+              <span class="text-2xl font-black text-primary">{{
+                empresaOptions.length - 1
+              }}</span>
+            </div>
+            <div class="w-px h-8 bg-border/50"></div>
+            <div class="flex flex-col">
+              <span
+                class="text-[10px] font-black uppercase tracking-widest text-secondary/30"
+                >Status</span
+              >
+              <div class="flex items-center gap-2 mt-1">
+                <div
+                  class="px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 text-[9px] font-black uppercase tracking-tighter border border-emerald-500/10"
+                >
+                  Online
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -38,14 +98,25 @@
 
     <!-- Summary Row -->
     <div
-      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 overflow-visible! py-2"
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8 overflow-visible! py-2"
     >
       <StatCard
         label="Faturamento"
         :value="formatCurrency(dashboard.stats.faturamento.total)"
+        :subtext="
+          'Ticket Médio: ' +
+          formatCurrency(dashboard.stats.faturamento.ticketMedio)
+        "
         :trend="dashboard.stats.faturamento.trend"
         :trend-up="dashboard.stats.faturamento.trend?.startsWith('+')"
         :icon="CreditCard"
+      />
+      <StatCard
+        label="Volume Total"
+        :value="formatNumber(dashboard.stats.volume.total) + ' m³'"
+        :trend="dashboard.stats.volume.trend"
+        :trend-up="dashboard.stats.volume.trend?.startsWith('+')"
+        :icon="Layers"
       />
       <StatCard
         label="Pedidos Realizados"
@@ -57,9 +128,10 @@
       <StatCard
         label="Custos Operacionais"
         :value="formatCurrency(dashboard.stats.custos.operacao)"
+        :subtext="'Margem Bruta: ' + grossMargin + '%'"
         :trend="dashboard.stats.custos.trend"
         :trend-up="!dashboard.stats.custos.trend?.startsWith('+')"
-        :icon="TrendingDown"
+        :icon="Wallet"
       />
       <StatCard
         label="Receita Disponível"
@@ -71,7 +143,7 @@
     </div>
 
     <!-- Main Grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10 flex-1">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 flex-1">
       <!-- Row 1: Chart & Schedule -->
       <OverviewChart
         v-model:period="currentPeriod"
@@ -86,109 +158,22 @@
       />
 
       <!-- Row 2: Bottom Details -->
-      <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-10">
-        <MajorExpenses
-          :average-monthly="
-            formatCurrency(dashboard.stats.custos.operacao / 12)
-          "
-          :expenses="formattedExpensesList"
-          class=""
-          style="animation-delay: 0.2s"
-        />
+      <MajorExpenses
+        :average-monthly="formatCurrency(dashboard.stats.custos.operacao / 12)"
+        :expenses="formattedExpensesList"
+        class="lg:col-span-1"
+        style="animation-delay: 0.2s"
+      />
 
-        <!-- Operational Intelligence Card -->
-        <div
-          class="bg-brand rounded-3xl p-10 text-white flex flex-col justify-between relative overflow-hidden group shadow-[0_20px_50px_rgba(var(--color-brand),0.3)] border border-white/10"
-          style="animation-delay: 0.3s"
-        >
-          <div class="relative z-10">
-            <div class="flex items-center gap-3 mb-8">
-              <div
-                class="p-2.5 rounded-2xl bg-white/20 backdrop-blur-xl border border-white/10 group-hover:scale-110 transition-transform duration-500"
-              >
-                <Activity size="20" class="text-white" />
-              </div>
-              <div class="flex flex-col">
-                <span
-                  class="text-[9px] font-black uppercase tracking-[0.3em] text-white/50 leading-none"
-                  >Live Intelligence</span
-                >
-                <span class="text-[10px] font-black uppercase text-white mt-1"
-                  >Status de Operação</span
-                >
-              </div>
-            </div>
-            <h3
-              class="text-4xl font-black tracking-tighter mb-4 leading-[0.9] uppercase italic"
-            >
-              Inteligência<br /><span class="text-white/40">Concreta.</span>
-            </h3>
-            <p class="text-white/70 text-xs font-bold leading-relaxed max-w-55">
-              Otimize sua produção monitorando
-              <span class="text-white font-black">volume, FCK e logística</span>
-              em tempo real.
-            </p>
-
-            <!-- Fiscal Compliance Progress -->
-            <div
-              class="mt-8 bg-white/5 border border-white/10 p-5 rounded-2xl backdrop-blur-md"
-            >
-              <div class="flex justify-between items-end mb-2">
-                <span
-                  class="text-[9px] font-black uppercase tracking-widest text-white/60"
-                  >Conformidade Fiscal</span
-                >
-                <span class="text-xs font-black text-white tabular-nums"
-                  >{{ dashboard.stats.fiscal.percentual }}%</span
-                >
-              </div>
-              <div
-                class="h-1.5 w-full bg-white/10 rounded-full overflow-hidden"
-              >
-                <div
-                  class="h-full bg-white transition-all duration-1000 ease-out"
-                  :style="{ width: `${dashboard.stats.fiscal.percentual}%` }"
-                ></div>
-              </div>
-              <p
-                class="text-[8px] font-bold text-white/40 uppercase tracking-tighter mt-2"
-              >
-                {{ dashboard.stats.fiscal.emitidas }} de
-                {{ dashboard.stats.fiscal.total }} notas emitidas
-              </p>
-            </div>
-          </div>
-
-          <div
-            class="relative z-10 flex flex-col sm:flex-row items-stretch sm:items-center justify-between mt-12 gap-4"
-          >
-            <div class="flex gap-2">
-              <NuxtLink
-                to="/orcamentos/vendedor"
-                class="flex-1 sm:flex-none bg-white/10 backdrop-blur-md text-white px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-white hover:text-brand transition-all border border-white/20 text-center flex items-center justify-center gap-2"
-              >
-                <Smartphone size="14" />
-                Mobile
-              </NuxtLink>
-            </div>
-          </div>
-
-          <!-- Decorative Elements -->
-          <div
-            class="absolute -right-20 -top-20 w-80 h-80 bg-white/10 rounded-full blur-[100px] group-hover:bg-white/20 transition-all duration-1000"
-          ></div>
-          <div
-            class="absolute -left-20 -bottom-20 w-64 h-64 bg-black/20 rounded-full blur-[80px]"
-          ></div>
-          <Zap
-            class="absolute right-0 top-1/2 -translate-y-1/2 text-white/5 w-56 h-56 rotate-12 group-hover:scale-110 group-hover:rotate-0 transition-all duration-1000 opacity-50"
-          />
-        </div>
-      </div>
+      <OperationalIntelligence
+        :stats="dashboard.stats"
+        class="lg:col-span-1"
+        style="animation-delay: 0.3s"
+      />
 
       <TeamList
         :people="formattedTeam"
-        class="lg:col-span-1 flex-1"
+        class="lg:col-span-1"
         style="animation-delay: 0.5s"
       />
     </div>
@@ -249,12 +234,16 @@ import {
   Zap,
   Building2,
   Smartphone,
+  Layers,
+  Globe2,
+  Wallet,
 } from "lucide-vue-next";
 import StatCard from "~/components/dashboard/StatCard.vue";
 import OverviewChart from "~/components/dashboard/OverviewChart.vue";
 import MajorExpenses from "~/components/dashboard/MajorExpenses.vue";
 import ScheduleWidget from "~/components/dashboard/ScheduleWidget.vue";
 import TeamList from "~/components/dashboard/TeamList.vue";
+import OperationalIntelligence from "~/components/dashboard/OperationalIntelligence.vue";
 
 definePageMeta({
   layout: "default",
@@ -270,7 +259,7 @@ const { data: listEmpresas } = useFetch("/api/empresas", {
 });
 
 const hasMultipleCompanies = computed(
-  () => (listEmpresas.value?.length || 0) > 1,
+  () => (listEmpresas.value?.length || 0) > 1 && user.value?.admin === 1
 );
 
 const empresaOptions = computed(() => {
@@ -296,6 +285,13 @@ const {
   watch: [currentPeriod, selectedEmpresa],
 });
 
+const grossMargin = computed(() => {
+  if (!dashboard.value?.stats?.faturamento?.total) return 0;
+  const faturamento = dashboard.value.stats.faturamento.total;
+  const custos = dashboard.value.stats.custos.operacao;
+  return Math.round(((faturamento - custos) / faturamento) * 100);
+});
+
 const formattedChartData = computed(() => {
   if (!dashboard.value?.chart) return [];
 
@@ -311,7 +307,9 @@ const formattedChartData = computed(() => {
     for (let i = 6; i >= 0; i--) {
       const d = new Date();
       d.setDate(now.getDate() - i);
-      const label = `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}`;
+      const label = `${String(d.getDate()).padStart(2, "0")}/${String(
+        d.getMonth() + 1
+      ).padStart(2, "0")}`;
       const found = rawData.find((item) => item.label === label);
       fullData.push({ label, total: found ? found.total : 0 });
     }
@@ -324,7 +322,7 @@ const formattedChartData = computed(() => {
       const firstDayOfYear = new Date(d.getFullYear(), 0, 1);
       const pastDaysOfYear = (d - firstDayOfYear) / 86400000;
       const weekNum = String(
-        Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7),
+        Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7)
       ).padStart(2, "0");
       const label = `Sem ${weekNum}`;
       const found = rawData.find((item) => item.label === label);
@@ -372,7 +370,10 @@ const formattedChartData = computed(() => {
 const getLocalDateStr = (date) => {
   if (!date) return null;
   const d = new Date(date);
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(
+    2,
+    "0"
+  )}-${String(d.getDate()).padStart(2, "0")}`;
 };
 
 const formattedEvents = computed(() => {
@@ -389,14 +390,14 @@ const formattedEvents = computed(() => {
       : "08:00",
     location: (d.enderecoEntrega || d.bairro || "Bairro Não Inf.").substring(
       0,
-      30,
+      30
     ),
     tag:
       d.vendaStatus === "NF_EMITIDA"
         ? "DOC. EMITIDO"
         : d.status === "APROVADO"
-          ? "CONCLUÍDO"
-          : "AGENDADO",
+        ? "CONCLUÍDO"
+        : "AGENDADO",
     status:
       d.vendaStatus === "NF_EMITIDA" || d.status === "APROVADO"
         ? "done"
@@ -431,5 +432,10 @@ const formatCurrency = (value) => {
     style: "currency",
     currency: "BRL",
   }).format(value / 100);
+};
+
+const formatNumber = (value) => {
+  if (!value) return "0";
+  return new Intl.NumberFormat("pt-BR").format(value);
 };
 </script>

@@ -1,37 +1,62 @@
 import { db } from "../../database/db";
 import { caminhoes } from "../../database/schema";
-import { caminhaoSchema } from "../../utils/validador";
+import { caminhaoSharedSchema } from "#shared/schemas";
 import { requireAuth } from "../../utils/auth";
+import { serverLog } from "../../utils/logger";
 
 export default defineEventHandler(async (event) => {
   const user = requireAuth(event);
+  
   try {
     const body = await readBody(event);
-    const validatedData = caminhaoSchema.parse(body);
+    
+    // Validação com schema compartilhado
+    const result = caminhaoSharedSchema.safeParse(body);
+    
+    if (!result.success) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: "Erro de Validação",
+        message: "Dados inválidos",
+        data: result.error.errors.map((e) => ({
+          path: e.path,
+          message: e.message,
+        })),
+      });
+    }
 
-    const result = await db
+    const data = result.data;
+
+    const [caminhao] = await db
       .insert(caminhoes)
       .values({
-        ...validatedData,
+        placa: data.placa,
+        modelo: data.modelo,
+        capacidade: data.capacidade,
+        ativo: data.ativo ? 1 : 0,
         idEmpresa: user.idEmpresa,
-        ativo: validatedData.ativo ? 1 : 0,
         createdAt: new Date(),
       })
       .returning();
 
+    await serverLog.info(event, "CAMINHOES", "Caminhão cadastrado", {
+      id: caminhao.id,
+      placa: caminhao.placa,
+    });
+
     setResponseStatus(event, 201);
-    return result[0];
+    return caminhao;
   } catch (error: any) {
-    if (error.name === "ZodError") {
-      throw createError({
-        statusCode: 400,
-        message: "Erro de validaÃ§Ã£o",
-        data: error.errors,
-      });
-    }
+    if (error.statusCode) throw error;
+    
+    await serverLog.error(event, "CAMINHOES", "Erro ao cadastrar caminhão", {
+      error: error.message,
+    });
+    
     throw createError({
-      statusCode: error.statusCode || 500,
-      message: error.message,
+      statusCode: 500,
+      statusMessage: "Erro Interno",
+      message: "Erro ao cadastrar caminhão",
     });
   }
 });

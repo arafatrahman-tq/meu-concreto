@@ -1,9 +1,13 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import tailwindcss from "@tailwindcss/vite";
+import { fileURLToPath } from "url";
 
 export default defineNuxtConfig({
   compatibilityDate: "2024-11-01",
   devtools: { enabled: true },
+  alias: {
+    "#shared": fileURLToPath(new URL("./shared", import.meta.url)),
+  },
   app: {
     head: {
       title: "Meu Concreto",
@@ -34,6 +38,10 @@ export default defineNuxtConfig({
   components: [
     {
       path: "~/components/ui",
+      pathPrefix: false,
+    },
+    {
+      path: "~/components/form",
       pathPrefix: false,
     },
     "~/components",

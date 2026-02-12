@@ -35,7 +35,9 @@ export const empresas = sqliteTable("empresas", {
     () => new Date(),
   ),
   deletedAt: integer("deleted_at", { mode: "timestamp" }),
-});
+}, (t) => ({
+  empresaDeletedIdx: index("empresa_deleted_idx").on(t.id, t.deletedAt),
+}));
 
 export const empresasRelations = relations(empresas, ({ many, one }) => ({
   clientes: many(clientes),
@@ -115,6 +117,7 @@ export const usuarios = sqliteTable("usuarios", {
   admin: integer("admin").default(0), // 0=false, 1=true
   ativo: integer("ativo").default(1), // 0=false, 1=true
   passwordChangeRequired: integer("password_change_required").default(1), // 1=true, 0=false
+  menuPermissions: text("menu_permissions").default("[]"), // JSON array de permissões de menu visíveis
   idEmpresa: integer("id_empresa")
     .notNull()
     .references(() => empresas.id),
@@ -125,7 +128,9 @@ export const usuarios = sqliteTable("usuarios", {
     () => new Date(),
   ),
   deletedAt: integer("deleted_at", { mode: "timestamp" }),
-});
+}, (t) => ({
+  empresaDeletedIdx: index("usuario_empresa_deleted_idx").on(t.idEmpresa, t.deletedAt),
+}));
 
 export const usuariosRelations = relations(usuarios, ({ one, many }) => ({
   empresa: one(empresas, {
@@ -315,6 +320,10 @@ export const orcamentos = sqliteTable(
     empresaIdx: index("orcamento_empresa_idx").on(t.idEmpresa),
     statusIdx: index("orcamento_status_idx").on(t.status),
     clienteIdx: index("orcamento_cliente_idx").on(t.idCliente),
+    empresaDeletedIdx: index("orcamento_empresa_deleted_idx").on(
+      t.idEmpresa,
+      t.deletedAt,
+    ),
   }),
 );
 
@@ -528,7 +537,9 @@ export const vendas = sqliteTable("vendas", {
     () => new Date(),
   ),
   deletedAt: integer("deleted_at", { mode: "timestamp" }),
-});
+}, (t) => ({
+  empresaDeletedIdx: index("vendas_real_venda_empresa_deleted_idx").on(t.idEmpresa, t.deletedAt),
+}));
 
 export const vendasRelations = relations(vendas, ({ one, many }) => ({
   orcamento: one(orcamentos, {
@@ -573,6 +584,10 @@ export const pagamentos = sqliteTable(
     empresaIdx: index("pagamento_empresa_idx").on(t.idEmpresa),
     vencimentoIdx: index("pagamento_vencimento_idx").on(t.dataVencimento),
     statusIdx: index("pagamento_status_idx").on(t.status),
+    empresaDeletedIdx: index("pagamento_empresa_deleted_idx").on(
+      t.idEmpresa,
+      t.deletedAt,
+    ),
   }),
 );
 
@@ -1060,3 +1075,50 @@ export const tracoItensRelations = relations(tracoItens, ({ one }) => ({
     references: [insumos.id],
   }),
 }));
+
+// ============================================================================
+// AUDITORIA DE PERMISSÕES DE MENU
+// ============================================================================
+
+export const permissoesMenuAuditoria = sqliteTable("permissoes_menu_auditoria", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  idUsuario: text("id_usuario")
+    .notNull()
+    .references(() => usuarios.id),
+  idUsuarioAlteradoPor: text("id_usuario_alterado_por")
+    .notNull()
+    .references(() => usuarios.id),
+  idEmpresa: integer("id_empresa")
+    .notNull()
+    .references(() => empresas.id),
+  permissoesAntes: text("permissoes_antes").notNull(), // JSON array
+  permissoesDepois: text("permissoes_depois").notNull(), // JSON array
+  tipoAlteracao: text("tipo_alteracao").notNull(), // 'CREATE', 'UPDATE', 'RESET'
+  ipAddress: text("ip_address"),
+  userAgent: text("user_agent"),
+  createdAt: integer("created_at", { mode: "timestamp" }).default(
+    sql`(strftime('%s', 'now'))`,
+  ),
+}, (t) => ({
+  usuarioIdx: index("perm_menu_aud_usuario_idx").on(t.idUsuario),
+  empresaIdx: index("perm_menu_aud_empresa_idx").on(t.idEmpresa),
+  createdAtIdx: index("perm_menu_aud_created_idx").on(t.createdAt),
+}));
+
+export const permissoesMenuAuditoriaRelations = relations(
+  permissoesMenuAuditoria,
+  ({ one }) => ({
+    usuario: one(usuarios, {
+      fields: [permissoesMenuAuditoria.idUsuario],
+      references: [usuarios.id],
+    }),
+    alteradoPor: one(usuarios, {
+      fields: [permissoesMenuAuditoria.idUsuarioAlteradoPor],
+      references: [usuarios.id],
+    }),
+    empresa: one(empresas, {
+      fields: [permissoesMenuAuditoria.idEmpresa],
+      references: [empresas.id],
+    }),
+  }),
+);

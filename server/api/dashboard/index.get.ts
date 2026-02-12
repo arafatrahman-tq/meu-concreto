@@ -36,9 +36,33 @@ export default defineEventHandler(async (event) => {
 
     let idEmpresa = user.idEmpresa;
 
-    // Filtro por empresa para administradores
-    if (user.admin === 1 && query.idEmpresa) {
-      idEmpresa = Number(query.idEmpresa);
+    // Filtro por empresa: Apenas administradores podem alternar entre empresas
+    if (query.idEmpresa) {
+      const targetId = Number(query.idEmpresa);
+
+      // Se o targetId for diferente da empresa principal do usuário, exige admin
+      if (targetId !== user.idEmpresa && user.admin !== 1) {
+        throw createError({
+          statusCode: 403,
+          message: "Apenas administradores podem visualizar dados de outras unidades",
+        });
+      }
+
+      // Se for admin, verifica se ele tem acesso àquela empresa específica
+      // Admins globais (admin === 1) têm acesso a todas as empresas
+      const hasAccess =
+        user.admin === 1 ||
+        user.idEmpresa === targetId ||
+        authUser.idEmpresasAcesso?.includes(targetId);
+
+      if (!hasAccess) {
+        throw createError({
+          statusCode: 403,
+          message: "Acesso negado à unidade solicitada",
+        });
+      }
+
+      idEmpresa = targetId;
     }
 
     // Datas para comparaÃ§Ã£o de tendÃªncias
@@ -83,14 +107,17 @@ export default defineEventHandler(async (event) => {
         ),
       );
 
+    const totalAtual = vendasMesAtual[0]?.total ?? 0;
+    const totalAnterior = vendasMesAnterior[0]?.total ?? 0;
+
     let trendFaturamento = "+0.0%";
-    if (vendasMesAnterior[0]?.total && vendasMesAnterior[0].total > 0) {
-      const diff = (vendasMesAtual[0]?.total || 0) - vendasMesAnterior[0].total;
+    if (totalAnterior > 0) {
+      const diff = totalAtual - totalAnterior;
       trendFaturamento =
         (diff >= 0 ? "+" : "") +
-        ((diff / vendasMesAnterior[0].total) * 100).toFixed(1) +
+        ((diff / totalAnterior) * 100).toFixed(1) +
         "%";
-    } else if (vendasMesAtual[0]?.total && vendasMesAtual[0].total > 0) {
+    } else if (totalAtual > 0) {
       trendFaturamento = "+100%";
     }
 
@@ -138,8 +165,11 @@ export default defineEventHandler(async (event) => {
         )
       );
 
-    const percentualFiscal = totalVendasFiscal[0]?.count > 0 
-      ? Math.round((vendasComNota[0]?.count / totalVendasFiscal[0].count) * 100)
+    const totalCount = totalVendasFiscal[0]?.count ?? 0;
+    const comNotaCount = vendasComNota[0]?.count ?? 0;
+
+    const percentualFiscal = totalCount > 0 
+      ? Math.round((comNotaCount / totalCount) * 100)
       : 0;
 
     // CÃ¡lculo de custos (valorCusto * qtd)
@@ -292,14 +322,11 @@ export default defineEventHandler(async (event) => {
         ),
       );
 
-    let trendPedidos = "0";
-    if (
-      pedidosMesAtual[0]?.count !== undefined &&
-      pedidosMesAnterior[0]?.count !== undefined
-    ) {
-      const diff = pedidosMesAtual[0].count - pedidosMesAnterior[0].count;
-      trendPedidos = (diff >= 0 ? "+" : "") + diff;
-    }
+    const countPedidosAtual = pedidosMesAtual[0]?.count ?? 0;
+    const countPedidosAnterior = pedidosMesAnterior[0]?.count ?? 0;
+
+    const diffPedidos = countPedidosAtual - countPedidosAnterior;
+    const trendPedidos = (diffPedidos >= 0 ? "+" : "") + diffPedidos;
 
     // Custos do mÃªs atual vs anterior para a trend
     const custosMesAtual = await db
@@ -333,26 +360,87 @@ export default defineEventHandler(async (event) => {
         ),
       );
 
+    const totalCustosAtual = custosMesAtual[0]?.total ?? 0;
+    const totalCustosAnterior = custosMesAnterior[0]?.total ?? 0;
+
     let trendCustos = "0%";
-    if (custosMesAnterior[0]?.total && custosMesAnterior[0].total > 0) {
-      const diff = (custosMesAtual[0]?.total || 0) - custosMesAnterior[0].total;
+    if (totalCustosAnterior > 0) {
+      const diff = totalCustosAtual - totalCustosAnterior;
       trendCustos =
         (diff >= 0 ? "+" : "") +
-        ((diff / custosMesAnterior[0].total) * 100).toFixed(1) +
+        ((diff / totalCustosAnterior) * 100).toFixed(1) +
         "%";
     }
+
+    // VOLUME DE CONCRETO (m³)
+    const volumeTotal = await db
+      .select({
+        total: sql<number>`sum(${orcamentos.qtd})`,
+      })
+      .from(vendas)
+      .innerJoin(orcamentos, eq(vendas.idOrcamento, orcamentos.id))
+      .where(and(eq(vendas.idEmpresa, idEmpresa), isNull(vendas.deletedAt)));
+
+    const volumeMesAtual = await db
+      .select({ total: sql<number>`sum(${orcamentos.qtd})` })
+      .from(vendas)
+      .innerJoin(orcamentos, eq(vendas.idOrcamento, orcamentos.id))
+      .where(
+        and(
+          eq(vendas.idEmpresa, idEmpresa),
+          isNull(vendas.deletedAt),
+          gte(vendas.createdAt, firstDayOfMonth),
+        ),
+      );
+
+    const volumeMesAnterior = await db
+      .select({ total: sql<number>`sum(${orcamentos.qtd})` })
+      .from(vendas)
+      .innerJoin(orcamentos, eq(vendas.idOrcamento, orcamentos.id))
+      .where(
+        and(
+          eq(vendas.idEmpresa, idEmpresa),
+          isNull(vendas.deletedAt),
+          gte(vendas.createdAt, firstDayOfLastMonth),
+          lt(vendas.createdAt, firstDayOfMonth),
+        ),
+      );
+
+    const volAtual = volumeMesAtual[0]?.total ?? 0;
+    const volAnterior = volumeMesAnterior[0]?.total ?? 0;
+    let trendVolume = "+0.0%";
+    if (volAnterior > 0) {
+      const diff = volAtual - volAnterior;
+      trendVolume = (diff >= 0 ? "+" : "") + ((diff / volAnterior) * 100).toFixed(1) + "%";
+    }
+
+    // Ticket Médio
+    const totalVendas = statsVendas[0]?.total || 0;
+    const countVendas = statsVendas[0]?.count || 0;
+    const ticketMedio = countVendas > 0 ? Math.round(totalVendas / countVendas) : 0;
+
+    // Taxa de Conversão
+    const countPendentes = statsOrcamentos[0]?.count || 0;
+    const totalOrcamentos = countVendas + countPendentes;
+    const conversao = totalOrcamentos > 0 ? Math.round((countVendas / totalOrcamentos) * 100) : 0;
 
     return {
       stats: {
         faturamento: {
-          total: statsVendas[0]?.total || 0,
+          total: totalVendas,
           disponivel: statsPagamentos[0]?.recebido || 0,
           trend: trendFaturamento,
+          ticketMedio: ticketMedio,
         },
         pedidos: {
-          realizados: statsVendas[0]?.count || 0,
-          pendentes: statsOrcamentos[0]?.count || 0,
+          realizados: countVendas,
+          pendentes: countPendentes,
           trend: trendPedidos,
+          conversao: conversao,
+        },
+        volume: {
+          total: volumeTotal[0]?.total || 0,
+          trend: trendVolume,
         },
         fiscal: {
           emitidas: vendasComNota[0]?.count || 0,

@@ -8,11 +8,11 @@
                 leave-from-class="opacity-100 translate-x-0 scale-100"
                 leave-to-class="opacity-0 translate-x-10 scale-95">
                 <div v-for="toast in toasts" :key="toast.id"
-                    class="pointer-events-auto flex items-center gap-4 px-6 py-4 rounded-3xl shadow-2xl border border-gray-100 dark:border-white/5 min-w-[20rem] backdrop-blur-xl transition-all"
+                    class="pointer-events-auto flex items-center gap-4 px-6 py-4 rounded-3xl shadow-2xl border min-w-[20rem] backdrop-blur-xl transition-all"
                     :class="[
-                        toast.type === 'success' ? 'bg-emerald-500 text-white border-emerald-400' :
-                            toast.type === 'error' ? 'bg-rose-500 text-white border-rose-400' :
-                                toast.type === 'warn' ? 'bg-amber-500 text-white border-amber-400' :
+                        toast.type === 'success' ? 'bg-success text-white border-success' :
+                            toast.type === 'error' ? 'bg-danger text-white border-danger' :
+                                toast.type === 'warn' ? 'bg-warning text-white border-warning' :
                                     'bg-surface text-primary border-border'
                     ]">
                     <div class="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0" :class="[

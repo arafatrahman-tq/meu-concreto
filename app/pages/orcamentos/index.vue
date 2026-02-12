@@ -349,11 +349,13 @@
                     class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2 block"
                     >Validade da Cotação</label
                   >
-                  <BaseInput
+                  <BaseDatePicker
                     v-model="form.validadeOrcamento"
                     type="date"
+                    label="Validade da Cotação"
                     :icon="Calendar"
                     :error="errors.validadeOrcamento"
+                    @blur="validateField('validadeOrcamento', form.validadeOrcamento)"
                   />
                 </div>
               </div>
@@ -435,12 +437,11 @@
                       class="text-[8px] font-black uppercase tracking-widest text-secondary opacity-30 pr-2"
                       >R$ Unit <span class="text-brand">*</span></label
                     >
-                    <BaseInput
-                      v-model.number="item.valorUnit"
-                      type="number"
-                      step="0.01"
-                      @input="calculateItemTotal(index)"
-                      required
+                    <BaseCurrency
+                      v-model="item.valorUnit"
+                      :centavos="true"
+                      placeholder="R$ 0,00"
+                      @update:model-value="calculateItemTotal(index)"
                       class="text-right"
                     />
                   </div>
@@ -548,10 +549,12 @@
                     class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2 block"
                     >Data/Hora de Entrega (Opcional)</label
                   >
-                  <BaseInput
+                  <BaseDatePicker
                     v-model="form.dataEntrega"
                     type="datetime-local"
+                    label="Data/Hora de Entrega"
                     :icon="Clock"
+                    :error="errors.dataEntrega"
                   />
                 </div>
                 <div class="space-y-1.5">
@@ -580,31 +583,22 @@
                       >Taxa de Operação</span
                     >
                   </div>
-                  <label
-                    class="relative inline-flex items-center cursor-pointer"
-                  >
-                    <input
-                      type="checkbox"
-                      v-model="form.bombaNecessaria"
-                      class="sr-only peer"
-                      @change="calculateTotal"
-                    />
-                    <div
-                      class="w-10 h-5 bg-primary/5 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-border after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-amber-500"
-                    ></div>
-                  </label>
+                  <BaseToggle 
+                    v-model="form.bombaNecessaria" 
+                    color-class="bg-amber-500"
+                    @update:model-value="calculateTotal"
+                  />
                 </div>
                 <div
                   v-if="form.bombaNecessaria"
                   class="animate-in fade-in zoom-in duration-300"
                 >
-                  <BaseInput
-                    v-model.number="form.valorBomba"
-                    type="number"
-                    step="1"
-                    :icon="DollarSign"
-                    @input="calculateTotal"
+                  <BaseCurrency
+                    v-model="form.valorBomba"
+                    :centavos="true"
                     placeholder="R$ 0,00"
+                    :icon="DollarSign"
+                    @update:model-value="calculateTotal"
                   />
                 </div>
               </div>
@@ -658,7 +652,7 @@
                           v-model.number="form.valorDesconto"
                           type="number"
                           class="w-20 bg-white/10 rounded-lg border border-white/10 text-right text-[10px] font-black text-white px-2 py-1 focus:ring-2 focus:ring-white/20 outline-none"
-                          @input="calculateTotal"
+                          @change="calculateTotal"
                         />
                       </div>
                     </div>
@@ -796,7 +790,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, reactive, computed, watch, onMounted } from "vue";
 import {
   Search,
@@ -830,6 +824,8 @@ import { useToast } from "~/composables/useToast";
 import { useLogger } from "~/composables/useLogger";
 import { useWhatsApp } from "~/composables/useWhatsApp";
 import { useAuth } from "~/composables/useAuth";
+import { useValidation, useCurrencyFormat } from "~/composables/useValidation";
+import { orcamentoSharedSchema } from "../../../shared/schemas";
 import { generateOrcamentoPdf } from "~/utils/orcamentoPdf";
 
 definePageMeta({ layout: "default" });
@@ -838,9 +834,9 @@ const { add: addToast } = useToast();
 const { info, error: logError } = useLogger();
 const { sendMessage: sendWS, loading: wsLoading } = useWhatsApp();
 const { user } = useAuth();
+const { validate, errors, validateField, clearError, hasErrors, clearAllErrors } = useValidation(orcamentoSharedSchema);
+const { formatarCentavos } = useCurrencyFormat();
 const route = useRoute();
-
-const errors = ref({});
 
 // Data Fetching
 const [
@@ -856,7 +852,7 @@ const [
   useFetch("/api/clientes"),
   useFetch("/api/produtos"),
   useFetch("/api/vendedores"),
-  useFetch("/api/forma-pgto"),
+  useFetch("/api/formas-pagamento"),
   useFetch("/api/motoristas"),
   useFetch("/api/caminhoes"),
 ]);
@@ -1164,11 +1160,11 @@ const onMotoristaSelect = (id) => {
   }
 };
 
-const onItemProdutoSelect = (id, index) => {
-  const produto = produtos.value.find((p) => p.id === id);
+const onItemProdutoSelect = (id: number, index: number) => {
+  const produto = produtos.value?.find((p: any) => p.id === id);
   if (produto) {
     form.itens[index].produtoNome = produto.produto;
-    form.itens[index].valorUnit = produto.valorVenda / 100;
+    form.itens[index].valorUnit = produto.valorVenda; // Já vem em centavos
     calculateItemTotal(index);
   }
 };
@@ -1207,6 +1203,7 @@ const handleNewOrcamento = () => {
 
 const resetForm = () => {
   isEditing.value = false;
+  clearAllErrors();
   Object.assign(form, {
     id: null,
     idCliente: null,
@@ -1239,8 +1236,9 @@ const resetForm = () => {
   originalFormState.value = JSON.stringify(form);
 };
 
-const openEditModal = (orc) => {
+const openEditModal = (orc: any) => {
   isEditing.value = true;
+  clearAllErrors();
 
   // Convert itens values back to decimal for form
   const mappedItens = (orc.itens || []).map((item) => ({
@@ -1275,23 +1273,27 @@ const openEditModal = (orc) => {
 
 const saveOrcamento = async () => {
   loading.value = true;
-  errors.value = {};
+  
+  // Validar formulário
+  const result = validate(form);
+  if (!result.success) {
+    loading.value = false;
+    addToast({
+      title: "Erro de Validação",
+      description: "Corrija os campos destacados",
+      type: "error",
+    });
+    return;
+  }
+  
   try {
     const payload = {
-      ...form,
-      valorBomba: Math.round(form.valorBomba * 100),
-      valorDesconto: Math.round(form.valorDesconto * 100),
-      total: Math.round(form.total * 100),
-      itens: form.itens.map((item) => ({
-        ...item,
-        valorUnit: Math.round(item.valorUnit * 100),
-        total: Math.round(item.total * 100),
-      })),
+      ...result.data,
+      // itens já estão em centavos pelo BaseCurrency
       // Legacy support (picks first item)
       idProduto: form.itens[0]?.idProduto || 1,
       produtoNome: form.itens[0]?.produtoNome || "N/A",
       qtd: form.itens[0]?.qtd || 0,
-      valorUnit: Math.round((form.itens[0]?.valorUnit || 0) * 100),
       idEmpresa: user.value?.idEmpresa,
       idUsuario: user.value?.id,
     };
@@ -1318,17 +1320,20 @@ const saveOrcamento = async () => {
     localStorage.removeItem("meu_concreto_orcamento_draft");
     showModal.value = false;
     refresh();
-  } catch (err) {
-    const msg = err.data?.message || err.message || "Erro ao salvar orçamento.";
-
-    // Tentar mapear erros de validação Zod
-    if (err.data?.message && err.data.message.includes(":")) {
-      const parts = err.data.message.split(", ");
-      parts.forEach((p) => {
-        const [field, m] = p.split(": ");
-        if (field && m) errors.value[field] = m;
-      });
+  } catch (err: any) {
+    // Tratar erros de validação do backend
+    if (err.data?.data) {
+      const backendErrors = err.data.data;
+      if (Array.isArray(backendErrors)) {
+        backendErrors.forEach((e: any) => {
+          if (e.path) {
+            errors.value[e.path[0]] = e.message;
+          }
+        });
+      }
     }
+    
+    const msg = err.data?.message || err.message || "Erro ao salvar orçamento.";
 
     addToast({
       title: "Erro de Validação",
@@ -1560,12 +1565,8 @@ const sendWhatsAppDocument = async (orc) => {
   }
 };
 
-const formatCurrency = (value) => {
-  if (!value) return "R$ 0,00";
-  return new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  }).format(value / 100);
+const formatCurrency = (value?: number) => {
+  return formatarCentavos(value);
 };
 </script>
 

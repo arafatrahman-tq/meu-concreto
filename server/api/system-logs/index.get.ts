@@ -1,6 +1,6 @@
 import { db } from "../../database/db";
 import { logs, usuarios } from "../../database/schema";
-import { eq, and, desc } from "drizzle-orm";
+import { eq, and, desc, like, or, type SQL } from "drizzle-orm";
 import { requireAdmin } from "../../utils/auth";
 
 export default defineEventHandler(async (event) => {
@@ -13,10 +13,23 @@ export default defineEventHandler(async (event) => {
     const offset = parseInt(query.offset as string) || 0;
     const nivel = query.nivel as string;
     const modulo = query.modulo as string;
+    const search = query.q as string;
 
-    const whereConditions = [eq(logs.idEmpresa, Number(idEmpresa))];
+    const whereConditions: SQL[] = [eq(logs.idEmpresa, Number(idEmpresa))];
     if (nivel && nivel !== "") whereConditions.push(eq(logs.nivel, nivel));
     if (modulo && modulo !== "") whereConditions.push(eq(logs.modulo, modulo));
+    
+    if (search && search !== "") {
+      const s = `%${search}%`;
+      const searchCondition = or(
+        like(logs.mensagem, s),
+        like(logs.modulo, s),
+        like(logs.dados, s)
+      );
+      if (searchCondition) {
+        whereConditions.push(searchCondition);
+      }
+    }
 
     const result = await db.query.logs.findMany({
       where: and(...whereConditions),

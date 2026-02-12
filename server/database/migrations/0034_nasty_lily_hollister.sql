@@ -1,0 +1,1 @@
+ALTER TABLE `usuarios` ADD `menu_permissions` text DEFAULT '[]';

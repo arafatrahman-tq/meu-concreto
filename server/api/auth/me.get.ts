@@ -2,6 +2,7 @@ import { db } from "../../database/db";
 import { usuarios } from "../../database/schema";
 import { eq } from "drizzle-orm";
 import { getAuthenticatedUser } from "../../utils/auth";
+import { getDefaultMenuPermissions } from "../../utils/menu-items";
 
 export default defineEventHandler(async (event) => {
   const sessionUser = getAuthenticatedUser(event);
@@ -48,6 +49,23 @@ export default defineEventHandler(async (event) => {
         userWithoutPassword.empresa = activeAccess.empresa;
       }
     }
+
+    // Parse das permissões de menu
+    let menuPermissions: string[] = [];
+    try {
+      menuPermissions = user.menuPermissions 
+        ? JSON.parse(user.menuPermissions)
+        : [];
+    } catch {
+      menuPermissions = [];
+    }
+
+    // Se não há permissões definidas, usar os padrões
+    if (menuPermissions.length === 0) {
+      menuPermissions = getDefaultMenuPermissions(user.admin === 1);
+    }
+
+    userWithoutPassword.menuPermissions = menuPermissions;
 
     return userWithoutPassword;
   } catch (e) {

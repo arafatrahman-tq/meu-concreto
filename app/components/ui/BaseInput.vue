@@ -10,10 +10,11 @@
       :value="displayValue"
       @input="onInput"
       v-bind="$attrs"
-      class="w-full bg-primary/2 border rounded-2xl py-3.5 text-sm font-bold text-primary placeholder:text-secondary/30 focus:ring-2 focus:ring-brand/20 focus:border-brand/30 transition-all font-sans outline-none tracking-tight"
+      class="w-full bg-primary/2 border rounded-2xl py-5 text-sm font-bold text-primary placeholder:text-secondary/30 focus:ring-4 focus:ring-brand/10 focus:border-brand/30 focus:bg-surface transition-all font-sans outline-none tracking-tight"
       :class="[
-        icon ? 'pl-12 pr-4' : 'px-5',
-        error ? 'border-rose-500/50 bg-rose-500/5' : 'border-border'
+        icon ? 'pl-14' : 'px-5',
+        $slots.suffix ? 'pr-14' : 'pr-5',
+        error ? 'border-danger/50 bg-danger/5' : 'border-border'
       ]"
     />
     <div v-if="$slots.suffix" class="absolute right-4 top-1/2 -translate-y-1/2">
@@ -25,7 +26,7 @@
       enter-from-class="opacity-0 -translate-y-1"
       enter-to-class="opacity-100 translate-y-0"
     >
-      <span v-if="error" class="absolute left-4 -bottom-5 text-[9px] font-black uppercase tracking-widest text-rose-500">
+      <span v-if="error" class="absolute left-4 -bottom-5 text-[9px] font-black uppercase tracking-widest text-danger">
         {{ error }}
       </span>
     </Transition>

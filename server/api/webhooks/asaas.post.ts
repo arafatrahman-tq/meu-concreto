@@ -27,15 +27,19 @@ export default defineEventHandler(async (event) => {
 
   try {
     // 2. Validar o Token do Webhook (Segurança)
+    if (!authToken) {
+      throw createError({
+        statusCode: 401,
+        message: "Missing Asaas Access Token",
+      });
+    }
+
     // Buscamos a configuração para validar o token.
-    // Como o webhook não envia o idEmpresa no header, tentamos validar contra os tokens cadastrados.
     const config = await db.query.configuracoesAsaas.findFirst({
-      where: authToken
-        ? eq(configuracoesAsaas.webhookToken, authToken)
-        : undefined,
+      where: eq(configuracoesAsaas.webhookToken, authToken),
     });
 
-    if (!config || config.webhookToken !== authToken) {
+    if (!config) {
       await serverLog.register(null, {
         nivel: "WARN",
         modulo: "WEBHOOK_ASAAS",

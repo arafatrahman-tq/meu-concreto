@@ -1,9 +1,9 @@
 <template>
-  <div class="bg-surface rounded-3xl p-8 shadow-sm border border-primary/5 dark:border-white/5 flex flex-col h-full">
+  <div class="bg-surface rounded-[2rem] p-6 sm:p-10 shadow-sm border border-primary/5 dark:border-white/5 flex flex-col h-full">
     <div class="flex justify-between items-center mb-10">
       <div>
         <h3 class="text-[10px] font-black uppercase tracking-[0.2em] opacity-40 mb-1">Ranking de Performance</h3>
-        <p class="text-3xl font-black tracking-tighter uppercase text-primary">Equipe em Destaque</p>
+        <p class="text-xl sm:text-3xl font-black tracking-tighter uppercase text-primary">Equipe em Destaque</p>
       </div>
       <div class="flex gap-2">
         <div class="p-2 rounded-xl bg-brand/5 text-brand">
@@ -12,7 +12,7 @@
       </div>
     </div>
 
-    <div class="space-y-6 flex-1 overflow-y-auto pr-2 no-scrollbar">
+    <div class="space-y-8 flex-1 overflow-y-auto pr-2 no-scrollbar">
       <div v-for="(person, index) in people" :key="person.id"
         @click="navigateTo(`/vendedores?id=${person.id}`)"
         class="flex items-center justify-between group cursor-pointer p-4 rounded-3xl hover:bg-primary/2 dark:hover:bg-white/5 transition-all duration-500 border border-transparent hover:border-primary/5 dark:hover:border-white/10">

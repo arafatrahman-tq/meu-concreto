@@ -178,6 +178,7 @@
             v-model="form.nome"
             placeholder="Ex: João da Silva"
             :icon="User"
+            :error="errors.nome"
             required
           />
         </div>
@@ -193,6 +194,8 @@
               mask="phone"
               placeholder="(00) 00000-0000"
               :icon="Phone"
+              :error="errors.telefone"
+              @input="onTelefoneInput"
             />
           </div>
           <div class="space-y-2">
@@ -204,6 +207,7 @@
               v-model="form.cnh"
               placeholder="0000000000"
               :icon="CreditCard"
+              :error="errors.cnh"
             />
           </div>
         </div>
@@ -218,6 +222,7 @@
             placeholder="Ex: 1234"
             :icon="Lock"
             maxlength="4"
+            :error="errors.pin"
           />
           <p
             class="text-[9px] font-bold text-secondary uppercase opacity-40 ml-2 mt-1"
@@ -252,12 +257,7 @@
               Motorista disponível para escalas
             </p>
           </div>
-          <label class="relative inline-flex items-center cursor-pointer">
-            <input type="checkbox" v-model="form.ativo" class="sr-only peer" />
-            <div
-              class="w-11 h-6 bg-border peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"
-            ></div>
-          </label>
+          <BaseToggle v-model="form.ativo" color-class="bg-emerald-500" />
         </div>
 
         <div class="flex gap-3 pt-4">
@@ -297,7 +297,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, reactive, computed } from "vue";
 import {
   Search,
@@ -315,6 +315,8 @@ import {
 import { useToast } from "~/composables/useToast";
 import { useLogger } from "~/composables/useLogger";
 import { useAuth } from "~/composables/useAuth";
+import { useValidation, useInputMask } from "~/composables/useValidation";
+import { motoristaSharedSchema } from "../../../shared/schemas";
 
 definePageMeta({ layout: "default" });
 
@@ -344,6 +346,9 @@ const showModal = ref(false);
 const isEditing = ref(false);
 const showDeleteDialog = ref(false);
 const motoristaToDelete = ref(null);
+
+const { validate, errors, hasErrors, clearAllErrors } = useValidation(motoristaSharedSchema);
+const { telefone } = useInputMask();
 
 const form = reactive({
   id: null,
@@ -389,13 +394,27 @@ const openEditModal = (motorista) => {
 
 const saveMotorista = async () => {
   loading.value = true;
+  clearAllErrors();
+
   try {
     if (!authUser.value) throw new Error("Sessão expirada");
 
+    // Validação com schema
+    const result = validate(form);
+    if (!result.success) {
+      addToast({
+        title: "Erro de Validação",
+        description: "Verifique os campos destacados.",
+        type: "error",
+      });
+      loading.value = false;
+      return;
+    }
+
     const payload = {
-      ...form,
+      ...result.data,
       idEmpresa: authUser.value.idEmpresa,
-      ativo: !!form.ativo,
+      ativo: !!result.data.ativo,
     };
 
     const url = isEditing.value
@@ -440,6 +459,12 @@ const saveMotorista = async () => {
 const confirmDelete = (motorista) => {
   motoristaToDelete.value = motorista;
   showDeleteDialog.value = true;
+};
+
+const onTelefoneInput = (e: Event) => {
+  const input = e.target as HTMLInputElement;
+  input.value = telefone(input.value);
+  form.telefone = input.value;
 };
 
 const handleDelete = async () => {

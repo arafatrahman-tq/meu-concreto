@@ -1,62 +1,185 @@
-# Auditoria de Fluxo e Planejamento - Meu Concreto
+# Auditoria de Consistência Design/Backend
 
-**Data**: 01/02/2026
-**Responsável**: Project Planner Agent
-**Status**: Em Análise
+> Data: 2026-02-11
+> Tipo: Correção de Consistência
 
-## 1. Visão Geral da Arquitetura
-O projeto segue uma arquitetura monolítica moderna baseada em **Nuxt 4**, utilizando o padrão "Full-Stack" onde o frontend (`app/`) e o backend (`server/`) coexistem harmoniosamente.
+---
 
-- **Frontend**: Vue 3 (Composition API), Tailwind CSS 4.
-- **Backend**: Nitro (Nuxt server engine), Drizzle ORM, Bun SQLite.
-- **Infraestrutura de Agentes**: Antigravity Kit implementado em `.agent/`.
+## Resumo das Correções Aplicadas
 
-## 2. Análise do Fluxo de Dados (Frontend <-> Backend)
+### 1. ✅ Schemas Zod Compartilhados
 
-A estrutura de pastas entre `app/pages` e `server/api` apresenta alta correlação, o que é excelente para manutenção. No entanto, foram detectadas algumas inconsistências:
+**Problema**: Validações duplicadas entre frontend e backend, risco de inconsistência.
 
-### ✅ Pontos Fortes
-1.  **Espelhamento Claro**: Rotas como `clientes`, `motoristas`, `vendas` existem em ambos os lados.
-2.  **Separação de Responsabilidades**: `utils/validador.ts` centraliza regras de negócio (Zod schemas), evitando duplicação.
-3.  **Componentização**: Uso de *ui components* base (`BaseInput`, `BaseTable`) padroniza a interface.
+**Solução**: Criado `shared/schemas/index.ts` com schemas compartilhados.
 
-### ⚠️ Discrepâncias Identificadas (Gaps)
-Alguns endpoints da API não possuem correspondência clara ou direta nas páginas do frontend, o que pode indicar funcionalidades incompletas ou "órfãs":
+**Schemas Criados**:
+- Base: `valorMonetarioSchema`, `cpfCnpjSchema`, `telefoneSchema`, `emailSchema`, `cepSchema`, `pinSchema`, `placaSchema`
+- Entidades: `clienteSharedSchema`, `produtoSharedSchema`, `orcamentoSharedSchema`, `vendaSharedSchema`, `pagamentoSharedSchema`, `motoristaSharedSchema`, `caminhaoSharedSchema`, `bombaSharedSchema`, `insumoSharedSchema`, `fornecedorSharedSchema`, `contaPagarSharedSchema`
 
-| Endpoint (Server) | Página Correspondente (App) | Observação |
-| :--- | :--- | :--- |
-| `api/familias` | ❌ Não encontrada | Gerenciamento de famílias de produtos? |
-| `api/insumos` | ❌ Não encontrada | Controle de estoque de insumos (cimento, areia)? |
-| `api/laudos` | ❌ Não encontrada | Emissão de laudos técnicos do concreto? |
-| `api/webhooks` | N/A (Backend only) | Correto, mas precisa de monitoramento/logs na UI. |
-| `api/notificacoes` | ❌ Não encontrada | Existe central de notificações para o usuário? |
-| `api/search` | ❌ Não encontrada | Existe uma busca global na UI? |
+**Uso**:
+```typescript
+// Frontend
+import { clienteSharedSchema } from '~/shared/schemas';
+import { useValidation } from '~/composables/useValidation';
+const { validate, errors } = useValidation(clienteSharedSchema);
 
-## 3. Sugestões de Melhoria (Plano de Ação)
+// Backend
+import { clienteSharedSchema } from '~/shared/schemas';
+const result = clienteSharedSchema.safeParse(body);
+```
 
-### Prioridade Alta: Consistência de Funcionalidades
-- [ ] **Módulo Insumos/Estoque**: Criar interface para `api/insumos` e `api/familias`. É crítico para uma concreteira controlar estoque de matéria-prima.
-- [ ] **Controle de Qualidade**: Implementar visualização para `api/laudos`.
+---
 
-### Prioridade Média: UX e Usabilidade
-- [ ] **Busca Global**: Implementar um componente de busca (`cmd+k` style) utilizando o endpoint `api/search` para encontrar clientes, orçamentos e vendas rapidamente.
-- [ ] **Central de Notificações**: Criar um componente (popover no header) para consumir `api/notificacoes` (alertas de estoque baixo, aprovações pendentes).
+### 2. ✅ Componentes de Formulário Padronizados
 
-### Prioridade Baixa: Técnica e Manutenibilidade
-- [ ] **Documentação de API**: Adicionar Swagger/OpenAPI (via módulo Nuxt) para documentar os endpoints existentes.
-- [ ] **Testes E2E**: Configurar Playwright para fluxos críticos (Criação de Orçamento -> Venda -> Pagamento).
+**Problema**: Inputs de data e moeda implementados de formas diferentes em várias telas.
 
-## 4. Estrutura de Agentes (Sugestão de Uso)
+**Solução**: Criados componentes reutilizáveis.
 
-Para executar o plano acima, recomendo a seguinte alocação de agentes:
+#### BaseDatePicker (`app/components/form/BaseDatePicker.vue`)
+- Suporte a `type="date"`, `type="datetime-local"`, `type="time"`
+- Conversão automática de Date/timestamp para ISO string
+- Ícone de calendário integrado
+- Validação de min/max
 
-1.  **`frontend-specialist`**:
-    - Tarefa: Criar UI para "Insumos" e "Famílias".
-    - Tarefa: Implementar componente de Busca Global.
-2.  **`backend-specialist`**:
-    - Tarefa: Revisar endpoints `insumos` e `laudos` para garantir que atendem aos requisitos da nova UI.
-3.  **`database-architect`**:
-    - Tarefa: Verificar se o schema de `insumos` suporta controle de estoque (entrada/saída).
+```vue
+<BaseDatePicker 
+  v-model="form.dataEntrega" 
+  type="datetime-local"
+  label="Data de Entrega"
+  :icon="Calendar"
+/>
+```
 
-## 5. Próximos Passos
-Solicite ao **Orchestrator** ou diretamente aos agentes especialistas para iniciar a implementação do **Módulo de Insumos** ou da **Busca Global**, conforme sua prioridade de negócio.
+#### BaseCurrency (`app/components/form/BaseCurrency.vue`)
+- Formatação automática no padrão brasileiro (R$ 1.234,56)
+- Suporte a trabalhar com centavos (prop `centavos`)
+- Máscara de input em tempo real
+- Validação de min/max
+
+```vue
+<BaseCurrency 
+  v-model="form.valor" 
+  :centavos="true"
+  label="Valor Total"
+  :icon="DollarSign"
+/>
+```
+
+---
+
+### 3. ✅ Composable useValidation
+
+**Problema**: Lógica de validação espalhada e inconsistente entre formulários.
+
+**Solução**: Criado `app/composables/useValidation.ts` com helpers completos.
+
+**Funcionalidades**:
+- `useValidation(schema)` - Validação completa de formulários
+- `useCpfCnpjValidation()` - Validação e formatação de documentos
+- `useCurrencyFormat()` - Formatação de valores monetários
+- `useInputMask()` - Máscaras (telefone, CEP, placa, CPF/CNPJ)
+
+```typescript
+const { validate, errors, clearError, hasErrors } = useValidation(clienteSharedSchema);
+const { validar, formatar } = useCpfCnpjValidation();
+const { formatarCentavos } = useCurrencyFormat();
+const { telefone, cep, cpfCnpj } = useInputMask();
+```
+
+---
+
+### 4. ✅ Documentação dos Padrões
+
+**Arquivos Criados/Atualizados**:
+
+1. **`shared/schemas/README.md`** - Guia completo de uso dos schemas
+2. **`AGENTS.md`** - Atualizado com:
+   - Seção 4.5 sobre Schemas Compartilhados
+   - Seção 5.4 sobre Validação (Zod)
+   - Seção 5.5 sobre Formatação de Dados
+   - Seção 6.2 sobre Componentes de Formulário
+   - Seção 7.2 sobre Novos Composables
+
+---
+
+## Convenções Estabelecidas
+
+### Valores Monetários
+| Camada | Formato | Exemplo |
+|--------|---------|---------|
+| Backend | Centavos (integer) | `123456` |
+| API | Centavos (integer) | `123456` |
+| Frontend | Decimal formatado | `"R$ 1.234,56"` |
+
+### Datas
+| Camada | Formato |
+|--------|---------|
+| Backend | Date object ou timestamp |
+| API | ISO 8601 string |
+| Frontend | Date object ou ISO string |
+
+### Validação
+1. Usar sempre schemas de `shared/schemas/index.ts`
+2. Frontend: usar `useValidation()` para feedback em tempo real
+3. Backend: usar `schema.safeParse()` e retornar erros formatados
+4. Nunca duplicar validações customizadas
+
+---
+
+## Próximos Passos Recomendados
+
+### Refatoração de Código Existente
+
+1. **Migrar telas para novos componentes**:
+   - Substituir inputs de data por `BaseDatePicker`
+   - Substituir inputs de moeda por `BaseCurrency`
+   - Atualizar `app/pages/orcamentos/index.vue`
+   - Atualizar `app/pages/vendas/index.vue`
+
+2. **Padronizar validações**:
+   - Substituir validações inline por schemas compartilhados
+   - Atualizar APIs para usar schemas de `shared/schemas/`
+
+3. **Corrigir APIs inconsistentes**:
+   - Renomear `/api/financeiro/summary` para `/api/financeiro/resumo`
+   - Padronizar todas as rotas para kebab-case
+
+### Testes
+
+1. Adicionar testes para schemas compartilhados
+2. Adicionar testes para componentes BaseDatePicker e BaseCurrency
+3. Adicionar testes para useValidation
+
+---
+
+## Checklist de Implementação
+
+- [x] Criar diretório `shared/schemas/`
+- [x] Criar `shared/schemas/index.ts` com todos os schemas
+- [x] Criar `shared/schemas/README.md` com documentação
+- [x] Criar diretório `app/components/form/`
+- [x] Criar `BaseDatePicker.vue`
+- [x] Criar `BaseCurrency.vue`
+- [x] Criar `app/composables/useValidation.ts`
+- [x] Atualizar `AGENTS.md` com novos padrões
+- [ ] Migrar telas existentes para novos componentes
+- [ ] Atualizar APIs para usar schemas compartilhados
+- [ ] Adicionar testes
+
+---
+
+## Notas para Desenvolvedores
+
+Ao criar novas funcionalidades, seguir estas regras:
+
+1. **Sempre** usar schemas compartilhados para validação
+2. **Sempre** usar `BaseDatePicker` e `BaseCurrency` para inputs de data/moeda
+3. **Sempre** usar `useValidation()` para validação de formulários
+4. **Sempre** manter valores monetários em centavos no backend
+5. **Nunca** duplicar lógica de validação entre frontend e backend
+
+---
+
+*Documento gerado automaticamente durante auditoria de consistência.*

@@ -1,5 +1,5 @@
 import { db } from "../database/db";
-import { configuracoesWhatsapp } from "../database/schema";
+import { configuracoesWhatsapp, empresas } from "../database/schema";
 import { eq, and } from "drizzle-orm";
 
 export interface WhatsAppMessageOptions {
@@ -204,6 +204,15 @@ export const sendWhatsAppMessage = async (
   } as WhatsAppMessageOptions);
 };
 
+const getEmpresaHeader = async (idEmpresa?: number) => {
+  if (!idEmpresa) return "";
+  const emp = await db.query.empresas.findFirst({
+    where: eq(empresas.id, idEmpresa),
+  });
+  if (!emp) return "";
+  return `*${emp.empresa}${emp.filial ? ` - ${emp.filial}` : ""}*\n\n`.toUpperCase();
+};
+
 export const sendPaymentLink = async (
   to: string,
   clienteNome: string,
@@ -215,7 +224,9 @@ export const sendPaymentLink = async (
     style: "currency",
     currency: "BRL",
   }).format(valor / 100);
-  const text = `Olá *${clienteNome}*,\n\nSegue o link para o pagamento do seu pedido no valor de *${formatado}*:\n\n${link}\n\nSe tiver qualquer dúvida, estamos à disposição!`;
+
+  const header = await getEmpresaHeader(idEmpresa);
+  const text = `${header}Olá *${clienteNome}*,\n\nSegue o link para o pagamento do seu pedido no valor de *${formatado}*:\n\n${link}\n\nSe tiver qualquer dúvida, estamos à disposição!`;
 
   return await whatsappService.sendMessage({ number: to, text }, idEmpresa);
 };
@@ -232,6 +243,8 @@ export const sendPixCode = async (
     currency: "BRL",
   }).format(valor / 100);
 
+  const header = await getEmpresaHeader(idEmpresa);
+
   // 1. Enviar QR Code como Imagem
   try {
     const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=512x512&data=${encodeURIComponent(pixCode)}`;
@@ -243,7 +256,7 @@ export const sendPixCode = async (
       {
         number: to,
         image: `data:image/png;base64,${base64}`,
-        caption: `Olá *${clienteNome}*,\n\nPara facilitar o seu pagamento no valor de *${formatado}*, utilize o QR Code acima ou o código Pix abaixo.`,
+        caption: `${header}Olá *${clienteNome}*,\n\nPara facilitar o seu pagamento no valor de *${formatado}*, utilize o QR Code acima ou o código Pix abaixo.`,
       },
       idEmpresa,
     );

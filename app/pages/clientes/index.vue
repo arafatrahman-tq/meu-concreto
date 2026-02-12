@@ -65,14 +65,14 @@
           <td class="px-8 py-5">
             <span
               class="text-[10px] font-black uppercase tracking-widest text-secondary opacity-60 tabular-nums"
-              >{{ cliente.cpfCnpj }}</span
+              >{{ formatCpfCnpj(cliente.cpfCnpj) }}</span
             >
           </td>
           <td class="px-8 py-5">
             <div class="flex flex-col gap-0.5">
               <span
                 class="text-xs font-black uppercase tracking-widest text-primary"
-                >{{ cliente.telefone || "---" }}</span
+                >{{ formatTelefone(cliente.telefone) || "---" }}</span
               >
               <span
                 class="text-[10px] font-black uppercase tracking-[0.2em] text-secondary opacity-40"
@@ -171,7 +171,7 @@
       "
       size="lg"
     >
-      <form @submit.prevent="saveCliente" class="space-y-8">
+      <form @submit.prevent="onSubmit" class="space-y-8">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="space-y-2">
             <label
@@ -182,8 +182,8 @@
               v-model="form.nome"
               placeholder="Ex: Construções Silva Ltda"
               :icon="UsersIcon"
-              required
               :error="errors.nome"
+              @blur="validateField('nome', form.nome)"
             />
           </div>
           <div class="space-y-2">
@@ -192,12 +192,12 @@
               >CPF / CNPJ <span class="text-brand">*</span></label
             >
             <BaseInput
-              v-model="form.cpfCnpj"
+              :model-value="form.cpfCnpj"
               placeholder="00.000.000/0000-00"
               :icon="IdCard"
-              mask="cpfCnpj"
-              required
               :error="errors.cpfCnpj"
+              @update:model-value="onCpfCnpjInput"
+              @blur="validateField('cpfCnpj', form.cpfCnpj)"
             />
           </div>
         </div>
@@ -214,6 +214,7 @@
               placeholder="cliente@email.com"
               :icon="Mail"
               :error="errors.email"
+              @blur="validateField('email', form.email)"
             />
           </div>
           <div class="space-y-2">
@@ -222,11 +223,12 @@
               >Telefone</label
             >
             <BaseInput
-              v-model="form.telefone"
+              :model-value="form.telefone"
               placeholder="(00) 00000-0000"
               :icon="Phone"
-              mask="phone"
               :error="errors.telefone"
+              @update:model-value="onTelefoneInput"
+              @blur="validateField('telefone', form.telefone)"
             />
           </div>
         </div>
@@ -292,7 +294,11 @@
                   />
                 </BaseTooltip>
               </label>
-              <BaseInput v-model="form.cep" placeholder="00000-000" mask="cep">
+              <BaseInput 
+                :model-value="form.cep" 
+                placeholder="00000-000" 
+                @update:model-value="onCepInput"
+              >
                 <template #suffix v-if="cepLoading">
                   <Loader2 class="animate-spin text-brand" size="16" />
                 </template>
@@ -330,14 +336,13 @@
           />
         </div>
 
+        <!-- Validation Summary -->
         <div
-          v-if="error"
+          v-if="hasErrors"
           class="bg-rose-50 dark:bg-rose-500/10 p-4 rounded-2xl border border-rose-100 dark:border-rose-500/20"
         >
-          <p
-            class="text-rose-600 dark:text-rose-400 text-[10px] font-black text-center uppercase tracking-widest"
-          >
-            {{ error }}
+          <p class="text-rose-600 dark:text-rose-400 text-[10px] font-black uppercase tracking-widest">
+            Corrija os erros acima antes de salvar
           </p>
         </div>
 
@@ -392,7 +397,7 @@
             <p
               class="text-[10px] font-black uppercase tracking-[0.2em] text-secondary opacity-40 mt-1"
             >
-              {{ selectedHistory.client.cpfCnpj }}
+              {{ formatCpfCnpj(selectedHistory.client.cpfCnpj) }}
             </p>
           </div>
           <div class="flex gap-6">
@@ -635,7 +640,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, reactive, watch, onMounted } from "vue";
 import {
   Users as UsersIcon,
@@ -662,19 +667,23 @@ import {
 } from "lucide-vue-next";
 import { useToast } from "~/composables/useToast";
 import { useLogger } from "~/composables/useLogger";
+import { useValidation, useInputMask, useCurrencyFormat } from "~/composables/useValidation";
+import { clienteSharedSchema } from "../../../shared/schemas";
 
 definePageMeta({ layout: "default" });
 
 const { add: addToast } = useToast();
 const { info, error: logError } = useLogger();
+const { validate, errors, validateField, clearError, hasErrors, clearAllErrors } = useValidation(clienteSharedSchema);
+const { cpfCnpj: maskCpfCnpj, telefone: maskTelefone, cep: maskCep } = useInputMask();
+const { formatarCentavos } = useCurrencyFormat();
+
 const { data: clientesData, refresh } = await useFetch("/api/clientes");
 
 const searchTerm = ref("");
 const itemsToShow = ref(20);
 const loading = ref(false);
 const cepLoading = ref(false);
-const error = ref("");
-const errors = ref({});
 const showModal = ref(false);
 const isEditing = ref(false);
 const showDeleteDialog = ref(false);
@@ -684,7 +693,7 @@ const selectedHistory = ref(null);
 const clienteToDelete = ref(null);
 
 const form = reactive({
-  id: null,
+  id: undefined,
   nome: "",
   cpfCnpj: "",
   email: "",
@@ -736,9 +745,9 @@ const filteredClientes = computed(() => {
   if (!clientesData.value) return [];
   const term = searchTerm.value.toLowerCase();
   return clientesData.value.filter(
-    (c) =>
+    (c: any) =>
       c.nome.toLowerCase().includes(term) ||
-      c.cpfCnpj.toLowerCase().includes(term) ||
+      c.cpfCnpj?.toLowerCase().includes(term) ||
       (c.email && c.email.toLowerCase().includes(term)),
   );
 });
@@ -747,10 +756,37 @@ const displayedClientes = computed(() => {
   return filteredClientes.value.slice(0, itemsToShow.value);
 });
 
+// Máscaras de input
+const onCpfCnpjInput = (value: string) => {
+  form.cpfCnpj = maskCpfCnpj(value);
+  clearError('cpfCnpj');
+};
+
+const onTelefoneInput = (value: string) => {
+  form.telefone = maskTelefone(value);
+  clearError('telefone');
+};
+
+const onCepInput = (value: string) => {
+  form.cep = maskCep(value);
+};
+
+// Formatação para exibição
+const formatCpfCnpj = (value?: string) => {
+  if (!value) return "";
+  return maskCpfCnpj(value);
+};
+
+const formatTelefone = (value?: string) => {
+  if (!value) return "";
+  return maskTelefone(value);
+};
+
 const openAddModal = () => {
   isEditing.value = false;
+  clearAllErrors();
   Object.assign(form, {
-    id: null,
+    id: undefined,
     nome: "",
     cpfCnpj: "",
     email: "",
@@ -763,17 +799,16 @@ const openAddModal = () => {
     estado: "",
   });
   showModal.value = true;
-  error.value = "";
 };
 
-const openEditModal = (cliente) => {
+const openEditModal = (cliente: any) => {
   isEditing.value = true;
+  clearAllErrors();
   Object.assign(form, { ...cliente });
   showModal.value = true;
-  error.value = "";
 };
 
-const openHistoryModal = async (cliente) => {
+const openHistoryModal = async (cliente: any) => {
   historyLoading.value = true;
   selectedHistory.value = null;
   showHistoryModal.value = true;
@@ -788,36 +823,43 @@ const openHistoryModal = async (cliente) => {
   }
 };
 
-const navigateToOrcamento = (id) => {
+const navigateToOrcamento = (id: number) => {
   navigateTo(`/orcamentos?id=${id}`);
 };
 
-const formatDate = (date) => {
+const formatDate = (date: string | Date) => {
   if (!date) return "---";
   return new Date(date).toLocaleDateString("pt-BR");
 };
 
-const formatCurrency = (value) => {
-  return new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  }).format(value / 100);
+const formatCurrency = (value: number) => {
+  return formatarCentavos(value);
 };
 
 const copyAddress = () => {
   form.enderecoEntrega = `${form.endereco}, ${form.bairro}, ${form.cidade} - ${form.estado}`;
 };
 
-const saveCliente = async () => {
+const onSubmit = async () => {
   loading.value = true;
-  error.value = "";
-  errors.value = {};
+
+  // Validar formulário
+  const result = validate(form);
+  if (!result.success) {
+    loading.value = false;
+    addToast({
+      title: "Erro de Validação",
+      description: "Corrija os campos destacados",
+      type: "error",
+    });
+    return;
+  }
 
   try {
     const { user: authUser } = useAuth();
     if (!authUser.value) throw new Error("Sessão expirada");
 
-    const payload = { ...form, idEmpresa: authUser.value.idEmpresa };
+    const payload = { ...result.data, idEmpresa: authUser.value.idEmpresa };
     const url = isEditing.value ? `/api/clientes/${form.id}` : "/api/clientes";
     const method = isEditing.value ? "PUT" : "POST";
 
@@ -834,24 +876,22 @@ const saveCliente = async () => {
     );
     showModal.value = false;
     refresh();
-  } catch (err) {
-    const validationErrors = err.data?.data;
-    error.value = validationErrors
-      ? validationErrors.map((e) => e.message).join(". ")
-      : err.data?.message || err.message;
-
-    // Tentar mapear erros de validação Zod individualmente
-    if (err.data?.message && err.data.message.includes(":")) {
-      const parts = err.data.message.split(", ");
-      parts.forEach((p) => {
-        const [field, m] = p.split(": ");
-        if (field && m) errors.value[field] = m;
-      });
+  } catch (err: any) {
+    // Tratar erros de validação do backend
+    if (err.data?.data) {
+      const backendErrors = err.data.data;
+      if (Array.isArray(backendErrors)) {
+        backendErrors.forEach((e: any) => {
+          if (e.path) {
+            errors.value[e.path[0]] = e.message;
+          }
+        });
+      }
     }
 
     addToast({
       title: "Erro",
-      description: error.value,
+      description: err.data?.message || err.message || "Erro ao salvar cliente",
       type: "error",
     });
     logError(
@@ -864,7 +904,7 @@ const saveCliente = async () => {
   }
 };
 
-const confirmDelete = (cliente) => {
+const confirmDelete = (cliente: any) => {
   clienteToDelete.value = cliente;
   showDeleteDialog.value = true;
 };
@@ -881,7 +921,7 @@ const handleDelete = async () => {
     });
     showDeleteDialog.value = false;
     refresh();
-  } catch (err) {
+  } catch (err: any) {
     addToast(
       err.data?.message || "Não foi possível remover este cliente no momento.",
       "error",

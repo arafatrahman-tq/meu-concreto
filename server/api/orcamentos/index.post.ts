@@ -1,22 +1,40 @@
 import { db } from "../../database/db";
 import { orcamentos, orcamentoItens } from "../../database/schema";
-import { orcamentoSchema } from "../../utils/validador";
+import { orcamentoSharedSchema } from "#shared/schemas";
 import { requireAuth } from "../../utils/auth";
+import { serverLog } from "../../utils/logger";
 
 export default defineEventHandler(async (event) => {
   const user = requireAuth(event);
 
   try {
     const body = await readBody(event);
-    const { itens, ...validatedData } = orcamentoSchema.parse(body);
+    
+    // Validar com schema compartilhado
+    const result = orcamentoSharedSchema.safeParse(body);
+    
+    if (!result.success) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: "Erro de Validação",
+        message: "Dados do orçamento inválidos",
+        data: result.error.errors.map((e) => ({
+          path: e.path,
+          message: e.message,
+        })),
+      });
+    }
+
+    const data = result.data;
+    const { itens, ...orcamentoData } = data;
 
     const [orcamento] = await db
       .insert(orcamentos)
       .values({
-        ...validatedData,
+        ...orcamentoData,
         idEmpresa: user.idEmpresa,
         idUsuario: user.id,
-        bombaNecessaria: validatedData.bombaNecessaria ? 1 : 0,
+        bombaNecessaria: orcamentoData.bombaNecessaria ? 1 : 0,
         createdAt: new Date(),
       })
       .returning();
@@ -30,23 +48,30 @@ export default defineEventHandler(async (event) => {
       );
     }
 
+    // Registrar criação
+    await serverLog.info(event, "ORCAMENTOS", `Novo orçamento criado: #${orcamento.id}`, {
+      id: orcamento.id,
+      idEmpresa: user.idEmpresa,
+      cliente: orcamento.nomeCliente,
+    });
+
     setResponseStatus(event, 201);
     return orcamento;
   } catch (error: any) {
-    if (error.name === "ZodError") {
-      const messages = error.issues
-        .map((e: any) => `${e.path.join(".")}: ${e.message}`)
-        .join(", ");
-      throw createError({
-        statusCode: 400,
-        statusMessage: "Erro de Validação",
-        message: messages,
-      });
+    // Se já é um erro do createError, apenas repassa
+    if (error.statusCode) {
+      throw error;
     }
+
+    // Log de erro inesperado
+    await serverLog.error(event, "ORCAMENTOS", "Erro inesperado ao criar orçamento", {
+      error: error.message,
+    });
+
     throw createError({
-      statusCode: error.statusCode || 500,
-      statusMessage: error.statusMessage || "Erro Interno",
-      message: error.message,
+      statusCode: 500,
+      statusMessage: "Erro Interno",
+      message: "Erro ao processar a solicitação",
     });
   }
 });

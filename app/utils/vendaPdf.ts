@@ -399,6 +399,32 @@ export const generateVendaPdf = (venda: any) => {
     align: "right",
   });
 
+  // --- Terms & Notes ---
+  const obsText = venda.obs || orcamento?.obs;
+  if (obsText) {
+    const notesY = Math.max(
+      finalY + 35,
+      (doc as any).lastAutoTable.finalY + 20,
+    );
+    doc.setTextColor(colors.primary[0], colors.primary[1], colors.primary[2]);
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "bold");
+    doc.text("OBSERVAÇÕES E CONDIÇÕES:", 20, notesY);
+
+    doc.setDrawColor(colors.border[0], colors.border[1], colors.border[2]);
+    doc.line(20, notesY + 2, 40, notesY + 2);
+
+    doc.setTextColor(
+      colors.secondary[0],
+      colors.secondary[1],
+      colors.secondary[2],
+    );
+    doc.setFontSize(8);
+    doc.setFont("helvetica", "normal");
+    const splitObs = doc.splitTextToSize(obsText, pageWidth - 120);
+    doc.text(splitObs, 20, notesY + 8);
+  }
+
   // --- Signature Area ---
   const sigY = pageHeight - 50;
   doc.setDrawColor(colors.border[0], colors.border[1], colors.border[2]);
@@ -452,10 +478,7 @@ export const generateVendaPdf = (venda: any) => {
   const footerText = `Documento gerado em ${new Date().toLocaleString("pt-BR")} | Meu Concreto Intelligence Platform`;
   doc.text(footerText, pageWidth / 2, pageHeight - 6, { align: "center" });
 
-  // Save the PDF
-  doc.save(`Venda-${String(venda.id).padStart(5, "0")}.pdf`);
-
-  // Return as Base64 for compatibility
+  // Return as Base64
   const output = doc.output("datauristring");
   return output.split(",")[1];
 };

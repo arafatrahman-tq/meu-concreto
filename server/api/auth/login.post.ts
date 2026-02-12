@@ -59,17 +59,19 @@ export default defineEventHandler(async (event) => {
     const { senha, ...userWithoutPassword } = user as any;
 
     // Dados para a sessÃ£o
+    const maxAge = rememberMe ? 60 * 60 * 24 * 30 : 60 * 60 * 24; // 30 dias ou 1 dia
     const sessionData = JSON.stringify({
       id: user.id,
       idEmpresa: user.idEmpresa,
       nome: user.nome,
       email: user.email,
       admin: user.admin,
+      exp: Date.now() + maxAge * 1000,
     });
 
     // Definir cookie de sessÃ£o assinado
     setCookie(event, "auth_session", signData(sessionData), {
-      maxAge: rememberMe ? 60 * 60 * 24 * 30 : 60 * 60 * 24, // 30 dias se rememberMe, senÃ£o 1 dia
+      maxAge,
       httpOnly: true, // Protege contra XSS (impede que JavaScript acesse o cookie)
       secure: process.env.NODE_ENV === "production", // Intercepta MitM apenas em HTTPS em produÃ§Ã£o
       sameSite: "strict", // Previne CSRF

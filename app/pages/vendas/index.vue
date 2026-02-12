@@ -698,11 +698,12 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
 import { useFetch, useToast } from "#imports";
 import { useLogger } from "~/composables/useLogger";
 import { useWhatsApp } from "~/composables/useWhatsApp";
+import { useCurrencyFormat } from "~/composables/useValidation";
 import { useRoute } from "vue-router";
 import { generateVendaPdf } from "~/utils/vendaPdf";
 import {
@@ -733,6 +734,8 @@ const route = useRoute();
 const { user } = useAuth();
 const { info, error: logError } = useLogger();
 const { sendMessage: sendWS } = useWhatsApp();
+const { formatarCentavos } = useCurrencyFormat();
+const formatCurrency = formatarCentavos;
 const searchTerm = ref("");
 const itemsToShow = ref(20);
 const loading = ref(false);
@@ -754,6 +757,10 @@ onMounted(() => {
     if (venda) {
       openViewModal(venda);
     }
+  }
+
+  if (route.query.q) {
+    searchTerm.value = String(route.query.q);
   }
 });
 
@@ -1023,14 +1030,6 @@ const sendWhatsAppVenda = async (venda) => {
   } catch (e) {
     // useWhatsApp handles toast
   }
-};
-
-const formatCurrency = (value) => {
-  if (!value) return "R$ 0,00";
-  return new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  }).format(value / 100);
 };
 
 const formatDate = (date) => {

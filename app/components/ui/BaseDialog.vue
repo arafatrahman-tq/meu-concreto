@@ -22,7 +22,7 @@
               class="w-16 h-16 rounded-2xl mx-auto mb-6 flex items-center justify-center"
               :class="
                 variant === 'danger'
-                  ? 'bg-rose-500/10 text-rose-500 shadow-[0_0_20px_rgba(244,63,94,0.1)]'
+                  ? 'bg-danger/10 text-danger shadow-[0_0_20px_rgba(239,68,68,0.1)]'
                   : 'bg-brand/10 text-brand shadow-[0_0_20px_rgba(255,122,61,0.1)]'
               "
             >
@@ -46,8 +46,8 @@
               class="w-full py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all shadow-xl active:scale-95 outline-none"
               :class="
                 variant === 'danger'
-                  ? 'bg-rose-500 text-white shadow-rose-500/20 hover:bg-rose-600'
-                  : 'bg-brand text-white shadow-brand/20 hover:bg-brand-hover'
+                  ? 'bg-danger text-white shadow-danger/20 hover:brightness-110'
+                  : 'bg-brand text-white shadow-brand/20 hover:brightness-110'
               "
             >
               {{ confirmLabel }}
