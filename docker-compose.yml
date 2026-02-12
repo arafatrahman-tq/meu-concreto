@@ -6,7 +6,6 @@ version: "3.9"
 # ==========================================
 
 services:
-  # Serviço único principal - Coolify gerencia este serviço
   meu-concreto:
     build:
       context: .
@@ -14,87 +13,42 @@ services:
       target: release
     container_name: meu-concreto
     restart: unless-stopped
-
-    # Porta exposta (Coolify detecta automaticamente)
+    
     ports:
       - "${PORT:-3000}:3000"
-
-    # Variáveis de ambiente
+    
     environment:
-      # Configurações obrigatórias (Coolify preenche ou usa defaults)
       - NODE_ENV=${NODE_ENV:-production}
       - HOST=${HOST:-0.0.0.0}
       - PORT=${PORT:-3000}
       - DB_FILE_NAME=${DB_FILE_NAME:-/app/data/database.sqlite}
-
-      # Segurança (gerado automaticamente se não fornecido)
       - AUTH_SECRET=${AUTH_SECRET}
-
-      # APIs Externas (configurar no Coolify)
-      - NUVEMFISCAL_CLIENT_ID=${NUVEMFISCAL_CLIENT_ID:-}
-      - NUVEMFISCAL_CLIENT_SECRET=${NUVEMFISCAL_CLIENT_SECRET:-}
-      - ASAAS_API_KEY=${ASAAS_API_KEY:-}
-      - BLING_API_KEY=${BLING_API_KEY:-}
-      - WHATSAPP_API_KEY=${WHATSAPP_API_KEY:-}
-      - WHATSAPP_API_URL=${WHATSAPP_API_URL:-}
-      - NUXT_PUBLIC_API_BASE=${NUXT_PUBLIC_API_BASE:-}
-
-    # Volume persistente para o banco de dados
+      - NUVEMFISCAL_CLIENT_ID=${NUVEMFISCAL_CLIENT_ID}
+      - NUVEMFISCAL_CLIENT_SECRET=${NUVEMFISCAL_CLIENT_SECRET}
+      - ASAAS_API_KEY=${ASAAS_API_KEY}
+      - BLING_API_KEY=${BLING_API_KEY}
+      - WHATSAPP_API_KEY=${WHATSAPP_API_KEY}
+      - WHATSAPP_API_URL=${WHATSAPP_API_URL}
+      - NUXT_PUBLIC_API_BASE=${NUXT_PUBLIC_API_BASE}
+    
     volumes:
       - meu-concreto-data:/app/data
-
-    # Configuração de deploy
+    
     deploy:
       resources:
         limits:
-          cpus: "4"
-          memory: 4G
+          cpus: '1'
+          memory: 1G
         reservations:
-          cpus: "0.5"
+          cpus: '0.5'
           memory: 512M
-      restart_policy:
-        condition: on-failure
-        delay: 5s
-        max_attempts: 3
-        window: 120s
-
-    # Logging
+    
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
         max-file: "3"
-        labels: "service,environment"
 
-    # Comando com inicialização do banco
-    command: >
-      sh -c "
-        echo '🔧 Inicializando Meu Concreto OS...' &&
-        
-        # Gerar AUTH_SECRET se não existir
-        if [ -z \"\$AUTH_SECRET\" ]; then
-          echo '⚠️  AUTH_SECRET não definido. Gerando...' &&
-          export AUTH_SECRET=\$(openssl rand -base64 32 | tr -d '=+/') &&
-          echo \"✅ AUTH_SECRET gerado: \${AUTH_SECRET:0:10}...\" &&
-          echo '   💡 Salve esta chave nas variáveis de ambiente do Coolify!';
-        fi &&
-        
-        # Inicializar banco de dados se necessário
-        echo '🗄️  Verificando banco de dados...' &&
-        if [ ! -f \"\$DB_FILE_NAME\" ]; then
-          echo '📦 Banco não encontrado. Criando e executando seed...' &&
-          bunx drizzle-kit push &&
-          bun server/database/seed-minimal.ts;
-        else
-          echo '📝 Banco existente. Aplicando migrations...' &&
-          bunx drizzle-kit push;
-        fi &&
-        
-        echo '🚀 Iniciando aplicação...' &&
-        exec bun .output/server/index.mjs
-      "
-
-# Volume persistente
 volumes:
   meu-concreto-data:
     driver: local

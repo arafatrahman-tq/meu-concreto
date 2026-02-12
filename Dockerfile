@@ -11,7 +11,6 @@ RUN bun install --frozen-lockfile
 FROM base AS build
 COPY --from=install /app/node_modules ./node_modules
 COPY . .
-# Nuxt 4 build
 RUN bun run build
 
 # Imagem de produção
@@ -25,13 +24,11 @@ RUN groupadd -r appgroup && useradd -r -g appgroup appuser
 
 COPY --from=build /app/.output ./.output
 COPY --from=build /app/package.json ./package.json
-
-# Incluindo arquivos necessários para o seed minimal e push do schema
 COPY --from=build /app/server/database ./server/database
 COPY --from=build /app/drizzle.config.ts ./drizzle.config.ts
 COPY --from=build /app/node_modules ./node_modules
 
-# Copiar entrypoint
+# Copiar e configurar entrypoint
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
@@ -45,11 +42,8 @@ ENV PORT=3000
 ENV DB_FILE_NAME=/app/data/database.sqlite
 
 # Healthcheck
-HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-  CMD curl -f http://localhost:3000/api/health || curl -f http://localhost:3000/ || exit 1
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+  CMD curl -f http://localhost:3000/api/health || exit 1
 
-# Entrypoint para configurações iniciais
+# Usar entrypoint script
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
-
-# Comando padrão para iniciar o servidor Nuxt (output do nitro)
-CMD ["bun", ".output/server/index.mjs"]

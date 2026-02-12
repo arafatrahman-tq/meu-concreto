@@ -15,7 +15,16 @@ O Coolify é a forma mais simples de fazer deploy desta aplicação. Ele gerenci
    - **Build Pack**: `Docker Compose`
    - O Coolify detectará automaticamente o `docker-compose.yml`
 
-3. **Variáveis de Ambiente (IMPORTANTE!)**
+3. **⚠️ Configuração Importante - NODE_ENV**
+   
+   O Coolify pode mostrar um warning sobre `NODE_ENV=production`. **Ignore este warning** ou configure:
+   - Vá em "Environment Variables" 
+   - Encontre `NODE_ENV`
+   - **Desmarque** a opção "Available at Buildtime" (deixe apenas "Available at Runtime")
+   
+   Isso é necessário porque usamos multi-stage build no Dockerfile.
+
+4. **Variáveis de Ambiente (IMPORTANTE!)
 
    Configure estas variáveis no painel do Coolify:
 
