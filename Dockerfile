@@ -1,5 +1,5 @@
 # Usar a imagem oficial do Bun (versão completa para build)
-FROM oven/bun:1.2.4 AS base
+FROM oven/bun:latest AS base
 WORKDIR /app
 
 # Instalar dependências (cacheable)
@@ -12,7 +12,7 @@ RUN bun --bun nuxt prepare
 RUN bun run build
 
 # Imagem final (slim para produção)
-FROM oven/bun:1.2.4-slim AS release
+FROM oven/bun:1.3.9-slim AS release
 WORKDIR /app
 
 # Instalar utilitários necessários
