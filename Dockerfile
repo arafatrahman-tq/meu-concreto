@@ -1,5 +1,5 @@
-# Usar a imagem oficial do Bun
-FROM oven/bun:latest AS base
+# Usar a imagem oficial do Bun (versão completa para build)
+FROM oven/bun:1.2.4 AS base
 WORKDIR /app
 
 # Instalar dependências (cacheable)
@@ -11,17 +11,19 @@ COPY . .
 RUN bun --bun nuxt prepare
 RUN bun run build
 
-# Imagem final mínima
+# Imagem final (slim para produção)
 FROM oven/bun:1.2.4-slim AS release
 WORKDIR /app
 
-# Instalar curl para healthcheck e openssl
+# Instalar utilitários necessários
 RUN apt-get update && apt-get install -y curl openssl && rm -rf /var/lib/apt/lists/*
 
-# Copiar apenas o necessário da build
+# Copiar artefatos da build
 COPY --from=base /app/.output ./.output
+COPY --from=base /app/node_modules ./node_modules
 COPY --from=base /app/package.json ./package.json
 COPY --from=base /app/server/database ./server/database
+COPY --from=base /app/shared ./shared
 COPY --from=base /app/drizzle.config.ts ./drizzle.config.ts
 COPY --from=base /app/docker-entrypoint.sh /usr/local/bin/
 
@@ -33,7 +35,7 @@ ENV HOST=0.0.0.0
 ENV PORT=3000
 ENV DB_FILE_NAME=/app/data/database.sqlite
 
-# Criar pasta de dados
+# Criar pasta de dados para o SQLite persistente
 RUN mkdir -p /app/data
 
 EXPOSE 3000
