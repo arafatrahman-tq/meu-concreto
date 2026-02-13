@@ -4,7 +4,7 @@ WORKDIR /app
 
 # Instalar dependências
 FROM base AS install
-COPY package.json bun.lockb* ./
+COPY package.json bun.lock* ./
 RUN bun install --frozen-lockfile
 
 # Build da aplicação
@@ -24,9 +24,17 @@ ARG WHATSAPP_API_URL
 ARG NUXT_PUBLIC_API_BASE
 ARG SERVICE_URL_MEU_CONCRETO
 ARG SERVICE_FQDN_MEU_CONCRETO
+ARG COOLIFY_URL
+ARG COOLIFY_FQDN
+ARG COOLIFY_BRANCH
+ARG COOLIFY_RESOURCE_UUID
 
 COPY --from=install /app/node_modules ./node_modules
 COPY . .
+
+# Gerar tipos do Nuxt e preparar build
+RUN bun --bun nuxt prepare
+
 RUN bun run build
 
 # Imagem de produção
@@ -45,7 +53,7 @@ COPY --from=build /app/drizzle.config.ts ./drizzle.config.ts
 COPY --from=build /app/node_modules ./node_modules
 
 # Copiar e configurar entrypoint
-COPY docker-entrypoint.sh /usr/local/bin/
+COPY --from=build /app/docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 # Criar diretório para o banco de dados e ajustar permissões
