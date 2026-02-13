@@ -1,26 +1,29 @@
 #!/bin/sh
 set -e
 
-echo "🔧 Inicializando Meu Concreto OS..."
+echo "🚀 Iniciando Meu Concreto OS..."
 
-# Gerar AUTH_SECRET automaticamente se não estiver definido
+# Gerar AUTH_SECRET se necessário
 if [ -z "$AUTH_SECRET" ]; then
-    echo "⚠️  AUTH_SECRET não definido. Gerando..."
-    export AUTH_SECRET=$(openssl rand -base64 32 | tr -d '=+/')
-    echo "✅ AUTH_SECRET gerado: ${AUTH_SECRET:0:10}..."
-    echo "   💡 Salve esta chave nas variáveis de ambiente!"
+    echo "🔑 Gerando AUTH_SECRET temporário..."
+    export AUTH_SECRET=$(openssl rand -base64 32)
 fi
 
-# Inicializar banco de dados se necessário
-echo "🗄️  Verificando banco de dados..."
-if [ ! -f "$DB_FILE_NAME" ]; then
-    echo "📦 Banco não encontrado. Criando..."
-    bunx drizzle-kit push
-    bun server/database/seed-minimal.ts
-else
-    echo "📝 Banco existente. Aplicando migrations..."
-    bunx drizzle-kit push
+# Verificar se o banco já existe antes de rodar o push
+BANCO_EXISTE=0
+if [ -f "$DB_FILE_NAME" ]; then
+    BANCO_EXISTE=1
 fi
 
-echo "🚀 Iniciando aplicação..."
+# Inicializar/Atualizar Banco de Dados
+echo "🗄️  Configurando banco de dados em $DB_FILE_NAME..."
+bunx drizzle-kit push || echo "⚠️  Aviso: Falha ao sincronizar schema, continuando..."
+
+# Seed inicial apenas se o banco era novo
+if [ "$BANCO_EXISTE" -eq 0 ]; then
+    echo "🌱 Executando seed inicial..."
+    bun server/database/seed-minimal.ts || echo "⚠️  Falha no seed, continuando..."
+fi
+
+echo "✅ Pronto! Iniciando servidor..."
 exec bun .output/server/index.mjs

@@ -1,22 +1,19 @@
-version: '3.9'
-
 services:
-  meu-concreto:
+  app:
     build:
       context: .
       dockerfile: Dockerfile
-      target: release
-    container_name: meu-concreto
+    container_name: meu-concreto-app
     restart: unless-stopped
-
     ports:
-      - '${PORT:-3000}:3000'
-
+      - '3000:3000'
+    volumes:
+      - data:/app/data
     environment:
-      - NODE_ENV=${NODE_ENV:-production}
-      - HOST=${HOST:-0.0.0.0}
-      - PORT=${PORT:-3000}
-      - DB_FILE_NAME=${DB_FILE_NAME:-/app/data/database.sqlite}
+      - NODE_ENV=production
+      - HOST=0.0.0.0
+      - PORT=3000
+      - DB_FILE_NAME=/app/data/database.sqlite
       - AUTH_SECRET=${AUTH_SECRET}
       - NUVEMFISCAL_CLIENT_ID=${NUVEMFISCAL_CLIENT_ID}
       - NUVEMFISCAL_CLIENT_SECRET=${NUVEMFISCAL_CLIENT_SECRET}
@@ -25,16 +22,13 @@ services:
       - WHATSAPP_API_KEY=${WHATSAPP_API_KEY}
       - WHATSAPP_API_URL=${WHATSAPP_API_URL}
       - NUXT_PUBLIC_API_BASE=${NUXT_PUBLIC_API_BASE}
-
-    volumes:
-      - meu-concreto-data:/app/data
-
-    logging:
-      driver: 'json-file'
-      options:
-        max-size: '10m'
-        max-file: '3'
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:3000/api/health']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
 
 volumes:
-  meu-concreto-data:
+  data:
     driver: local
