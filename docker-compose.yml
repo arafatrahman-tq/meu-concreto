@@ -1,9 +1,4 @@
-version: "3.9"
-
-# ==========================================
-# DOCKER COMPOSE - MEU CONCRETO OS
-# Otimizado para Coolify e deploy em produção
-# ==========================================
+version: '3.9'
 
 services:
   meu-concreto:
@@ -13,10 +8,10 @@ services:
       target: release
     container_name: meu-concreto
     restart: unless-stopped
-    
+
     ports:
-      - "${PORT:-3000}:3000"
-    
+      - '${PORT:-3000}:3000'
+
     environment:
       - NODE_ENV=${NODE_ENV:-production}
       - HOST=${HOST:-0.0.0.0}
@@ -30,24 +25,15 @@ services:
       - WHATSAPP_API_KEY=${WHATSAPP_API_KEY}
       - WHATSAPP_API_URL=${WHATSAPP_API_URL}
       - NUXT_PUBLIC_API_BASE=${NUXT_PUBLIC_API_BASE}
-    
+
     volumes:
       - meu-concreto-data:/app/data
-    
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 1G
-        reservations:
-          cpus: '0.5'
-          memory: 512M
-    
+
     logging:
-      driver: "json-file"
+      driver: 'json-file'
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: '10m'
+        max-file: '3'
 
 volumes:
   meu-concreto-data:
