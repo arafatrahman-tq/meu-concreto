@@ -15,14 +15,24 @@
         </p>
       </div>
 
-      <div v-if="user?.admin === 1" class="flex items-center gap-3">
+      <div
+        v-if="user?.admin === 1"
+        class="flex items-center gap-3"
+      >
         <button
-          @click="saveConfig"
           :disabled="saving"
           class="bg-[#003641] text-white px-8 py-4 rounded-2xl text-xs font-black uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-3 shadow-xl shadow-[#003641]/20 disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed"
+          @click="saveConfig"
         >
-          <Save size="20" v-if="!saving" />
-          <RefreshCw v-else size="20" class="animate-spin" />
+          <Save
+            v-if="!saving"
+            size="20"
+          />
+          <RefreshCw
+            v-else
+            size="20"
+            class="animate-spin"
+          />
           {{ saving ? "Processando" : "Salvar Alterações" }}
         </button>
       </div>
@@ -47,20 +57,26 @@
       </div>
     </div>
 
-    <div v-if="pending" class="flex justify-center py-20">
+    <div
+      v-if="pending"
+      class="flex justify-center py-20"
+    >
       <div
         class="w-10 h-10 border-4 border-brand/20 border-t-brand rounded-full animate-spin"
-      ></div>
+      />
     </div>
 
-    <div v-else class="grid grid-cols-1 xl:grid-cols-12 gap-8">
+    <div
+      v-else
+      class="grid grid-cols-1 xl:grid-cols-12 gap-8"
+    >
       <!-- Main Content (8 cols) -->
       <div class="xl:col-span-8 space-y-8">
         <!-- Credenciais -->
         <div class="space-y-4">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
-              <div class="w-1.5 h-4 bg-[#7db61c] rounded-full"></div>
+              <div class="w-1.5 h-4 bg-[#7db61c] rounded-full" />
               <h3
                 class="text-[10px] font-black uppercase tracking-[0.2em] text-primary"
               >
@@ -76,7 +92,7 @@
                   'w-2 h-2 rounded-full animate-pulse',
                   config.ativo ? 'bg-[#7db61c]' : 'bg-slate-300',
                 ]"
-              ></div>
+              />
               <span
                 class="text-[8px] font-black uppercase tracking-widest text-secondary opacity-60"
               >
@@ -96,8 +112,7 @@
               <div class="space-y-2">
                 <label
                   class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2"
-                  >Client ID</label
-                >
+                >Client ID</label>
                 <BaseInput
                   v-model="config.clientId"
                   :disabled="user?.admin !== 1"
@@ -108,8 +123,7 @@
               <div class="space-y-2">
                 <label
                   class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2"
-                  >Client Secret (Opcional)</label
-                >
+                >Client Secret (Opcional)</label>
                 <BaseInput
                   v-model="config.clientSecret"
                   type="password"
@@ -124,8 +138,7 @@
               <div class="space-y-2">
                 <label
                   class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2"
-                  >Ambiente</label
-                >
+                >Ambiente</label>
                 <BaseSelect
                   v-model="config.environment"
                   :disabled="user?.admin !== 1"
@@ -142,8 +155,7 @@
               <div class="flex items-center gap-2 ml-2">
                 <label
                   class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40"
-                  >Chave Pix (Recebedora)</label
-                >
+                >Chave Pix (Recebedora)</label>
                 <BaseTooltip
                   text="A chave Pix cadastrada no Sicoob que receberá os pagamentos."
                 >
@@ -165,8 +177,7 @@
               <div class="space-y-2">
                 <label
                   class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2"
-                  >Conta Corrente</label
-                >
+                >Conta Corrente</label>
                 <BaseInput
                   v-model="config.contaCorrente"
                   :disabled="user?.admin !== 1"
@@ -176,8 +187,7 @@
               <div class="space-y-2">
                 <label
                   class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2"
-                  >Cooperativa</label
-                >
+                >Cooperativa</label>
                 <BaseInput
                   v-model="config.cooperativa"
                   :disabled="user?.admin !== 1"
@@ -219,7 +229,7 @@
         <!-- Certificados MTLS -->
         <div class="space-y-4">
           <div class="flex items-center gap-2">
-            <div class="w-1.5 h-4 bg-primary rounded-full"></div>
+            <div class="w-1.5 h-4 bg-primary rounded-full" />
             <h3
               class="text-[10px] font-black uppercase tracking-[0.2em] text-primary"
             >
@@ -234,8 +244,7 @@
               <div class="flex items-center gap-2 ml-2">
                 <label
                   class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40"
-                  >Certificado Público (.pem)</label
-                >
+                >Certificado Público (.pem)</label>
                 <BaseTooltip
                   text="Cole aqui o conteúdo do seu certificado .pem fornecido pelo Sicoob."
                 >
@@ -251,15 +260,14 @@
                 class="w-full bg-primary/2 border border-border rounded-2xl py-4 px-5 text-xs font-mono text-primary placeholder:text-secondary/20 focus:ring-2 focus:ring-[#7db61c]/20 focus:border-[#7db61c]/30 transition-all outline-none resize-none"
                 rows="5"
                 placeholder="-----BEGIN CERTIFICATE----- ... -----END CERTIFICATE-----"
-              ></textarea>
+              />
             </div>
 
             <div class="space-y-2">
               <div class="flex items-center gap-2 ml-2">
                 <label
                   class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40"
-                  >Chave Privada (.key)</label
-                >
+                >Chave Privada (.key)</label>
                 <BaseTooltip
                   text="Cole aqui o conteúdo da sua chave privada .key. Mantenha isso em sigilo total."
                 >
@@ -275,7 +283,7 @@
                 class="w-full bg-primary/2 border border-border rounded-2xl py-4 px-5 text-xs font-mono text-primary placeholder:text-secondary/20 focus:ring-2 focus:ring-[#7db61c]/20 focus:border-[#7db61c]/30 transition-all outline-none resize-none"
                 rows="5"
                 placeholder="-----BEGIN PRIVATE KEY----- ... -----END PRIVATE KEY-----"
-              ></textarea>
+              />
             </div>
           </div>
         </div>
@@ -287,7 +295,10 @@
           <h3
             class="text-[10px] font-black text-secondary uppercase tracking-[0.25em] mb-8 opacity-40 flex items-center gap-2"
           >
-            <Zap size="14" class="text-[#7db61c]" />
+            <Zap
+              size="14"
+              class="text-[#7db61c]"
+            />
             Benefícios Sicoob
           </h3>
           <ul class="space-y-6">
@@ -365,10 +376,6 @@
 </template>
 
 <script setup>
-definePageMeta({
-  layout: "default",
-  middleware: ["admin"],
-});
 import {
   Building2,
   Settings,
@@ -381,64 +388,71 @@ import {
   Activity,
   UserCircle,
   ShieldAlert,
-} from "lucide-vue-next";
-import { ref } from "vue";
+} from 'lucide-vue-next'
+import { ref } from 'vue'
 
-const { user } = useAuth();
-const { add: addToast } = useToast();
+definePageMeta({
+  layout: 'default',
+  middleware: ['admin'],
+})
+
+const { user } = useAuth()
+const { add: addToast } = useToast()
 
 const config = ref({
-  clientId: "",
-  clientSecret: "",
-  certificate: "",
-  privateKey: "",
-  environment: "sandbox",
-  chavePix: "",
-  contaCorrente: "",
-  cooperativa: "",
+  clientId: '',
+  clientSecret: '',
+  certificate: '',
+  privateKey: '',
+  environment: 'sandbox',
+  chavePix: '',
+  contaCorrente: '',
+  cooperativa: '',
   ativo: false,
-});
+})
 
-const saving = ref(false);
+const saving = ref(false)
 
-const { data, pending } = await useFetch("/api/configuracoes/sicoob");
+const { data, pending } = await useFetch('/api/configuracoes/sicoob')
 if (data.value) {
-  config.value = { ...data.value };
+  config.value = { ...data.value }
 }
 
 const saveConfig = async () => {
   if (
-    config.value.ativo &&
-    (!config.value.clientId ||
-      !config.value.certificate ||
-      !config.value.privateKey)
+    config.value.ativo
+    && (!config.value.clientId
+      || !config.value.certificate
+      || !config.value.privateKey)
   ) {
     return addToast({
-      title: "Atenção",
-      description: "Preencha as credenciais e certificados para ativar.",
-      type: "error",
-    });
+      title: 'Atenção',
+      description: 'Preencha as credenciais e certificados para ativar.',
+      type: 'error',
+    })
   }
 
-  saving.value = true;
+  saving.value = true
   try {
-    await $fetch("/api/configuracoes/sicoob", {
-      method: "PUT",
+    await $fetch('/api/configuracoes/sicoob', {
+      method: 'PUT',
       body: config.value,
-    });
+    })
     addToast({
-      title: "Sucesso",
-      description: "Configurações do Sicoob atualizadas.",
-      type: "success",
-    });
-  } catch (error) {
-    addToast({
-      title: "Erro",
-      description: error.data?.message || "Erro ao processar.",
-      type: "error",
-    });
-  } finally {
-    saving.value = false;
+      title: 'Sucesso',
+      description: 'Configurações do Sicoob atualizadas.',
+      type: 'success',
+    })
   }
-};
+  catch (error) {
+    addToast({
+      title: 'Erro',
+      description: error.data?.message || 'Erro ao processar.',
+      type: 'error',
+    })
+  }
+  finally {
+    saving.value = false
+  }
+}
 </script>

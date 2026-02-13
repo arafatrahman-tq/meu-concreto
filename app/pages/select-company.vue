@@ -4,7 +4,11 @@
   >
     <!-- Background Decor -->
     <div class="absolute inset-0 opacity-[0.03] pointer-events-none">
-      <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+      <svg
+        width="100%"
+        height="100%"
+        xmlns="http://www.w3.org/2000/svg"
+      >
         <defs>
           <pattern
             id="grid"
@@ -20,7 +24,11 @@
             />
           </pattern>
         </defs>
-        <rect width="100%" height="100%" fill="url(#grid)" />
+        <rect
+          width="100%"
+          height="100%"
+          fill="url(#grid)"
+        />
       </svg>
     </div>
 
@@ -34,9 +42,21 @@
             fill="currentColor"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <circle cx="155" cy="245" r="45" />
-            <circle cx="265" cy="245" r="45" />
-            <circle cx="435" cy="245" r="45" />
+            <circle
+              cx="155"
+              cy="245"
+              r="45"
+            />
+            <circle
+              cx="265"
+              cy="245"
+              r="45"
+            />
+            <circle
+              cx="435"
+              cy="245"
+              r="45"
+            />
             <path
               d="M40 170h430v60H40zM350 70h80c40 0 45 40 45 40v60H350V70z M440 90h25v45h-25z"
             />
@@ -62,9 +82,9 @@
         <button
           v-for="emp in allEmpresas"
           :key="emp.id"
-          @click="selectCompany(emp.id)"
           :disabled="loading"
           class="group bg-surface border-2 border-primary/5 p-6 rounded-2xl flex items-center justify-between hover:border-brand hover:shadow-xl hover:shadow-brand/5 transition-all text-left"
+          @click="selectCompany(emp.id)"
         >
           <div class="flex items-center gap-5">
             <div
@@ -80,8 +100,7 @@
                 <span
                   v-if="emp.filial"
                   class="text-brand opacity-60 ml-1 text-sm font-black"
-                  >- {{ emp.filial }}</span
-                >
+                >- {{ emp.filial }}</span>
               </h3>
               <p
                 class="text-[10px] text-secondary font-bold uppercase tracking-widest mt-1 opacity-60"
@@ -107,8 +126,8 @@
 
       <div class="mt-12 text-center">
         <button
-          @click="logout"
           class="text-[10px] font-black uppercase tracking-widest text-danger hover:brightness-110 transition-all"
+          @click="logout"
         >
           Sair do Sistema
         </button>
@@ -118,58 +137,60 @@
 </template>
 
 <script setup>
-import { Building2, ChevronRight } from "lucide-vue-next";
-import { useAuth } from "~/composables/useAuth";
+import { Building2, ChevronRight } from 'lucide-vue-next'
+import { useAuth } from '~/composables/useAuth'
 
 definePageMeta({
   layout: false,
-});
+})
 
-const { user, logout, fetchUser } = useAuth();
-const { add: addToast } = useToast();
-const loading = ref(false);
+const { user, logout, fetchUser } = useAuth()
+const { add: addToast } = useToast()
+const loading = ref(false)
 
 const allEmpresas = computed(() => {
-  if (!user.value) return [];
+  if (!user.value) return []
 
-  const main = { ...user.value.empresa };
-  const others = user.value.acessoEmpresas?.map((a) => a.empresa) || [];
+  const main = { ...user.value.empresa }
+  const others = user.value.acessoEmpresas?.map(a => a.empresa) || []
 
   // Unificar e remover duplicatas caso existam
-  const merged = [main, ...others].filter((e) => e && e.id);
-  return Array.from(new Map(merged.map((item) => [item.id, item])).values());
-});
+  const merged = [main, ...others].filter(e => e && e.id)
+  return Array.from(new Map(merged.map(item => [item.id, item])).values())
+})
 
 async function selectCompany(id) {
-  loading.value = true;
+  loading.value = true
   try {
-    const result = await $fetch("/api/auth/switch-company", {
-      method: "POST",
+    const result = await $fetch('/api/auth/switch-company', {
+      method: 'POST',
       body: { idEmpresa: id },
-    });
+    })
 
     if (result.success) {
       // Atualizar o estado global do usuário para refletir a nova idEmpresa na sessão
-      await fetchUser(true);
+      await fetchUser(true)
 
       addToast({
-        title: "Unidade Alterada",
-        description: "Você trocou de unidade com sucesso.",
-        type: "success",
-      });
+        title: 'Unidade Alterada',
+        description: 'Você trocou de unidade com sucesso.',
+        type: 'success',
+      })
 
       // Redirecionar para o dashboard
-      navigateTo("/");
+      navigateTo('/')
     }
-  } catch (error) {
-    console.error("Erro ao trocar empresa:", error);
+  }
+  catch (error) {
+    console.error('Erro ao trocar empresa:', error)
     addToast({
-      title: "Erro",
-      description: "Não foi possível trocar de unidade.",
-      type: "danger",
-    });
-  } finally {
-    loading.value = false;
+      title: 'Erro',
+      description: 'Não foi possível trocar de unidade.',
+      type: 'danger',
+    })
+  }
+  finally {
+    loading.value = false
   }
 }
 </script>

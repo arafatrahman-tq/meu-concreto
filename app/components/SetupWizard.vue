@@ -15,7 +15,7 @@
       <div
         class="absolute inset-0 bg-primary/20 backdrop-blur-md"
         @click="closeModal"
-      ></div>
+      />
 
       <!-- Modal Content -->
       <div
@@ -27,14 +27,18 @@
             v-for="i in 40"
             :key="i"
             class="w-8 h-full skew-x-[-45deg] bg-brand mx-2"
-          ></div>
+          />
         </div>
 
         <!-- Background Pattern (Industrial Grid) -->
         <div
           class="absolute inset-x-0 top-0 h-64 opacity-5 pointer-events-none overflow-hidden"
         >
-          <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+          <svg
+            width="100%"
+            height="100%"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <defs>
               <pattern
                 id="grid"
@@ -50,7 +54,11 @@
                 />
               </pattern>
             </defs>
-            <rect width="100%" height="100%" fill="url(#grid)" />
+            <rect
+              width="100%"
+              height="100%"
+              fill="url(#grid)"
+            />
           </svg>
         </div>
 
@@ -61,7 +69,7 @@
           <!-- Corner Accent -->
           <div
             class="absolute top-0 right-0 w-32 h-32 bg-brand/5 rotate-45 translate-x-16 -translate-y-16"
-          ></div>
+          />
 
           <div
             class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6"
@@ -72,7 +80,10 @@
                   class="w-12 h-12 flex items-center justify-center bg-brand text-white shadow-xl shadow-brand/20 relative"
                   style="clip-path: polygon(25% 0%, 100% 0%, 75% 100%, 0% 100%)"
                 >
-                  <Zap size="24" class="fill-current -ml-1" />
+                  <Zap
+                    size="24"
+                    class="fill-current -ml-1"
+                  />
                 </div>
                 <div>
                   <h2
@@ -83,11 +94,10 @@
                   <div class="flex items-center gap-2 mt-1">
                     <span
                       class="w-2 h-2 rounded-full bg-brand animate-pulse"
-                    ></span>
+                    />
                     <span
                       class="text-[10px] font-black uppercase tracking-[0.2em] text-brand"
-                      >Industrial Strength Operations</span
-                    >
+                    >Industrial Strength Operations</span>
                   </div>
                 </div>
               </div>
@@ -98,13 +108,11 @@
                 <div class="text-right">
                   <span
                     class="block text-[9px] font-black uppercase text-secondary/40 tracking-widest"
-                    >Readiness Level</span
-                  >
+                  >Readiness Level</span>
                   <span
                     class="text-5xl font-black text-primary tracking-tighter tabular-nums"
-                    >{{ status.percentage
-                    }}<span class="text-xl text-brand">%</span></span
-                  >
+                  >{{ status.percentage
+                  }}<span class="text-xl text-brand">%</span></span>
                 </div>
                 <div
                   class="w-1.5 h-16 bg-primary/5 rounded-full overflow-hidden border border-border flex flex-col justify-end"
@@ -112,7 +120,7 @@
                   <div
                     class="w-full bg-brand transition-all duration-1000 ease-out"
                     :style="{ height: `${status.percentage}%` }"
-                  ></div>
+                  />
                 </div>
               </div>
             </div>
@@ -127,13 +135,13 @@
             <div
               v-for="(step, index) in status.steps"
               :key="index"
-              @click="handleNavigate(step.path)"
               class="group/step relative p-6 bg-surface border-2 transition-all cursor-pointer flex flex-col gap-4 shadow-sm"
               :class="[
                 step.status === 'completed'
                   ? 'border-emerald-500/20 grayscale hover:grayscale-0 opacity-70 hover:opacity-100'
                   : 'border-primary/5 hover:border-brand/40 hover:-translate-y-1 hover:shadow-xl hover:shadow-brand/5',
               ]"
+              @click="handleNavigate(step.path)"
             >
               <!-- Index Number Background -->
               <span
@@ -155,7 +163,10 @@
                   size="18"
                   stroke-width="3"
                 />
-                <span v-else class="text-sm">0{{ index + 1 }}</span>
+                <span
+                  v-else
+                  class="text-sm"
+                >0{{ index + 1 }}</span>
               </div>
 
               <div class="flex-1 space-y-2 relative">
@@ -206,28 +217,31 @@
             />
 
             <button
-              @click="refreshStatus"
               class="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.15em] text-secondary/40 hover:text-brand transition-all"
+              @click="refreshStatus"
             >
-              <RefreshCw size="14" :class="{ 'animate-spin': loading }" />
+              <RefreshCw
+                size="14"
+                :class="{ 'animate-spin': loading }"
+              />
               SYNC STATUS
             </button>
           </div>
 
           <button
-            @click="closeModal"
             class="group w-full md:w-auto overflow-hidden relative"
+            @click="closeModal"
           >
             <div
               class="absolute inset-0 bg-brand translate-y-full group-hover:translate-y-0 transition-transform duration-300"
-            ></div>
+            />
             <div
               class="relative px-12 py-4 bg-primary text-background text-[11px] font-black uppercase tracking-[0.2em] transition-all group-hover:text-white border-2 border-primary group-hover:border-brand flex items-center justify-center gap-3"
             >
               Continuar Depois
               <div
                 class="w-1.5 h-1.5 rounded-full bg-brand group-hover:bg-white transition-colors"
-              ></div>
+              />
             </div>
           </button>
         </div>
@@ -237,76 +251,78 @@
 </template>
 
 <script setup>
-import { Zap, Check, ArrowUpRight, RefreshCw } from "lucide-vue-next";
-import { ref, onMounted, watch } from "vue";
-import { navigateTo, useAuth } from "#imports";
+import { Zap, Check, ArrowUpRight, RefreshCw } from 'lucide-vue-next'
+import { ref, onMounted, watch } from 'vue'
+import { navigateTo, useAuth } from '#imports'
 
 const props = defineProps({
   idEmpresa: {
     type: [Number, String],
     default: null,
   },
-});
+})
 
-const { user } = useAuth();
-const status = ref(null);
-const loading = ref(false);
-const isVisible = ref(false);
-const dontShowAgain = ref(false);
+const { user } = useAuth()
+const status = ref(null)
+const loading = ref(false)
+const isVisible = ref(false)
+const dontShowAgain = ref(false)
 
 // Estado global do Nuxt para controlar se já foi mostrado nesta sessão
-const hasShownInSession = useState("wizard_shown_session", () => false);
+const hasShownInSession = useState('wizard_shown_session', () => false)
 
 const fetchStatus = async () => {
-  if (!user.value || user.value.admin !== 1) return;
+  if (!user.value || user.value.admin !== 1) return
 
-  loading.value = true;
+  loading.value = true
   try {
-    const data = await $fetch("/api/dashboard/setup-status", {
+    const data = await $fetch('/api/dashboard/setup-status', {
       query: { idEmpresa: props.idEmpresa },
-    });
-    status.value = data;
+    })
+    status.value = data
 
     // Só mostra se:
     // 1. Não está completo (< 100%)
     // 2. Não houver flag no localStorage (Não mostrar novamente)
     // 3. Ainda não foi mostrado nesta sessão (evitar abrir toda vez que volta pro dashboard)
-    const hidden = localStorage.getItem(`hide_wizard_${user.value.id}`);
+    const hidden = localStorage.getItem(`hide_wizard_${user.value.id}`)
     if (status.value?.percentage < 100 && !hidden && !hasShownInSession.value) {
-      isVisible.value = true;
-      hasShownInSession.value = true;
+      isVisible.value = true
+      hasShownInSession.value = true
     }
-  } catch (err) {
-    console.error("Erro ao carregar status de configuração:", err);
-  } finally {
-    loading.value = false;
   }
-};
+  catch (err) {
+    console.error('Erro ao carregar status de configuração:', err)
+  }
+  finally {
+    loading.value = false
+  }
+}
 
 const closeModal = () => {
   if (dontShowAgain.value && user.value) {
-    localStorage.setItem(`hide_wizard_${user.value.id}`, "true");
+    localStorage.setItem(`hide_wizard_${user.value.id}`, 'true')
   }
-  isVisible.value = false;
-};
+  isVisible.value = false
+}
 
 const handleNavigate = (path) => {
-  isVisible.value = false;
-  navigateTo(path);
-};
+  isVisible.value = false
+  navigateTo(path)
+}
 
-const refreshStatus = () => fetchStatus();
+const refreshStatus = () => fetchStatus()
 
 watch(
   () => props.idEmpresa,
   () => {
-    fetchStatus();
+    fetchStatus()
   },
-);
+)
 
 onMounted(() => {
-  fetchStatus();
-});
+  fetchStatus()
+})
 </script>
 
 <style scoped>

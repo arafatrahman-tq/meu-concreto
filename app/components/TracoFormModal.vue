@@ -5,7 +5,10 @@
     subtitle="Configuração de dosagem para produção"
     size="lg"
   >
-    <form @submit.prevent="handleSubmit" class="space-y-8 py-2">
+    <form
+      class="space-y-8 py-2"
+      @submit.prevent="handleSubmit"
+    >
       <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
         <div class="space-y-6">
           <h4
@@ -17,8 +20,7 @@
           <div>
             <label
               class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 mb-2 block"
-              >Nome do Traço <span class="text-brand">*</span></label
-            >
+            >Nome do Traço <span class="text-brand">*</span></label>
             <BaseInput
               v-model="form.nome"
               placeholder="EX: FCK 25 SLUMP 12..."
@@ -29,8 +31,7 @@
           <div>
             <label
               class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 mb-2 block"
-              >Produto Vinculado <span class="text-brand">*</span></label
-            >
+            >Produto Vinculado <span class="text-brand">*</span></label>
             <BaseSelect
               v-model="form.idProduto"
               :options="produtosOptions"
@@ -42,8 +43,7 @@
           <div>
             <label
               class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 mb-2 block"
-              >Descrição Técnica</label
-            >
+            >Descrição Técnica</label>
             <BaseInput
               v-model="form.descricao"
               placeholder="DETALHES DA APLICAÇÃO OU COMPOSIÇÃO..."
@@ -57,8 +57,7 @@
             <BaseToggle v-model="form.ativo" />
             <span
               class="text-xs font-black uppercase tracking-widest text-primary"
-              >Traço Ativo</span
-            >
+            >Traço Ativo</span>
           </div>
         </div>
 
@@ -71,8 +70,8 @@
             </h4>
             <button
               type="button"
-              @click="addItem"
               class="p-2 bg-brand/10 text-brand rounded-xl hover:bg-brand/20 transition-all"
+              @click="addItem"
             >
               <Plus size="18" />
             </button>
@@ -102,9 +101,9 @@
                 />
               </div>
               <button
-                @click="removeItem(index)"
                 type="button"
                 class="p-2 text-secondary opacity-20 group-hover:opacity-100 hover:text-red-500 transition-all"
+                @click="removeItem(index)"
               >
                 <X size="20" />
               </button>
@@ -131,8 +130,8 @@
       <div class="flex justify-end gap-3 pt-6 border-t border-border">
         <button
           type="button"
-          @click="isOpen = false"
           class="px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest text-secondary hover:bg-primary/3 border border-border transition-all outline-none"
+          @click="isOpen = false"
         >
           Cancelar
         </button>
@@ -151,38 +150,38 @@
 </template>
 
 <script setup>
-import { ref, reactive, watch, computed } from "vue";
-import { Plus, X, FileText, FlaskConical } from "lucide-vue-next";
+import { ref, reactive, watch, computed } from 'vue'
+import { Plus, X, FileText, FlaskConical } from 'lucide-vue-next'
 
 const props = defineProps({
   traco: Object,
-});
+})
 
-const emit = defineEmits(["close", "saved"]);
+const emit = defineEmits(['close', 'saved'])
 
-const isOpen = ref(true);
-const loading = ref(false);
+const isOpen = ref(true)
+const loading = ref(false)
 
-const { data: produtos } = useFetch("/api/produtos");
-const { data: insumos } = useFetch("/api/insumos");
+const { data: produtos } = useFetch('/api/produtos')
+const { data: insumos } = useFetch('/api/insumos')
 
 const produtosOptions = computed(() => {
-  if (!produtos.value) return [];
-  return produtos.value.map((p) => ({ label: p.produto, value: p.id }));
-});
+  if (!produtos.value) return []
+  return produtos.value.map(p => ({ label: p.produto, value: p.id }))
+})
 
 const insumosOptions = computed(() => {
-  if (!insumos.value) return [];
-  return insumos.value.map((i) => ({ label: i.nome, value: i.id }));
-});
+  if (!insumos.value) return []
+  return insumos.value.map(i => ({ label: i.nome, value: i.id }))
+})
 
 const form = reactive({
-  nome: "",
+  nome: '',
   idProduto: null,
-  descricao: "",
+  descricao: '',
   ativo: true,
   itens: [],
-});
+})
 
 watch(
   () => props.traco,
@@ -191,57 +190,61 @@ watch(
       Object.assign(form, {
         ...val,
         itens:
-          val.itens?.map((i) => ({
+          val.itens?.map(i => ({
             idInsumo: i.idInsumo,
             quantidade: i.quantidade,
           })) || [],
-      });
-    } else {
+      })
+    }
+    else {
       Object.assign(form, {
-        nome: "",
+        nome: '',
         idProduto: null,
-        descricao: "",
+        descricao: '',
         ativo: true,
         itens: [],
-      });
+      })
     }
   },
   { immediate: true },
-);
+)
 
 watch(isOpen, (val) => {
-  if (!val) emit("close");
-});
+  if (!val) emit('close')
+})
 
 const addItem = () => {
-  form.itens.push({ idInsumo: null, quantidade: 0 });
-};
+  form.itens.push({ idInsumo: null, quantidade: 0 })
+}
 
 const removeItem = (index) => {
-  form.itens.splice(index, 1);
-};
+  form.itens.splice(index, 1)
+}
 
 const handleSubmit = async () => {
   if (form.itens.length === 0)
-    return alert("Adicione pelo menos um insumo ao traço");
-  if (!form.idProduto) return alert("Selecione um produto");
+    return alert('Adicione pelo menos um insumo ao traço')
+  if (!form.idProduto) return alert('Selecione um produto')
 
-  loading.value = true;
+  loading.value = true
   try {
     if (props.traco) {
       await $fetch(`/api/tracos/${props.traco.id}`, {
-        method: "PUT",
+        method: 'PUT',
         body: form,
-      });
-    } else {
-      await $fetch("/api/tracos", { method: "POST", body: form });
+      })
     }
-    emit("saved");
-    isOpen.value = false;
-  } catch (e) {
-    alert("Erro ao salvar traço: " + (e.data?.message || e.message));
-  } finally {
-    loading.value = false;
+    else {
+      await $fetch('/api/tracos', { method: 'POST', body: form })
+    }
+    emit('saved')
+    isOpen.value = false
   }
-};
+  catch (e) {
+    alert('Erro ao salvar traço: ' + (e.data?.message || e.message))
+  }
+  finally {
+    loading.value = false
+  }
+}
 </script>

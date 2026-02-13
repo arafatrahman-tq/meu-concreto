@@ -39,19 +39,20 @@
 </template>
 
 <script setup>
-import { Settings } from "lucide-vue-next";
-const { user, fetchUser } = useAuth();
-const { fetchSettings, isFeatureEnabled } = useSettings();
+import { Settings } from 'lucide-vue-next'
+
+const { user, fetchUser } = useAuth()
+const { fetchSettings, isFeatureEnabled } = useSettings()
 
 // Busca configurações e usuário no lado do servidor e cliente
 // O uso de top-level await aqui garante consistência na hidratação
-await Promise.all([fetchUser(), fetchSettings()]);
+await Promise.all([fetchUser(), fetchSettings()])
 
 const isMaintenance = computed(() => {
   // Admins podem ignorar o modo manutenção para testar o sistema
-  if (user.value?.admin === 1) return false;
-  return isFeatureEnabled("MAINTENANCE_MODE");
-});
+  if (user.value?.admin === 1) return false
+  return isFeatureEnabled('MAINTENANCE_MODE')
+})
 </script>
 
 <style>

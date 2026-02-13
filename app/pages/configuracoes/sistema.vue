@@ -14,21 +14,27 @@
         </p>
       </div>
       <button
-        @click="openModal()"
         class="bg-brand text-white px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-3 shadow-xl shadow-brand/20 outline-none"
+        @click="openModal()"
       >
         <Plus size="20" />
         Nova Variável
       </button>
     </div>
 
-    <div v-if="pending" class="flex justify-center py-12">
+    <div
+      v-if="pending"
+      class="flex justify-center py-12"
+    >
       <div
         class="animate-spin rounded-full h-8 w-8 border-b-2 border-brand"
-      ></div>
+      />
     </div>
 
-    <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div
+      v-else
+      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+    >
       <BaseCard
         v-for="config in configs"
         :key="config.id"
@@ -49,8 +55,8 @@
             class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
           >
             <button
-              @click="openModal(config)"
               class="p-2 hover:bg-primary/5 rounded-xl text-secondary transition-colors"
+              @click="openModal(config)"
             >
               <Edit2 size="16" />
             </button>
@@ -82,7 +88,7 @@
             <div
               class="w-1.5 h-1.5 rounded-full"
               :class="config.idEmpresa ? 'bg-emerald-500' : 'bg-brand'"
-            ></div>
+            />
             {{ config.idEmpresa ? "Unidade Local" : "Global" }}
           </span>
         </div>
@@ -92,16 +98,18 @@
     <!-- Modal de Configuração -->
     <BaseModal
       :show="showModal"
-      @close="showModal = false"
       :title="editingConfig ? 'Editar Variável' : 'Nova Variável de Sistema'"
+      @close="showModal = false"
     >
-      <form @submit.prevent="saveConfig" class="space-y-6 pt-4">
+      <form
+        class="space-y-6 pt-4"
+        @submit.prevent="saveConfig"
+      >
         <div>
           <label
             class="block text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 mb-2 ml-1"
-            >Chave (Identificador Único)
-            <span class="text-brand">*</span></label
-          >
+          >Chave (Identificador Único)
+            <span class="text-brand">*</span></label>
           <BaseInput
             v-model="form.chave"
             placeholder="Ex: MANUTENCAO_SITE"
@@ -114,8 +122,7 @@
           <div>
             <label
               class="block text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 mb-2 ml-1"
-              >Categoria</label
-            >
+            >Categoria</label>
             <BaseSelect
               v-model="form.categoria"
               :options="[
@@ -129,8 +136,7 @@
           <div>
             <label
               class="block text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 mb-2 ml-1"
-              >Escopo de Aplicação</label
-            >
+            >Escopo de Aplicação</label>
             <BaseSelect
               v-model="form.scope"
               :options="[
@@ -145,21 +151,19 @@
         <div>
           <label
             class="block text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 mb-2 ml-1"
-            >Valor (JSON ou String)</label
-          >
+          >Valor (JSON ou String)</label>
           <textarea
             v-model="form.valor"
             class="w-full bg-primary/2 border border-border rounded-2xl py-4 px-5 text-sm font-mono text-primary placeholder:text-secondary/20 focus:ring-2 focus:ring-brand/20 focus:border-brand/30 transition-all outline-none resize-none"
             rows="4"
-            placeholder='true ou { "active": true }'
-          ></textarea>
+            placeholder="true ou { &quot;active&quot;: true }"
+          />
         </div>
 
         <div>
           <label
             class="block text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 mb-2 ml-1"
-            >Descrição</label
-          >
+          >Descrição</label>
           <BaseInput
             v-model="form.descricao"
             placeholder="Explique para que serve esta variável..."
@@ -169,8 +173,8 @@
         <div class="flex flex-col-reverse md:flex-row justify-end gap-3 pt-4">
           <button
             type="button"
-            @click="showModal = false"
             class="px-8 py-4 rounded-2xl border border-border text-[10px] font-black uppercase tracking-widest text-secondary hover:bg-primary/2 transition-all outline-none"
+            @click="showModal = false"
           >
             Cancelar
           </button>
@@ -179,8 +183,15 @@
             :disabled="saving"
             class="bg-brand text-background px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 shadow-xl shadow-brand/20 disabled:opacity-50 outline-none"
           >
-            <RefreshCw v-if="saving" size="18" class="animate-spin" />
-            <Save v-else size="18" />
+            <RefreshCw
+              v-if="saving"
+              size="18"
+              class="animate-spin"
+            />
+            <Save
+              v-else
+              size="18"
+            />
             {{ editingConfig ? "Salvar Alterações" : "Criar Variável" }}
           </button>
         </div>
@@ -190,88 +201,91 @@
 </template>
 
 <script setup>
-import { Settings2, Plus, Edit2, RefreshCw, Save } from "lucide-vue-next";
-import { useAuth, useToast } from "#imports";
+import { Settings2, Plus, Edit2, RefreshCw, Save } from 'lucide-vue-next'
+import { useAuth, useToast } from '#imports'
 
 definePageMeta({
-  middleware: ["admin"], // Apenas admins podem ver isso
-});
+  middleware: ['admin'], // Apenas admins podem ver isso
+})
 
-const { user } = useAuth();
-const { add: addToast } = useToast();
+const { user } = useAuth()
+const { add: addToast } = useToast()
 
 const {
   data: configs,
   pending,
   refresh,
-} = useFetch("/api/configuracoes/sistema");
+} = useFetch('/api/configuracoes/sistema')
 
-const showModal = ref(false);
-const saving = ref(false);
-const editingConfig = ref(null);
+const showModal = ref(false)
+const saving = ref(false)
+const editingConfig = ref(null)
 
 const form = ref({
-  chave: "",
-  valor: "",
-  descricao: "",
-  categoria: "GERAL",
-  scope: "empresa",
-});
+  chave: '',
+  valor: '',
+  descricao: '',
+  categoria: 'GERAL',
+  scope: 'empresa',
+})
 
 const openModal = (config = null) => {
-  editingConfig.value = config;
+  editingConfig.value = config
   if (config) {
     form.value = {
       ...config,
-      scope: config.idEmpresa ? "empresa" : "global",
-    };
-  } else {
-    form.value = {
-      chave: "",
-      valor: "",
-      descricao: "",
-      categoria: "GERAL",
-      scope: "empresa",
-    };
+      scope: config.idEmpresa ? 'empresa' : 'global',
+    }
   }
-  showModal.value = true;
-};
+  else {
+    form.value = {
+      chave: '',
+      valor: '',
+      descricao: '',
+      categoria: 'GERAL',
+      scope: 'empresa',
+    }
+  }
+  showModal.value = true
+}
 
 const saveConfig = async () => {
   try {
-    saving.value = true;
+    saving.value = true
 
     const payload = {
       chave: form.value.chave,
       valor: form.value.valor,
       descricao: form.value.descricao,
       categoria: form.value.categoria,
-      idEmpresa: form.value.scope === "empresa" ? user.value.idEmpresa : null,
-    };
+      idEmpresa: form.value.scope === 'empresa' ? user.value.idEmpresa : null,
+    }
 
-    await $fetch("/api/configuracoes/sistema", {
-      method: "POST",
+    await $fetch('/api/configuracoes/sistema', {
+      method: 'POST',
       body: payload,
-    });
+    })
 
     addToast({
-      title: "Sucesso",
+      title: 'Sucesso',
       description: editingConfig.value
-        ? "Configuração atualizada!"
-        : "Configuração criada!",
-      type: "success",
-    });
+        ? 'Configuração atualizada!'
+        : 'Configuração criada!',
+      type: 'success',
+    })
 
-    showModal.value = false;
-    refresh();
-  } catch (error) {
-    addToast({
-      title: "Erro",
-      description: error.data?.statusMessage || "Erro ao salvar configuração",
-      type: "error",
-    });
-  } finally {
-    saving.value = false;
+    showModal.value = false
+    refresh()
   }
-};
+  catch (error) {
+    addToast({
+      title: 'Erro',
+      description: error.data?.statusMessage || 'Erro ao salvar configuração',
+      type: 'error',
+    })
+  }
+  finally {
+    saving.value = false
+  }
+}
 </script>

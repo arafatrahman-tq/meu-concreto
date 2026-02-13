@@ -109,10 +109,8 @@
           <div
             class="flex items-center gap-2 mt-4 text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-xl bg-rose-500/5 text-rose-500 w-fit"
           >
-            <span
-              >{{ formatCurrency(summary?.receber?.atrasado || 0) }} em
-              atraso</span
-            >
+            <span>{{ formatCurrency(summary?.receber?.atrasado || 0) }} em
+              atraso</span>
           </div>
         </div>
       </div>
@@ -168,7 +166,7 @@
           <h3
             class="text-lg font-black text-primary uppercase tracking-tighter flex items-center gap-3"
           >
-            <div class="w-2 h-8 bg-green-500 rounded-full"></div>
+            <div class="w-2 h-8 bg-green-500 rounded-full" />
             Contas a Receber
           </h3>
           <span class="text-xl font-black text-primary">{{
@@ -262,7 +260,7 @@
           <h3
             class="text-lg font-black text-primary uppercase tracking-tighter flex items-center gap-3"
           >
-            <div class="w-2 h-8 bg-rose-500 rounded-full"></div>
+            <div class="w-2 h-8 bg-rose-500 rounded-full" />
             Contas a Pagar
           </h3>
           <span class="text-xl font-black text-primary">{{
@@ -369,14 +367,14 @@ import {
   AlertCircle,
   CreditCard,
   ArrowRight,
-} from "lucide-vue-next";
+} from 'lucide-vue-next'
 
-const { data: summary, refresh } = await useFetch("/api/financeiro/summary");
+const { data: summary, refresh } = await useFetch('/api/financeiro/summary')
 
 const formatCurrency = (val) => {
-  return new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  }).format(val / 100);
-};
+  return new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+  }).format(val / 100)
+}
 </script>

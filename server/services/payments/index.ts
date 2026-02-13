@@ -1,18 +1,18 @@
-import { db } from "../../database/db";
+import { db } from '../../database/db'
 import {
   configuracoesSicoob,
   configuracoesAsaas,
   configuracoesPixManual,
-} from "../../database/schema";
-import { eq, and } from "drizzle-orm";
-import { SicoobPaymentProvider } from "./sicoob-provider";
-import { AsaasPaymentProvider } from "./asaas-provider";
-import { ManualPixProvider } from "./manual-pix-provider";
+} from '../../database/schema'
+import { eq, and } from 'drizzle-orm'
+import { SicoobPaymentProvider } from './sicoob-provider'
+import { AsaasPaymentProvider } from './asaas-provider'
+import { ManualPixProvider } from './manual-pix-provider'
 import type {
   PaymentProvider,
   PaymentOptions,
   PaymentResponse,
-} from "./provider";
+} from './provider'
 
 export class PaymentService {
   /**
@@ -27,14 +27,14 @@ export class PaymentService {
     options: PaymentOptions,
   ): Promise<PaymentProvider> {
     // Try Sicoob for PIX
-    if (options.tipo === "PIX") {
+    if (options.tipo === 'PIX') {
       const sicoob = await db.query.configuracoesSicoob.findFirst({
         where: and(
           eq(configuracoesSicoob.idEmpresa, idEmpresa),
           eq(configuracoesSicoob.ativo, 1),
         ),
-      });
-      if (sicoob) return new SicoobPaymentProvider();
+      })
+      if (sicoob) return new SicoobPaymentProvider()
     }
 
     // Try Asaas
@@ -43,11 +43,11 @@ export class PaymentService {
         eq(configuracoesAsaas.idEmpresa, idEmpresa),
         eq(configuracoesAsaas.ativo, 1),
       ),
-    });
-    if (asaas) return new AsaasPaymentProvider();
+    })
+    if (asaas) return new AsaasPaymentProvider()
 
     // Default to Manual Pix
-    return new ManualPixProvider();
+    return new ManualPixProvider()
   }
 
   /**
@@ -57,34 +57,35 @@ export class PaymentService {
     idEmpresa: number,
     options: PaymentOptions,
   ): Promise<PaymentResponse> {
-    const provider = await this.getProvider(idEmpresa, options);
-    let response = await provider.createPayment(idEmpresa, options);
+    const provider = await this.getProvider(idEmpresa, options)
+    let response = await provider.createPayment(idEmpresa, options)
 
     // Fallback logic
     if (!response.sucesso) {
       if (provider instanceof SicoobPaymentProvider) {
         console.warn(
           `[PaymentService] Sicoob failed, falling back to Asaas: ${response.error}`,
-        );
-        const asaas = new AsaasPaymentProvider();
-        response = await asaas.createPayment(idEmpresa, options);
+        )
+        const asaas = new AsaasPaymentProvider()
+        response = await asaas.createPayment(idEmpresa, options)
 
         if (!response.sucesso) {
           console.warn(
             `[PaymentService] Asaas fallback failed, trying Manual Pix: ${response.error}`,
-          );
-          const manual = new ManualPixProvider();
-          response = await manual.createPayment(idEmpresa, options);
+          )
+          const manual = new ManualPixProvider()
+          response = await manual.createPayment(idEmpresa, options)
         }
-      } else if (provider instanceof AsaasPaymentProvider) {
+      }
+      else if (provider instanceof AsaasPaymentProvider) {
         console.warn(
           `[PaymentService] Asaas failed, falling back to Manual Pix: ${response.error}`,
-        );
-        const manual = new ManualPixProvider();
-        response = await manual.createPayment(idEmpresa, options);
+        )
+        const manual = new ManualPixProvider()
+        response = await manual.createPayment(idEmpresa, options)
       }
     }
 
-    return response;
+    return response
   }
 }

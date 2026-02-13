@@ -5,7 +5,7 @@
     <!-- Glass Background Decoration -->
     <div
       class="absolute -right-4 -top-4 w-28 h-28 bg-brand/5 rounded-full blur-2xl group-hover:bg-brand/10 transition-colors"
-    ></div>
+    />
 
     <!-- Header -->
     <div class="flex justify-between items-start mb-5 relative z-10">
@@ -54,7 +54,10 @@
     </div>
 
     <!-- Sub Info -->
-    <div v-if="subtext" class="mt-3 relative z-10">
+    <div
+      v-if="subtext"
+      class="mt-3 relative z-10"
+    >
       <p
         class="text-[10px] font-bold text-secondary/40 uppercase tracking-widest truncate"
       >
@@ -74,13 +77,13 @@
           transitionDelay: `${i * 50}ms`,
         }"
         class="flex-1 bg-primary rounded-t-lg transition-all duration-1000"
-      ></div>
+      />
     </div>
   </div>
 </template>
 
 <script setup>
-import { TrendingUp, TrendingDown, BarChart } from "lucide-vue-next";
+import { TrendingUp, TrendingDown, BarChart } from 'lucide-vue-next'
 
 defineProps({
   label: String,
@@ -89,5 +92,5 @@ defineProps({
   trend: String,
   trendUp: Boolean,
   icon: [Object, Function],
-});
+})
 </script>

@@ -1,27 +1,27 @@
-import { db } from "../../database/db";
-import { logs, empresas, usuarios, orcamentos } from "../../database/schema";
-import { eq, and, isNull, desc, or, inArray } from "drizzle-orm";
-import { getAuthenticatedUser } from "../../utils/auth";
+import { db } from '../../database/db'
+import { logs, empresas, usuarios, orcamentos } from '../../database/schema'
+import { eq, and, isNull, desc, or, inArray } from 'drizzle-orm'
+import { getAuthenticatedUser } from '../../utils/auth'
 
 export default defineEventHandler(async (event) => {
   try {
-    const authUser = getAuthenticatedUser(event);
+    const authUser = getAuthenticatedUser(event)
     if (!authUser) {
-      throw createError({ statusCode: 401, message: "Não autorizado" });
+      throw createError({ statusCode: 401, message: 'Não autorizado' })
     }
 
     const user = await db.query.usuarios.findFirst({
       where: eq(usuarios.id, authUser.id),
-    });
+    })
 
     if (!user || user.admin !== 1) {
-      return []; // Retorna lista vazia em vez de erro para não quebrar o layout
+      return [] // Retorna lista vazia em vez de erro para não quebrar o layout
     }
 
     // Busca os últimos 10 logs importantes filtrados por empresa
     const recentLogs = await db.query.logs.findMany({
       where: and(
-        or(eq(logs.nivel, "WARN"), eq(logs.nivel, "ERROR")),
+        or(eq(logs.nivel, 'WARN'), eq(logs.nivel, 'ERROR')),
         eq(logs.idEmpresa, user.idEmpresa),
       ),
       orderBy: [desc(logs.timestamp)],
@@ -29,48 +29,49 @@ export default defineEventHandler(async (event) => {
       with: {
         empresa: true,
       },
-    });
+    })
 
     // Busca orçamentos pendentes (Aprovações Pendentes)
     const pendingOrcamentos = await db.query.orcamentos.findMany({
       where: and(
-        eq(orcamentos.status, "PENDENTE"),
+        eq(orcamentos.status, 'PENDENTE'),
         inArray(orcamentos.idEmpresa, [user.idEmpresa]),
       ),
       orderBy: [desc(orcamentos.createdAt)],
       limit: 5,
-    });
+    })
 
     const notifications = [
-      ...pendingOrcamentos.map((o) => ({
+      ...pendingOrcamentos.map(o => ({
         id: `orc-${o.id}`,
-        title: "Aprovação Pendente",
-        message: `Orçamento #${String(o.id).padStart(4, "0")} de ${o.nomeCliente} aguarda aprovação.`,
-        type: "WARN",
+        title: 'Aprovação Pendente',
+        message: `Orçamento #${String(o.id).padStart(4, '0')} de ${o.nomeCliente} aguarda aprovação.`,
+        type: 'WARN',
         time: o.createdAt,
         empresa: user.idEmpresa,
-        icon: "FileStack",
+        icon: 'FileStack',
       })),
-      ...recentLogs.map((n) => ({
+      ...recentLogs.map(n => ({
         id: `log-${n.id}`,
         title: n.modulo,
         message: n.mensagem,
         type: n.nivel,
         time: n.timestamp,
-        empresa: n.empresa?.empresa || "Sistema",
-        icon: n.nivel === "ERROR" ? "AlertTriangle" : "Info",
+        empresa: n.empresa?.empresa || 'Sistema',
+        icon: n.nivel === 'ERROR' ? 'AlertTriangle' : 'Info',
       })),
     ].sort((a, b) => {
-      const timeB = b.time ? new Date(b.time).getTime() : 0;
-      const timeA = a.time ? new Date(a.time).getTime() : 0;
-      return timeB - timeA;
-    });
+      const timeB = b.time ? new Date(b.time).getTime() : 0
+      const timeA = a.time ? new Date(a.time).getTime() : 0
+      return timeB - timeA
+    })
 
-    return notifications;
-  } catch (error: any) {
+    return notifications
+  }
+  catch (error: any) {
     throw createError({
       statusCode: 500,
       message: error.message,
-    });
+    })
   }
-});
+})

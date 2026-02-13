@@ -9,6 +9,22 @@ RUN bun install --frozen-lockfile
 
 # Build da aplicação
 FROM base AS build
+# Argumentos de build para expor variáveis de ambiente ao Nuxt
+ARG NODE_ENV
+ARG HOST
+ARG PORT
+ARG DB_FILE_NAME
+ARG AUTH_SECRET
+ARG NUVEMFISCAL_CLIENT_ID
+ARG NUVEMFISCAL_CLIENT_SECRET
+ARG ASAAS_API_KEY
+ARG BLING_API_KEY
+ARG WHATSAPP_API_KEY
+ARG WHATSAPP_API_URL
+ARG NUXT_PUBLIC_API_BASE
+ARG SERVICE_URL_MEU_CONCRETO
+ARG SERVICE_FQDN_MEU_CONCRETO
+
 COPY --from=install /app/node_modules ./node_modules
 COPY . .
 RUN bun run build

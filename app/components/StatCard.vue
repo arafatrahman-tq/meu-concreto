@@ -6,10 +6,13 @@
       <div
         :class="[
           'w-8 h-8 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110',
-          colorClasses[color]
+          colorClasses[color],
         ]"
       >
-        <component :is="icon" size="14" />
+        <component
+          :is="icon"
+          size="14"
+        />
       </div>
       <p
         class="text-[9px] font-black uppercase tracking-[0.2em] text-secondary/60 group-hover:text-primary/80 transition-colors"
@@ -30,32 +33,32 @@
 defineProps({
   icon: {
     type: [Object, Function],
-    required: true
+    required: true,
   },
   label: {
     type: String,
-    required: true
+    required: true,
   },
   value: {
     type: String,
-    required: true
+    required: true,
   },
   sublabel: {
     type: String,
-    default: ''
+    default: '',
   },
   color: {
     type: String,
     default: 'brand',
-    validator: (val) => ['brand', 'success', 'accent', 'warning', 'danger'].includes(val)
-  }
-});
+    validator: val => ['brand', 'success', 'accent', 'warning', 'danger'].includes(val),
+  },
+})
 
 const colorClasses = {
   brand: 'bg-brand/10 text-brand',
   success: 'bg-success/10 text-success',
   accent: 'bg-accent/10 text-accent',
   warning: 'bg-warning/10 text-warning',
-  danger: 'bg-danger/10 text-danger'
-};
+  danger: 'bg-danger/10 text-danger',
+}
 </script>

@@ -14,8 +14,8 @@
         </p>
       </div>
       <button
-        @click="openModal()"
         class="bg-brand text-white px-8 py-4 rounded-2xl text-xs font-black uppercase tracking-widest shadow-xl shadow-brand/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-3"
+        @click="openModal()"
       >
         <Plus size="20" />
         Novo Traço
@@ -39,16 +39,16 @@
             <div class="flex items-center gap-2">
               <BaseTooltip text="Editar">
                 <button
-                  @click="openModal(traco)"
                   class="p-2.5 rounded-xl bg-surface text-secondary hover:text-brand hover:scale-110 transition-all shadow-sm border border-border"
+                  @click="openModal(traco)"
                 >
                   <Edit3 size="16" />
                 </button>
               </BaseTooltip>
               <BaseTooltip text="Excluir">
                 <button
-                  @click="deleteTraco(traco.id)"
                   class="p-2.5 rounded-xl bg-surface text-secondary hover:text-red-500 hover:scale-110 transition-all shadow-sm border border-border"
+                  @click="deleteTraco(traco.id)"
                 >
                   <Trash2 size="16" />
                 </button>
@@ -76,11 +76,8 @@
             >
               <span
                 class="text-[11px] font-bold text-secondary uppercase tracking-tight"
-                >{{ item.insumo?.nome }}</span
-              >
-              <span class="text-xs font-black text-primary tabular-nums"
-                >{{ item.quantidade }} {{ item.insumo?.unidadeMedida }}</span
-              >
+              >{{ item.insumo?.nome }}</span>
+              <span class="text-xs font-black text-primary tabular-nums">{{ item.quantidade }} {{ item.insumo?.unidadeMedida }}</span>
             </div>
           </div>
         </div>
@@ -90,8 +87,7 @@
         >
           <span
             class="text-[9px] font-black uppercase tracking-[0.2em] text-secondary opacity-40"
-            >Status do Projeto</span
-          >
+          >Status do Projeto</span>
           <div class="flex items-center gap-2">
             <div
               :class="[
@@ -100,7 +96,7 @@
                   ? 'bg-emerald-500 shadow-emerald-500/50'
                   : 'bg-rose-500 shadow-rose-500/50',
               ]"
-            ></div>
+            />
             <span
               class="text-[9px] font-black uppercase tracking-[0.2em]"
               :class="traco.ativo ? 'text-emerald-500' : 'text-rose-500'"
@@ -115,34 +111,35 @@
     <!-- Modal Form -->
     <TracoFormModal
       v-if="showModal"
+      :traco="selectedTraco"
       @close="showModal = false"
       @saved="refresh"
-      :traco="selectedTraco"
     />
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { Plus, FlaskConical, Edit3, Trash2 } from "lucide-vue-next";
+import { ref } from 'vue'
+import { Plus, FlaskConical, Edit3, Trash2 } from 'lucide-vue-next'
 
-const showModal = ref(false);
-const selectedTraco = ref(null);
+const showModal = ref(false)
+const selectedTraco = ref(null)
 
-const { data: tracos, refresh } = useFetch("/api/tracos");
+const { data: tracos, refresh } = useFetch('/api/tracos')
 
 const openModal = (traco = null) => {
-  selectedTraco.value = traco;
-  showModal.value = true;
-};
+  selectedTraco.value = traco
+  showModal.value = true
+}
 
 const deleteTraco = async (id) => {
-  if (!confirm("Deseja excluir este traço?")) return;
+  if (!confirm('Deseja excluir este traço?')) return
   try {
-    await $fetch(`/api/tracos/${id}`, { method: "DELETE" });
-    refresh();
-  } catch (e) {
-    alert("Erro ao excluir: " + (e.data?.message || e.message));
+    await $fetch(`/api/tracos/${id}`, { method: 'DELETE' })
+    refresh()
   }
-};
+  catch (e) {
+    alert('Erro ao excluir: ' + (e.data?.message || e.message))
+  }
+}
 </script>

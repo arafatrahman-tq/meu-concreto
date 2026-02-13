@@ -1,8 +1,8 @@
-import { db } from "../../../database/db";
-import { usuarios } from "../../../database/schema";
-import { eq, and, isNull } from "drizzle-orm";
-import { requireAdmin } from "../../../utils/auth";
-import { getAvailableMenuItems, getDefaultMenuPermissions, getMenuGroups } from "../../../utils/menu-items";
+import { db } from '../../../database/db'
+import { usuarios } from '../../../database/schema'
+import { eq, and, isNull } from 'drizzle-orm'
+import { requireAdmin } from '../../../utils/auth'
+import { getAvailableMenuItems, getDefaultMenuPermissions, getMenuGroups } from '../../../utils/menu-items'
 
 /**
  * GET /api/usuarios/:id/menu-permissions
@@ -12,14 +12,14 @@ import { getAvailableMenuItems, getDefaultMenuPermissions, getMenuGroups } from 
  */
 
 export default defineEventHandler(async (event) => {
-  const admin = requireAdmin(event);
-  const userId = getRouterParam(event, "id");
+  const admin = requireAdmin(event)
+  const userId = getRouterParam(event, 'id')
 
   if (!userId) {
     throw createError({
       statusCode: 400,
-      message: "ID do usuário é obrigatório",
-    });
+      message: 'ID do usuário é obrigatório',
+    })
   }
 
   try {
@@ -27,15 +27,15 @@ export default defineEventHandler(async (event) => {
     const targetUser = await db.query.usuarios.findFirst({
       where: and(
         eq(usuarios.id, userId),
-        isNull(usuarios.deletedAt)
+        isNull(usuarios.deletedAt),
       ),
-    });
+    })
 
     if (!targetUser) {
       throw createError({
         statusCode: 404,
-        message: "Usuário não encontrado",
-      });
+        message: 'Usuário não encontrado',
+      })
     }
 
     // Verificar se o admin tem acesso à empresa do usuário
@@ -45,38 +45,39 @@ export default defineEventHandler(async (event) => {
         with: {
           acessoEmpresas: true,
         },
-      });
+      })
 
       const hasAccess = adminUser?.acessoEmpresas?.some(
-        (a) => a.idEmpresa === targetUser.idEmpresa
-      );
+        a => a.idEmpresa === targetUser.idEmpresa,
+      )
 
       if (!hasAccess) {
         throw createError({
           statusCode: 403,
-          message: "Você não tem permissão para visualizar usuários desta empresa",
-        });
+          message: 'Você não tem permissão para visualizar usuários desta empresa',
+        })
       }
     }
 
     // Parse das permissões armazenadas
-    let permissions: string[] = [];
+    let permissions: string[] = []
     try {
-      permissions = targetUser.menuPermissions 
+      permissions = targetUser.menuPermissions
         ? JSON.parse(targetUser.menuPermissions)
-        : [];
-    } catch {
-      permissions = [];
+        : []
+    }
+    catch {
+      permissions = []
     }
 
     // Se não há permissões definidas, retornar os padrões
-    const isTargetAdmin = targetUser.admin === 1;
-    const availableItems = getAvailableMenuItems(isTargetAdmin);
-    const defaultPermissions = getDefaultMenuPermissions(isTargetAdmin);
-    const groups = getMenuGroups(isTargetAdmin);
+    const isTargetAdmin = targetUser.admin === 1
+    const availableItems = getAvailableMenuItems(isTargetAdmin)
+    const defaultPermissions = getDefaultMenuPermissions(isTargetAdmin)
+    const groups = getMenuGroups(isTargetAdmin)
 
     // Se não há permissões salvas, usar os padrões
-    const effectivePermissions = permissions.length > 0 ? permissions : defaultPermissions;
+    const effectivePermissions = permissions.length > 0 ? permissions : defaultPermissions
 
     return {
       userId,
@@ -90,13 +91,14 @@ export default defineEventHandler(async (event) => {
         totalAvailable: availableItems.length,
         totalGranted: effectivePermissions.length,
       },
-    };
-  } catch (error: any) {
-    if (error.statusCode) throw error;
-    
+    }
+  }
+  catch (error: any) {
+    if (error.statusCode) throw error
+
     throw createError({
       statusCode: 500,
-      message: error.message || "Erro ao carregar permissões de menu",
-    });
+      message: error.message || 'Erro ao carregar permissões de menu',
+    })
   }
-});
+})

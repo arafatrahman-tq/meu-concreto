@@ -1,7 +1,7 @@
 <template>
   <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
     <!-- Backdrop -->
-    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" />
 
     <!-- Modal Content -->
     <div
@@ -20,47 +20,47 @@
         </p>
       </div>
 
-      <form @submit.prevent="handleSubmit" class="space-y-4 md:space-y-5">
+      <form
+        class="space-y-4 md:space-y-5"
+        @submit.prevent="handleSubmit"
+      >
         <div class="space-y-1">
           <label
             class="block text-[9px] md:text-[10px] font-black uppercase tracking-widest text-secondary ml-2"
-            >Senha Atual <span class="text-brand">*</span></label
-          >
+          >Senha Atual <span class="text-brand">*</span></label>
           <input
             v-model="form.currentPassword"
             type="password"
             class="w-full px-5 md:px-6 py-3 md:py-4 bg-primary/2 border border-border rounded-xl md:rounded-2xl focus:ring-4 focus:ring-brand/10 focus:border-brand/30 transition-all font-bold placeholder:text-secondary/30 text-primary text-sm outline-none"
             placeholder="••••••••"
             required
-          />
+          >
         </div>
 
         <div class="space-y-1">
           <label
             class="block text-[9px] md:text-[10px] font-black uppercase tracking-widest text-secondary ml-2"
-            >Nova Senha <span class="text-brand">*</span></label
-          >
+          >Nova Senha <span class="text-brand">*</span></label>
           <input
             v-model="form.newPassword"
             type="password"
             class="w-full px-5 md:px-6 py-3 md:py-4 bg-primary/2 border border-border rounded-xl md:rounded-2xl focus:ring-4 focus:ring-brand/10 focus:border-brand/30 transition-all font-bold placeholder:text-secondary/30 text-primary text-sm outline-none"
             placeholder="••••••••"
             required
-          />
+          >
         </div>
 
         <div class="space-y-1">
           <label
             class="block text-[9px] md:text-[10px] font-black uppercase tracking-widest text-secondary ml-2"
-            >Confirmar Nova Senha <span class="text-brand">*</span></label
-          >
+          >Confirmar Nova Senha <span class="text-brand">*</span></label>
           <input
             v-model="form.confirmPassword"
             type="password"
             class="w-full px-5 md:px-6 py-3 md:py-4 bg-primary/2 border border-border rounded-xl md:rounded-2xl focus:ring-4 focus:ring-brand/10 focus:border-brand/30 transition-all font-bold placeholder:text-secondary/30 text-primary text-sm outline-none"
             placeholder="••••••••"
             required
-          />
+          >
         </div>
 
         <div
@@ -78,7 +78,7 @@
           <span
             v-if="loading"
             class="w-5 h-5 border-2 border-white/20 dark:border-black/20 border-t-white dark:border-t-black rounded-full animate-spin"
-          ></span>
+          />
           {{ loading ? "Sincronizando..." : "Atualizar e Acessar" }}
         </button>
       </form>
@@ -87,63 +87,65 @@
 </template>
 
 <script setup>
-import { ref, reactive } from "vue";
-import { useFetch } from "#imports";
-import { useToast } from "~/composables/useToast";
-import { useLogger } from "~/composables/useLogger";
+import { ref, reactive } from 'vue'
+import { useFetch } from '#imports'
+import { useToast } from '~/composables/useToast'
+import { useLogger } from '~/composables/useLogger'
 
 const props = defineProps({
   userId: {
     type: [Number, String],
     required: true,
   },
-});
+})
 
-const emit = defineEmits(["success"]);
-const { add: addToast } = useToast();
-const { info, error: logError } = useLogger();
+const emit = defineEmits(['success'])
+const { add: addToast } = useToast()
+const { info, error: logError } = useLogger()
 
 const form = reactive({
-  currentPassword: "",
-  newPassword: "",
-  confirmPassword: "",
-});
+  currentPassword: '',
+  newPassword: '',
+  confirmPassword: '',
+})
 
-const loading = ref(false);
-const error = ref("");
+const loading = ref(false)
+const error = ref('')
 
 const handleSubmit = async () => {
   if (form.newPassword !== form.confirmPassword) {
-    error.value = "As senhas não coincidem.";
-    return;
+    error.value = 'As senhas não coincidem.'
+    return
   }
 
-  loading.value = true;
-  error.value = "";
+  loading.value = true
+  error.value = ''
 
   try {
     await $fetch(`/api/usuarios/${props.userId}/password`, {
-      method: "PUT",
+      method: 'PUT',
       body: {
         currentPassword: form.currentPassword,
         newPassword: form.newPassword,
       },
-    });
+    })
 
-    addToast("Senha atualizada com sucesso!", "success");
-    info("USUARIOS", `Senha do usuário #${props.userId} atualizada`);
-    emit("success");
-  } catch (err) {
-    const msg = err.data?.message || err.message || "Erro ao atualizar senha.";
-    addToast(msg, "error");
-    error.value = msg;
+    addToast('Senha atualizada com sucesso!', 'success')
+    info('USUARIOS', `Senha do usuário #${props.userId} atualizada`)
+    emit('success')
+  }
+  catch (err) {
+    const msg = err.data?.message || err.message || 'Erro ao atualizar senha.'
+    addToast(msg, 'error')
+    error.value = msg
     logError(
-      "USUARIOS",
+      'USUARIOS',
       `Erro ao atualizar senha do usuário #${props.userId}`,
       { error: msg },
-    );
-  } finally {
-    loading.value = false;
+    )
   }
-};
+  finally {
+    loading.value = false
+  }
+}
 </script>

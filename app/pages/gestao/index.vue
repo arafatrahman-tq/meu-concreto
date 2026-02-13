@@ -16,19 +16,21 @@
             <!-- Empresa/Filial Switcher Design -->
             <div
               ref="dropdownTriggerRef"
-              @click="toggleDropdown"
               class="mt-4 inline-flex items-center gap-2 pl-3 bg-surface border border-border rounded-2xl p-1 shadow-sm focus-within:ring-2 focus-within:ring-brand/20 transition-all cursor-pointer hover:bg-surface/80"
+              @click="toggleDropdown"
             >
               <div
                 class="w-12 h-12 rounded-xl bg-brand/10 flex items-center justify-center text-brand shrink-0"
               >
-                <Building2 size="16" stroke-width="2.5" />
+                <Building2
+                  size="16"
+                  stroke-width="2.5"
+                />
               </div>
               <div class="relative flex flex-col pr-8 min-w-0">
                 <span
                   class="text-[7px] font-black uppercase tracking-[0.2em] text-secondary/40 leading-none mb-1"
-                  >Unidade Ativa</span
-                >
+                >Unidade Ativa</span>
                 <div class="flex items-center gap-1.5">
                   <span
                     class="text-[11px] font-black text-primary max-w-35 truncate"
@@ -45,10 +47,13 @@
             </div>
           </div>
           <button
-            @click="handleLogout"
             class="w-12 h-12 rounded-2xl bg-brand/10 flex items-center justify-center text-brand border border-brand/10 active:scale-95 transition-transform"
+            @click="handleLogout"
           >
-            <User size="24" stroke-width="2.5" />
+            <User
+              size="24"
+              stroke-width="2.5"
+            />
           </button>
         </div>
       </div>
@@ -72,25 +77,25 @@
           <div
             v-for="emp in availableEmpresas"
             :key="emp.id"
-            @click="selectEmpresa(emp.id)"
             class="px-5 py-3.5 text-[10px] font-black uppercase tracking-widest cursor-pointer transition-all flex items-center justify-between hover:bg-brand/5 group/opt relative"
             :class="[
               selectedEmpresaId === emp.id
                 ? 'text-brand bg-brand/3'
                 : 'text-secondary hover:text-primary',
             ]"
+            @click="selectEmpresa(emp.id)"
           >
             <div class="flex items-center gap-3">
               <div
                 v-if="selectedEmpresaId === emp.id"
                 class="w-1 h-3 rounded-full bg-brand"
-              ></div>
+              />
               {{ emp.empresa }} {{ emp.filial ? `• ${emp.filial}` : "" }}
             </div>
             <div
               v-if="selectedEmpresaId === emp.id"
               class="w-1.5 h-1.5 rounded-full bg-brand shadow-[0_0_10px_#ff7a3d] animate-pulse"
-            ></div>
+            />
           </div>
         </div>
       </Transition>
@@ -102,10 +107,13 @@
         v-if="isDropdownOpen"
         class="fixed inset-0 z-9998"
         @click="isDropdownOpen = false"
-      ></div>
+      />
     </Teleport>
 
-    <main v-if="data" class="p-6 space-y-10 animate-enter">
+    <main
+      v-if="data"
+      class="p-6 space-y-10 animate-enter"
+    >
       <!-- KPIs Primários - Design de Alta Performance -->
       <div class="grid grid-cols-2 gap-5">
         <!-- Vendas de Hoje -->
@@ -115,7 +123,10 @@
           <div
             class="w-11 h-11 bg-emerald-500/10 text-emerald-500 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform"
           >
-            <TrendingUp size="22" stroke-width="2.5" />
+            <TrendingUp
+              size="22"
+              stroke-width="2.5"
+            />
           </div>
           <p
             class="text-[8px] font-black uppercase tracking-[0.2em] text-secondary mb-2"
@@ -146,7 +157,10 @@
           <div
             class="w-11 h-11 bg-amber-500/10 text-amber-500 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform"
           >
-            <FileText size="22" stroke-width="2.5" />
+            <FileText
+              size="22"
+              stroke-width="2.5"
+            />
           </div>
           <p
             class="text-[8px] font-black uppercase tracking-[0.2em] text-secondary mb-2"
@@ -172,7 +186,10 @@
           <div
             class="w-11 h-11 bg-blue-500/10 text-blue-500 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform"
           >
-            <Truck size="22" stroke-width="2.5" />
+            <Truck
+              size="22"
+              stroke-width="2.5"
+            />
           </div>
           <p
             class="text-[8px] font-black uppercase tracking-[0.2em] text-secondary mb-2"
@@ -181,9 +198,7 @@
           </p>
           <p class="text-xl font-black text-primary tracking-tighter">
             {{ data.stats?.frota?.emRota || 0
-            }}<span class="text-xs text-secondary/40 font-bold"
-              >/{{ data.stats?.frota?.total || 0 }}</span
-            >
+            }}<span class="text-xs text-secondary/40 font-bold">/{{ data.stats?.frota?.total || 0 }}</span>
           </p>
           <p class="text-[8px] font-black text-blue-500 uppercase mt-2">
             Caminhões Ativos
@@ -239,7 +254,10 @@
           <div
             class="w-11 h-11 bg-indigo-500/10 text-indigo-500 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform"
           >
-            <BarChart3 size="22" stroke-width="2.5" />
+            <BarChart3
+              size="22"
+              stroke-width="2.5"
+            />
           </div>
           <p
             class="text-[8px] font-black uppercase tracking-[0.2em] text-secondary mb-2"
@@ -278,7 +296,11 @@
               stroke-width="2.5"
               class="animate-pulse"
             />
-            <Package v-else size="22" stroke-width="2.5" />
+            <Package
+              v-else
+              size="22"
+              stroke-width="2.5"
+            />
           </div>
           <div>
             <p
@@ -315,20 +337,26 @@
       </div>
 
       <!-- Alerta de Estoque Crítico - Visão Imediata -->
-      <section v-if="data.stats?.insumosCriticos > 0" class="animate-bounce-in">
+      <section
+        v-if="data.stats?.insumosCriticos > 0"
+        class="animate-bounce-in"
+      >
         <div
           class="bg-rose-500 rounded-3xl p-6 shadow-2xl shadow-rose-500/20 border border-white/20 relative overflow-hidden"
         >
           <!-- Background Decoration -->
           <div
             class="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full blur-3xl"
-          ></div>
+          />
 
           <div class="flex items-center gap-4 mb-6 relative z-10">
             <div
               class="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center text-white"
             >
-              <AlertTriangle size="24" stroke-width="2.5" />
+              <AlertTriangle
+                size="24"
+                stroke-width="2.5"
+              />
             </div>
             <div>
               <h2 class="text-white font-black uppercase italic tracking-tight">
@@ -350,10 +378,8 @@
                 <span class="text-[10px] font-black text-white uppercase">{{
                   insumo.nome
                 }}</span>
-                <span class="text-[8px] font-bold text-white/50 uppercase"
-                  >Estoque: {{ insumo.estoqueAtual }}{{ insumo.unidadeMedida }} /
-                  Min: {{ insumo.estoqueMinimo }}{{ insumo.unidadeMedida }}</span
-                >
+                <span class="text-[8px] font-bold text-white/50 uppercase">Estoque: {{ insumo.estoqueAtual }}{{ insumo.unidadeMedida }} /
+                  Min: {{ insumo.estoqueMinimo }}{{ insumo.unidadeMedida }}</span>
               </div>
               <div class="h-1.5 w-16 bg-white/10 rounded-full overflow-hidden">
                 <div
@@ -361,7 +387,7 @@
                   :style="{
                     width: `${Math.min((insumo.estoqueAtual / insumo.estoqueMinimo) * 100, 100)}%`,
                   }"
-                ></div>
+                />
               </div>
             </div>
           </div>
@@ -371,7 +397,10 @@
             class="mt-6 w-full py-4 bg-white text-rose-500 rounded-2xl text-[9px] font-black uppercase tracking-[0.2em] flex items-center justify-center gap-2 hover:bg-white/90 transition-colors"
           >
             Gerenciar Suprimentos
-            <ChevronRight size="14" stroke-width="3" />
+            <ChevronRight
+              size="14"
+              stroke-width="3"
+            />
           </NuxtLink>
         </div>
       </section>
@@ -380,7 +409,7 @@
       <section class="space-y-6">
         <div class="flex items-center justify-between px-2">
           <div class="flex items-center gap-3">
-            <div class="w-1.5 h-1.5 rounded-full bg-brand"></div>
+            <div class="w-1.5 h-1.5 rounded-full bg-brand" />
             <h2
               class="text-[10px] font-black uppercase tracking-[0.3em] text-secondary/40"
             >
@@ -388,8 +417,8 @@
             </h2>
           </div>
           <button
-            @click="refresh"
             class="p-2.5 bg-surface rounded-2xl border border-border active:scale-90 transition-all shadow-sm"
+            @click="refresh"
           >
             <RefreshCw
               size="14"
@@ -402,7 +431,7 @@
 
         <div class="relative pl-4 space-y-6">
           <!-- Timeline Line -->
-          <div class="absolute left-5.75 top-2 bottom-2 w-px bg-border"></div>
+          <div class="absolute left-5.75 top-2 bottom-2 w-px bg-border" />
 
           <div
             v-for="evento in data.eventos || []"
@@ -452,7 +481,10 @@
             v-if="!data.eventos?.length"
             class="py-16 text-center bg-surface rounded-3xl border border-dashed border-border"
           >
-            <Package size="32" class="mx-auto mb-3 text-secondary/20" />
+            <Package
+              size="32"
+              class="mx-auto mb-3 text-secondary/20"
+            />
             <p
               class="text-[9px] font-black uppercase tracking-[0.3em] text-secondary/40"
             >
@@ -472,7 +504,11 @@
         <div
           class="bg-black rounded-3xl border border-white/5 p-6 space-y-6 shadow-2xl"
         >
-          <div v-for="log in data.logs || []" :key="log.id" class="flex gap-4">
+          <div
+            v-for="log in data.logs || []"
+            :key="log.id"
+            class="flex gap-4"
+          >
             <div
               class="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0"
               :class="
@@ -480,7 +516,7 @@
                   ? 'bg-rose-500 shadow-[0_0_10px_rgba(244,63,94,0.5)]'
                   : 'bg-brand shadow-[0_0_10px_rgba(var(--color-brand),0.5)]'
               "
-            ></div>
+            />
             <div class="flex-1 min-w-0">
               <p
                 class="text-[10px] font-bold text-slate-300 uppercase leading-relaxed"
@@ -493,7 +529,7 @@
                 >
                   {{ log.usuario?.nome || "System" }}
                 </span>
-                <span class="text-[8px] text-white/10"></span>
+                <span class="text-[8px] text-white/10" />
                 <span
                   class="text-[8px] font-black text-white/30 uppercase tabular-nums"
                 >
@@ -503,7 +539,10 @@
             </div>
           </div>
 
-          <div v-if="!data.logs?.length" class="py-6 text-center opacity-30">
+          <div
+            v-if="!data.logs?.length"
+            class="py-6 text-center opacity-30"
+          >
             <p
               class="text-[9px] font-black text-white uppercase tracking-[0.4em]"
             >
@@ -515,15 +554,18 @@
     </main>
 
     <!-- Skeleton Otimizado -->
-    <main v-if="pending && !data" class="p-6 space-y-10 animate-pulse">
+    <main
+      v-if="pending && !data"
+      class="p-6 space-y-10 animate-pulse"
+    >
       <div class="grid grid-cols-2 gap-5">
         <div
           v-for="i in 4"
           :key="i"
           class="h-40 bg-primary/5 rounded-3xl"
-        ></div>
+        />
       </div>
-      <div class="h-80 bg-primary/5 rounded-3xl"></div>
+      <div class="h-80 bg-primary/5 rounded-3xl" />
     </main>
 
     <!-- Navegação Mobile Inferior - Floating iOS Concept -->
@@ -535,24 +577,33 @@
           to="/"
           class="p-4 text-secondary/40 hover:text-brand transition-all active:scale-90"
         >
-          <LayoutDashboard size="24" stroke-width="2.5" />
+          <LayoutDashboard
+            size="24"
+            stroke-width="2.5"
+          />
         </NuxtLink>
         <NuxtLink
           to="/orcamentos"
           class="p-4 text-secondary/40 hover:text-brand transition-all active:scale-90"
         >
-          <FileText size="24" stroke-width="2.5" />
+          <FileText
+            size="24"
+            stroke-width="2.5"
+          />
         </NuxtLink>
 
         <!-- Dynamic Action Button -->
         <div class="relative -translate-y-8">
           <div
             class="absolute inset-0 bg-brand blur-2xl opacity-40 animate-pulse"
-          ></div>
+          />
           <div
             class="w-16 h-16 bg-brand rounded-3xl flex items-center justify-center text-white shadow-2xl shadow-brand/40 border-4 border-background relative z-10 active:scale-90 transition-transform"
           >
-            <Activity size="28" stroke-width="2.5" />
+            <Activity
+              size="28"
+              stroke-width="2.5"
+            />
           </div>
         </div>
 
@@ -560,13 +611,19 @@
           to="/vendas"
           class="p-4 text-secondary/40 hover:text-brand transition-all active:scale-90"
         >
-          <DollarSign size="24" stroke-width="2.5" />
+          <DollarSign
+            size="24"
+            stroke-width="2.5"
+          />
         </NuxtLink>
         <NuxtLink
           to="/clientes"
           class="p-4 text-secondary/40 hover:text-brand transition-all active:scale-90"
         >
-          <Users size="24" stroke-width="2.5" />
+          <Users
+            size="24"
+            stroke-width="2.5"
+          />
         </NuxtLink>
       </nav>
     </div>
@@ -574,11 +631,7 @@
 </template>
 
 <script setup>
-definePageMeta({
-  layout: "default",
-  middleware: ["admin"],
-});
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted } from 'vue'
 import {
   User,
   TrendingUp,
@@ -599,142 +652,147 @@ import {
   Building2,
   AlertTriangle,
   BarChart3,
-} from "lucide-vue-next";
-import { useAuth, useFetch, navigateTo, computed, useLogger } from "#imports";
+} from 'lucide-vue-next'
+import { useAuth, useFetch, navigateTo, computed, useLogger } from '#imports'
 
-const { user, logout } = useAuth();
-const { info } = useLogger();
+definePageMeta({
+  layout: 'default',
+  middleware: ['admin'],
+})
 
-const selectedEmpresaId = ref(user.value?.idEmpresa);
+const { user, logout } = useAuth()
+const { info } = useLogger()
 
-const isDropdownOpen = ref(false);
-const dropdownTriggerRef = ref(null);
-const dropdownStyle = ref({});
+const selectedEmpresaId = ref(user.value?.idEmpresa)
+
+const isDropdownOpen = ref(false)
+const dropdownTriggerRef = ref(null)
+const dropdownStyle = ref({})
 
 const toggleDropdown = () => {
   if (!isDropdownOpen.value) {
-    const rect = dropdownTriggerRef.value.getBoundingClientRect();
+    const rect = dropdownTriggerRef.value.getBoundingClientRect()
     dropdownStyle.value = {
       top: `${rect.bottom + 8}px`,
       left: `${rect.left}px`,
       width: `${rect.width}px`,
-    };
+    }
   }
-  isDropdownOpen.value = !isDropdownOpen.value;
-};
+  isDropdownOpen.value = !isDropdownOpen.value
+}
 
 const selectEmpresa = (id) => {
-  const de = currentEmpresaLabel.value;
-  selectedEmpresaId.value = id;
-  isDropdownOpen.value = false;
+  const de = currentEmpresaLabel.value
+  selectedEmpresaId.value = id
+  isDropdownOpen.value = false
 
-  const emp = availableEmpresas.value.find((e) => e.id === id);
+  const emp = availableEmpresas.value.find(e => e.id === id)
   const para = emp
-    ? `${emp.empresa} ${emp.filial ? `• ${emp.filial}` : ""}`
-    : id;
+    ? `${emp.empresa} ${emp.filial ? `• ${emp.filial}` : ''}`
+    : id
 
-  info("SISTEMA", "Unidade de visualização alterada no Dashboard", {
+  info('SISTEMA', 'Unidade de visualização alterada no Dashboard', {
     de,
     para,
     idEmpresa: id,
-  });
-};
+  })
+}
 
 const availableEmpresas = computed(() => {
-  if (!user.value) return [];
-  const list = [];
+  if (!user.value) return []
+  const list = []
   if (user.value.empresa) {
-    list.push(user.value.empresa);
+    list.push(user.value.empresa)
   }
   if (user.value.acessoEmpresas) {
     user.value.acessoEmpresas.forEach((ae) => {
-      if (ae.empresa && !list.find((e) => e.id === ae.empresa.id)) {
-        list.push(ae.empresa);
+      if (ae.empresa && !list.find(e => e.id === ae.empresa.id)) {
+        list.push(ae.empresa)
       }
-    });
+    })
   }
-  return list;
-});
+  return list
+})
 
 const currentEmpresaLabel = computed(() => {
   const emp = availableEmpresas.value.find(
-    (e) => e.id === selectedEmpresaId.value,
-  );
-  if (!emp) return "Selecione...";
-  return `${emp.empresa} ${emp.filial ? `• ${emp.filial}` : ""}`;
-});
+    e => e.id === selectedEmpresaId.value,
+  )
+  if (!emp) return 'Selecione...'
+  return `${emp.empresa} ${emp.filial ? `• ${emp.filial}` : ''}`
+})
 
 // Habilitamos SSR para estabilidade e removemos lazy para garantir conteúdo imediato
-const { data, pending, refresh } = await useFetch("/api/gestao/live", {
+const { data, pending, refresh } = await useFetch('/api/gestao/live', {
   params: { idEmpresa: selectedEmpresaId },
   watch: [selectedEmpresaId],
   server: true,
-});
+})
 
 const handleLogout = async () => {
-  if (confirm("Deseja realmente sair?")) {
-    info("USUARIO", "Logout realizado via Dashboard Mobile");
-    await logout();
-    navigateTo("/login");
+  if (confirm('Deseja realmente sair?')) {
+    info('USUARIO', 'Logout realizado via Dashboard Mobile')
+    await logout()
+    navigateTo('/login')
   }
-};
+}
 
 onMounted(() => {
   // Auto refresh a cada 30 segundos
-  const dataTimer = setInterval(refresh, 30000);
+  const dataTimer = setInterval(refresh, 30000)
   onUnmounted(() => {
-    clearInterval(dataTimer);
-  });
-});
+    clearInterval(dataTimer)
+  })
+})
 
 const formatCurrency = (val) => {
-  return new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  }).format(val / 100);
-};
+  return new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+  }).format(val / 100)
+}
 
 const formatTime = (date) => {
-  if (!date) return "--:--";
-  return new Date(date).toLocaleTimeString("pt-BR", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-};
+  if (!date) return '--:--'
+  return new Date(date).toLocaleTimeString('pt-BR', {
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+}
 
 const getEventoLabel = (tipo) => {
   const labels = {
-    PEDIDO_CRIADO: "Novo pedido registrado",
-    ORCAMENTO_APROVADO: "Orçamento aprovado",
-    SAIDA_USINA: "Caminhão saiu da usina",
-    CHEGADA_OBRA: "Chegada na obra",
-    INICIO_DESCARGA: "Início da descarga",
-    FIM_DESCARGA: "Descarregamento finalizado",
-    RETORNO_USINA: "Retornando para usina",
-  };
-  return labels[tipo] || tipo;
-};
+    PEDIDO_CRIADO: 'Novo pedido registrado',
+    ORCAMENTO_APROVADO: 'Orçamento aprovado',
+    SAIDA_USINA: 'Caminhão saiu da usina',
+    CHEGADA_OBRA: 'Chegada na obra',
+    INICIO_DESCARGA: 'Início da descarga',
+    FIM_DESCARGA: 'Descarregamento finalizado',
+    RETORNO_USINA: 'Retornando para usina',
+  }
+  return labels[tipo] || tipo
+}
 
 const getEventoStyle = (tipo) => {
   const styles = {
-    PEDIDO_CRIADO: { bg: "bg-blue-500/10 text-blue-500", icon: FileText },
-    ORCAMENTO_APROVADO: { bg: "bg-emerald-500/10 text-emerald-500", icon: CheckCircle },
-    SAIDA_USINA: { bg: "bg-blue-500/10 text-blue-500", icon: Truck },
-    CHEGADA_OBRA: { bg: "bg-amber-500/10 text-amber-500", icon: MapPin },
+    PEDIDO_CRIADO: { bg: 'bg-blue-500/10 text-blue-500', icon: FileText },
+    ORCAMENTO_APROVADO: { bg: 'bg-emerald-500/10 text-emerald-500', icon: CheckCircle },
+    SAIDA_USINA: { bg: 'bg-blue-500/10 text-blue-500', icon: Truck },
+    CHEGADA_OBRA: { bg: 'bg-amber-500/10 text-amber-500', icon: MapPin },
     INICIO_DESCARGA: {
-      bg: "bg-emerald-500/10 text-emerald-500",
+      bg: 'bg-emerald-500/10 text-emerald-500',
       icon: Activity,
     },
     FIM_DESCARGA: {
-      bg: "bg-emerald-500/10 text-emerald-500",
+      bg: 'bg-emerald-500/10 text-emerald-500',
       icon: CheckCircle,
     },
-    RETORNO_USINA: { bg: "bg-slate-500/10 text-slate-500", icon: Clock },
-  };
+    RETORNO_USINA: { bg: 'bg-slate-500/10 text-slate-500', icon: Clock },
+  }
   return (
-    styles[tipo] || { bg: "bg-slate-500/10 text-slate-500", icon: Package }
-  );
-};
+    styles[tipo] || { bg: 'bg-slate-500/10 text-slate-500', icon: Package }
+  )
+}
 </script>
 
 <style scoped>

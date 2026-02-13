@@ -20,13 +20,13 @@
           <button
             v-for="view in ['Calendário', 'Lista']"
             :key="view"
-            @click="currentView = view"
             class="px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all"
             :class="
               currentView === view
                 ? 'bg-primary text-background shadow-lg'
                 : 'text-secondary opacity-40 hover:opacity-100'
             "
+            @click="currentView = view"
           >
             {{ view }}
           </button>
@@ -35,15 +35,18 @@
     </div>
 
     <!-- Calendário View -->
-    <div v-if="currentView === 'Calendário'" class="flex flex-col gap-6">
+    <div
+      v-if="currentView === 'Calendário'"
+      class="flex flex-col gap-6"
+    >
       <!-- Calendar Strip -->
       <div
         class="bg-surface rounded-3xl border border-border p-8 shadow-sm overflow-hidden"
       >
         <div class="flex items-center justify-between mb-10 px-4">
           <button
-            @click="prevWeek"
             class="p-3 rounded-2xl bg-primary/2 hover:bg-primary/5 transition-all text-primary"
+            @click="prevWeek"
           >
             <ChevronLeft size="20" />
           </button>
@@ -53,8 +56,8 @@
             {{ currentMonthYear }}
           </h3>
           <button
-            @click="nextWeek"
             class="p-3 rounded-2xl bg-primary/2 hover:bg-primary/5 transition-all text-primary"
+            @click="nextWeek"
           >
             <ChevronRight size="20" />
           </button>
@@ -66,9 +69,6 @@
           <div
             v-for="day in weekDays"
             :key="day.dateStr"
-            @click="selectedDate = day.dateStr"
-            @dragover.prevent
-            @drop="handleDropOnDate(day.dateStr)"
             class="flex flex-col items-center gap-3 p-6 rounded-3xl transition-all cursor-pointer min-w-30 group relative border-2 border-transparent"
             :class="[
               selectedDate === day.dateStr
@@ -76,6 +76,9 @@
                 : 'bg-primary/2 text-secondary hover:bg-primary/4',
               draggedEventId ? 'border-dashed border-brand/30' : '',
             ]"
+            @click="selectedDate = day.dateStr"
+            @dragover.prevent
+            @drop="handleDropOnDate(day.dateStr)"
           >
             <span
               class="font-black opacity-40 text-[10px] uppercase tracking-[0.2em] group-hover:opacity-100 transition-opacity"
@@ -86,7 +89,7 @@
             <div
               v-if="day.hasEvents && selectedDate !== day.dateStr"
               class="absolute bottom-4 w-1.5 h-1.5 rounded-full bg-brand animate-pulse"
-            ></div>
+            />
           </div>
         </div>
       </div>
@@ -96,13 +99,13 @@
         <!-- Timeline/Events (Left 8 cols) -->
         <div class="xl:col-span-8 space-y-8">
           <div class="flex items-center gap-3 px-2">
-            <div class="w-2 h-2 rounded-full bg-brand"></div>
+            <div class="w-2 h-2 rounded-full bg-brand" />
             <h4
               class="text-[10px] font-black uppercase tracking-[0.3em] text-primary"
             >
               Programação do Dia
             </h4>
-            <div class="flex-1 h-px bg-border ml-2"></div>
+            <div class="flex-1 h-px bg-border ml-2" />
           </div>
 
           <div
@@ -111,10 +114,8 @@
           >
             <div
               class="w-10 h-10 border-4 border-primary/10 border-t-primary rounded-full animate-spin mb-4"
-            ></div>
-            <span class="text-[10px] font-black uppercase tracking-widest"
-              >Sincronizando logistica...</span
-            >
+            />
+            <span class="text-[10px] font-black uppercase tracking-widest">Sincronizando logistica...</span>
           </div>
 
           <div
@@ -124,7 +125,10 @@
             <div
               class="p-8 rounded-full bg-primary/2 mb-6 group-hover:scale-110 transition-transform"
             >
-              <CalendarX size="48" class="text-secondary opacity-20" />
+              <CalendarX
+                size="48"
+                class="text-secondary opacity-20"
+              />
             </div>
             <p
               class="text-[11px] font-black uppercase tracking-[0.2em] text-secondary opacity-40"
@@ -133,33 +137,37 @@
             </p>
           </div>
 
-          <div v-else class="space-y-2">
+          <div
+            v-else
+            class="space-y-2"
+          >
             <div
               v-for="hour in timelineHours"
               :key="hour"
+              class="relative flex gap-8 group/hour"
               @dragover.prevent
               @drop="handleDropOnHour(hour)"
-              class="relative flex gap-8 group/hour"
             >
               <!-- Hour Marker -->
               <div class="flex flex-col items-end min-w-16 py-4">
-                <span class="text-sm font-black text-primary tabular-nums"
-                  >{{ hour }}:00</span
-                >
-                <div class="w-1 h-1 rounded-full bg-border mt-2"></div>
+                <span class="text-sm font-black text-primary tabular-nums">{{ hour }}:00</span>
+                <div class="w-1 h-1 rounded-full bg-border mt-2" />
               </div>
 
               <!-- Drop Zone / Line -->
               <div
                 class="flex-1 border-l-2 border-border/50 pl-8 pb-8 group-hover/hour:border-brand/30 transition-colors"
               >
-                <div v-if="getEventsByHour(hour).length > 0" class="space-y-4">
+                <div
+                  v-if="getEventsByHour(hour).length > 0"
+                  class="space-y-4"
+                >
                   <div
                     v-for="event in getEventsByHour(hour)"
                     :key="event.id"
                     draggable="true"
-                    @dragstart="handleDragStart($event, event.id)"
                     class="group/item bg-surface rounded-2xl p-6 border border-border hover:border-brand shadow-sm hover:shadow-xl hover:shadow-brand/5 transition-all cursor-move relative"
+                    @dragstart="handleDragStart($event, event.id)"
                   >
                     <div class="flex items-center justify-between mb-4">
                       <div class="flex items-center gap-3">
@@ -217,31 +225,30 @@
                       </div>
                       <div class="flex items-center gap-3">
                         <button
-                          @click="handleExecutar(event)"
                           class="flex items-center gap-2 px-6 py-3 bg-brand/10 text-brand rounded-xl hover:bg-brand hover:text-white transition-all"
+                          @click="handleExecutar(event)"
                         >
                           <Truck size="16" />
                           <span
                             class="text-[10px] font-black uppercase tracking-widest"
-                            >Expedição</span
-                          >
+                          >Expedição</span>
                         </button>
                         <div
                           class="flex items-center gap-2 px-4 py-2 bg-primary/2 rounded-xl"
                         >
-                          <Package size="14" class="text-brand" />
-                          <span class="text-xs font-black text-primary"
-                            >{{ event.qtd }} m³</span
-                          >
+                          <Package
+                            size="14"
+                            class="text-brand"
+                          />
+                          <span class="text-xs font-black text-primary">{{ event.qtd }} m³</span>
                           <div
                             v-if="event.produtoNome"
                             class="flex items-center gap-2"
                           >
-                            <div class="w-1 h-1 rounded-full bg-border"></div>
+                            <div class="w-1 h-1 rounded-full bg-border" />
                             <span
                               class="text-[10px] font-black text-secondary uppercase"
-                              >{{ event.produtoNome }}</span
-                            >
+                            >{{ event.produtoNome }}</span>
                           </div>
                         </div>
                       </div>
@@ -256,7 +263,10 @@
                         v-if="event.caminhao"
                         class="flex items-center gap-2"
                       >
-                        <Truck size="14" class="text-secondary opacity-40" />
+                        <Truck
+                          size="14"
+                          class="text-secondary opacity-40"
+                        />
                         <span
                           class="text-[10px] font-black uppercase text-secondary tracking-tight"
                         >
@@ -268,7 +278,10 @@
                         v-if="event.motorista"
                         class="flex items-center gap-2"
                       >
-                        <User size="14" class="text-secondary opacity-40" />
+                        <User
+                          size="14"
+                          class="text-secondary opacity-40"
+                        />
                         <span
                           class="text-[10px] font-black uppercase text-secondary tracking-tight"
                         >
@@ -286,8 +299,7 @@
                 >
                   <span
                     class="hidden group-hover/hour:block text-[8px] font-black uppercase tracking-[0.3em] text-brand/30"
-                    >Livre</span
-                  >
+                  >Livre</span>
                 </div>
               </div>
             </div>
@@ -298,7 +310,10 @@
               class="mt-10 pt-10 border-t border-dashed border-border"
             >
               <div class="flex items-center gap-3 mb-6 px-2">
-                <Clock size="16" class="text-secondary opacity-40" />
+                <Clock
+                  size="16"
+                  class="text-secondary opacity-40"
+                />
                 <h4
                   class="text-[9px] font-black uppercase tracking-[0.3em] text-secondary opacity-40"
                 >
@@ -310,8 +325,8 @@
                   v-for="event in unscheduledEvents"
                   :key="event.id"
                   draggable="true"
-                  @dragstart="handleDragStart($event, event.id)"
                   class="group/item bg-surface rounded-2xl p-6 border border-border hover:border-brand shadow-sm hover:shadow-xl hover:shadow-brand/5 transition-all cursor-move relative"
+                  @dragstart="handleDragStart($event, event.id)"
                 >
                   <div class="flex items-center justify-between mb-4">
                     <div class="flex items-center gap-3">
@@ -359,12 +374,10 @@
                 <div class="flex items-end gap-2">
                   <span
                     class="text-5xl font-black tracking-tighter text-background"
-                    >{{ totalVolume }}</span
-                  >
+                  >{{ totalVolume }}</span>
                   <span
                     class="text-xl font-bold opacity-40 mb-1 text-background"
-                    >m³</span
-                  >
+                  >m³</span>
                 </div>
               </div>
 
@@ -374,8 +387,7 @@
                 <div>
                   <span
                     class="text-[9px] font-black uppercase tracking-widest text-background/40 block mb-1"
-                    >Entregas</span
-                  >
+                  >Entregas</span>
                   <span class="text-xl font-black text-background">{{
                     dailyEvents.length
                   }}</span>
@@ -383,8 +395,7 @@
                 <div>
                   <span
                     class="text-[9px] font-black uppercase tracking-widest text-background/40 block mb-1"
-                    >Pendente</span
-                  >
+                  >Pendente</span>
                   <span class="text-xl font-black text-background">{{
                     dailyEvents.filter((e) => e.status !== "APROVADO").length
                   }}</span>
@@ -401,7 +412,10 @@
             class="bg-surface rounded-3xl border border-border p-10 space-y-8"
           >
             <div class="flex items-center gap-3">
-              <Filter size="18" class="text-brand" />
+              <Filter
+                size="18"
+                class="text-brand"
+              />
               <h4
                 class="text-[10px] font-black uppercase tracking-widest text-primary"
               >
@@ -413,8 +427,7 @@
               <div class="space-y-3">
                 <label
                   class="text-[9px] font-black uppercase tracking-widest opacity-40"
-                  >Status da Entrega</label
-                >
+                >Status da Entrega</label>
                 <div class="flex flex-col gap-2">
                   <label
                     v-for="s in ['Todos', 'Confirmados', 'Pendentes']"
@@ -422,11 +435,11 @@
                     class="flex items-center gap-3 p-3 rounded-2xl border border-transparent hover:bg-primary/2 cursor-pointer transition-all"
                   >
                     <input
-                      type="radio"
                       v-model="statusFilter"
+                      type="radio"
                       :value="s"
                       class="accent-brand w-4 h-4"
-                    />
+                    >
                     <span class="text-xs font-bold text-primary">{{ s }}</span>
                   </label>
                 </div>
@@ -434,10 +447,13 @@
 
               <div class="pt-6 border-t border-border">
                 <button
-                  @click="refresh"
                   class="w-full py-4 bg-primary/2 rounded-2xl text-[10px] font-black uppercase tracking-widest text-secondary hover:bg-primary/5 transition-all flex items-center justify-center gap-3"
+                  @click="refresh"
                 >
-                  <RefreshCw size="14" :class="{ 'animate-spin': pending }" />
+                  <RefreshCw
+                    size="14"
+                    :class="{ 'animate-spin': pending }"
+                  />
                   Sincronizar Dados
                 </button>
               </div>
@@ -514,26 +530,34 @@
               <span class="text-[10px] font-black text-primary uppercase">{{
                 event.produtoNome
               }}</span>
-              <span class="text-xs font-black text-brand"
-                >{{ event.qtd }} m³</span
-              >
+              <span class="text-xs font-black text-brand">{{ event.qtd }} m³</span>
             </div>
           </td>
           <td class="px-8 py-5">
             <div class="flex flex-col gap-1">
-              <div v-if="event.motorista" class="flex items-center gap-2">
-                <User size="12" class="text-secondary opacity-40" />
+              <div
+                v-if="event.motorista"
+                class="flex items-center gap-2"
+              >
+                <User
+                  size="12"
+                  class="text-secondary opacity-40"
+                />
                 <span
                   class="text-[9px] font-black uppercase text-secondary tracking-tight"
-                  >{{ event.motorista.nome }}</span
-                >
+                >{{ event.motorista.nome }}</span>
               </div>
-              <div v-if="event.caminhao" class="flex items-center gap-2">
-                <Truck size="12" class="text-secondary opacity-40" />
+              <div
+                v-if="event.caminhao"
+                class="flex items-center gap-2"
+              >
+                <Truck
+                  size="12"
+                  class="text-secondary opacity-40"
+                />
                 <span
                   class="text-[9px] font-black uppercase text-secondary tracking-tight"
-                  >{{ event.caminhao.placa }}</span
-                >
+                >{{ event.caminhao.placa }}</span>
               </div>
             </div>
           </td>
@@ -560,8 +584,8 @@
           <td class="px-8 py-5">
             <div class="flex items-center justify-end gap-2">
               <button
-                @click="handleExecutar(event)"
                 class="p-2.5 rounded-xl bg-primary/2 text-secondary hover:text-brand hover:bg-white border border-transparent hover:border-border transition-all shadow-sm"
+                @click="handleExecutar(event)"
               >
                 <Truck size="16" />
               </button>
@@ -571,9 +595,15 @@
 
         <!-- Empty State List -->
         <tr v-if="!sortedEvents.length">
-          <td colspan="7" class="py-32 text-center">
+          <td
+            colspan="7"
+            class="py-32 text-center"
+          >
             <div class="flex flex-col items-center justify-center opacity-20">
-              <CalendarX size="48" class="mb-4" />
+              <CalendarX
+                size="48"
+                class="mb-4"
+              />
               <p class="text-[10px] font-black uppercase tracking-widest">
                 Nenhuma entrega agendada no período
               </p>
@@ -593,7 +623,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted } from 'vue'
 import {
   ChevronLeft,
   ChevronRight,
@@ -608,238 +638,240 @@ import {
   Clock,
   GripVertical,
   User,
-} from "lucide-vue-next";
-import { useFetch, navigateTo } from "#imports";
-import { useToast } from "~/composables/useToast";
-import { useLogger } from "~/composables/useLogger";
+} from 'lucide-vue-next'
+import { useFetch, navigateTo } from '#imports'
+import { useToast } from '~/composables/useToast'
+import { useLogger } from '~/composables/useLogger'
 
-definePageMeta({ layout: "default" });
+definePageMeta({ layout: 'default' })
 
-const { add: addToast } = useToast();
-const { info, error: logError } = useLogger();
-const currentView = ref("Calendário");
-const statusFilter = ref("Todos");
+const { add: addToast } = useToast()
+const { info, error: logError } = useLogger()
+const currentView = ref('Calendário')
+const statusFilter = ref('Todos')
 const selectedDate = useState(
-  "agenda_selected_date",
-  () => new Date().toISOString().split("T")[0],
-);
-const weekOffset = ref(0);
-const showLogisticaModal = ref(false);
-const orcamentoSelecionado = ref(null);
+  'agenda_selected_date',
+  () => new Date().toISOString().split('T')[0],
+)
+const weekOffset = ref(0)
+const showLogisticaModal = ref(false)
+const orcamentoSelecionado = ref(null)
 
 const handleExecutar = async (event) => {
   try {
     // Buscamos o orçamento completo para garantir que temos todos os dados (idEmpresa, idBomba, etc)
-    const data = await $fetch(`/api/orcamentos/${event.id}`);
-    orcamentoSelecionado.value = data;
-    showLogisticaModal.value = true;
-    info("LOGISTICA", `Iniciando controle logístico para #${event.id}`, {
+    const data = await $fetch(`/api/orcamentos/${event.id}`)
+    orcamentoSelecionado.value = data
+    showLogisticaModal.value = true
+    info('LOGISTICA', `Iniciando controle logístico para #${event.id}`, {
       cliente: event.nomeCliente,
-    });
-  } catch (e) {
+    })
+  }
+  catch (e) {
     logError(
-      "LOGISTICA",
+      'LOGISTICA',
       `Falha ao carregar orçamento #${event.id} na agenda`,
       {
         error: e.message,
       },
-    );
+    )
     addToast({
-      title: "Erro",
-      description: "Não foi possível carregar os dados do orçamento.",
-      type: "error",
-    });
+      title: 'Erro',
+      description: 'Não foi possível carregar os dados do orçamento.',
+      type: 'error',
+    })
   }
-};
+}
 // Helper para calcular as datas da semana de forma isolada
 const weekDates = computed(() => {
-  const dates = [];
-  const now = new Date();
-  const startOfWeek = new Date(now);
-  startOfWeek.setDate(now.getDate() - now.getDay() + weekOffset.value * 7);
+  const dates = []
+  const now = new Date()
+  const startOfWeek = new Date(now)
+  startOfWeek.setDate(now.getDate() - now.getDay() + weekOffset.value * 7)
 
   for (let i = 0; i < 7; i++) {
-    const d = new Date(startOfWeek);
-    d.setDate(startOfWeek.getDate() + i);
-    dates.push(d.toISOString().split("T")[0]);
+    const d = new Date(startOfWeek)
+    d.setDate(startOfWeek.getDate() + i)
+    dates.push(d.toISOString().split('T')[0])
   }
-  return dates;
-});
+  return dates
+})
 
 // Data Fetching
 const {
   data: events,
   pending,
   refresh,
-} = await useFetch("/api/entregas", {
+} = await useFetch('/api/entregas', {
   query: computed(() => ({
     start: weekDates.value[0],
     end: weekDates.value[6],
   })),
-});
+})
 
 const weekDays = computed(() => {
-  const labels = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+  const labels = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
   return weekDates.value.map((dateStr) => {
-    const d = new Date(dateStr + "T00:00:00");
+    const d = new Date(dateStr + 'T00:00:00')
     return {
       label: labels[d.getDay()],
       day: d.getDate(),
       dateStr,
       hasEvents: events.value?.some(
-        (e) =>
-          e.dataEntrega &&
-          new Date(e.dataEntrega).toISOString().split("T")[0] === dateStr,
+        e =>
+          e.dataEntrega
+          && new Date(e.dataEntrega).toISOString().split('T')[0] === dateStr,
       ),
-    };
-  });
-});
+    }
+  })
+})
 
 const currentMonthYear = computed(() => {
-  const midDate = new Date(weekDays.value[3].dateStr);
-  return midDate.toLocaleDateString("pt-BR", {
-    month: "long",
-    year: "numeric",
-  });
-});
+  const midDate = new Date(weekDays.value[3].dateStr)
+  return midDate.toLocaleDateString('pt-BR', {
+    month: 'long',
+    year: 'numeric',
+  })
+})
 
 const dailyEvents = computed(() => {
-  if (!events.value) return [];
+  if (!events.value) return []
   return events.value.filter((e) => {
-    const eDate = new Date(e.dataEntrega).toISOString().split("T")[0];
-    const matchesDate = eDate === selectedDate.value;
+    const eDate = new Date(e.dataEntrega).toISOString().split('T')[0]
+    const matchesDate = eDate === selectedDate.value
 
-    if (statusFilter.value === "Confirmados")
-      return matchesDate && e.status === "APROVADO";
-    if (statusFilter.value === "Pendentes")
-      return matchesDate && e.status !== "APROVADO";
-    return matchesDate;
-  });
-});
+    if (statusFilter.value === 'Confirmados')
+      return matchesDate && e.status === 'APROVADO'
+    if (statusFilter.value === 'Pendentes')
+      return matchesDate && e.status !== 'APROVADO'
+    return matchesDate
+  })
+})
 
 const totalVolume = computed(() => {
   return dailyEvents.value
     .reduce((acc, curr) => acc + (curr.qtd || 0), 0)
-    .toFixed(1);
-});
+    .toFixed(1)
+})
 
 const sortedEvents = computed(() => {
-  if (!events.value) return [];
+  if (!events.value) return []
   return [...events.value].sort(
     (a, b) => new Date(a.dataEntrega) - new Date(b.dataEntrega),
-  );
-});
+  )
+})
 
-const prevWeek = () => weekOffset.value--;
-const nextWeek = () => weekOffset.value++;
+const prevWeek = () => weekOffset.value--
+const nextWeek = () => weekOffset.value++
 
 const formatTime = (date) => {
-  if (!date) return "--:--";
-  return new Date(date).toLocaleTimeString("pt-BR", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-};
+  if (!date) return '--:--'
+  return new Date(date).toLocaleTimeString('pt-BR', {
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+}
 
 // Timeline Hours
 const timelineHours = [
-  "06",
-  "07",
-  "08",
-  "09",
-  "10",
-  "11",
-  "12",
-  "13",
-  "14",
-  "15",
-  "16",
-  "17",
-  "18",
-  "19",
-];
+  '06',
+  '07',
+  '08',
+  '09',
+  '10',
+  '11',
+  '12',
+  '13',
+  '14',
+  '15',
+  '16',
+  '17',
+  '18',
+  '19',
+]
 
 const getEventsByHour = (hour) => {
   return dailyEvents.value.filter((e) => {
-    const time = new Date(e.dataEntrega);
-    return time.getHours().toString().padStart(2, "0") === hour;
-  });
-};
+    const time = new Date(e.dataEntrega)
+    return time.getHours().toString().padStart(2, '0') === hour
+  })
+}
 
 const unscheduledEvents = computed(() => {
   return dailyEvents.value.filter((e) => {
-    const hour = new Date(e.dataEntrega).getHours().toString().padStart(2, "0");
-    return !timelineHours.includes(hour);
-  });
-});
+    const hour = new Date(e.dataEntrega).getHours().toString().padStart(2, '0')
+    return !timelineHours.includes(hour)
+  })
+})
 
 // Drag and Drop Logic
-const draggedEventId = ref(null);
+const draggedEventId = ref(null)
 
 const handleDragStart = (e, eventId) => {
-  draggedEventId.value = eventId;
-  e.dataTransfer.effectAllowed = "move";
+  draggedEventId.value = eventId
+  e.dataTransfer.effectAllowed = 'move'
   // Adiciona uma classe visual ou preview se necessário
-};
+}
 
 const handleDropOnHour = async (hour) => {
-  if (!draggedEventId.value) return;
+  if (!draggedEventId.value) return
 
-  const event = events.value.find((e) => e.id === draggedEventId.value);
-  if (!event) return;
+  const event = events.value.find(e => e.id === draggedEventId.value)
+  if (!event) return
 
-  const newDate = new Date(selectedDate.value + "T00:00:00");
-  newDate.setHours(parseInt(hour));
-  newDate.setMinutes(0);
+  const newDate = new Date(selectedDate.value + 'T00:00:00')
+  newDate.setHours(parseInt(hour))
+  newDate.setMinutes(0)
 
-  await updateEntregaDate(event.id, newDate);
-  draggedEventId.value = null;
-};
+  await updateEntregaDate(event.id, newDate)
+  draggedEventId.value = null
+}
 
 const handleDropOnDate = async (dateStr) => {
-  if (!draggedEventId.value) return;
+  if (!draggedEventId.value) return
 
-  const event = events.value.find((e) => e.id === draggedEventId.value);
-  if (!event) return;
+  const event = events.value.find(e => e.id === draggedEventId.value)
+  if (!event) return
 
-  const oldDate = new Date(event.dataEntrega);
-  const newDate = new Date(dateStr + "T00:00:00");
-  newDate.setHours(oldDate.getHours());
-  newDate.setMinutes(oldDate.getMinutes());
+  const oldDate = new Date(event.dataEntrega)
+  const newDate = new Date(dateStr + 'T00:00:00')
+  newDate.setHours(oldDate.getHours())
+  newDate.setMinutes(oldDate.getMinutes())
 
-  await updateEntregaDate(event.id, newDate);
-  draggedEventId.value = null;
-};
+  await updateEntregaDate(event.id, newDate)
+  draggedEventId.value = null
+}
 
 const updateEntregaDate = async (id, date) => {
   try {
     await $fetch(`/api/orcamentos/${id}`, {
-      method: "PUT",
+      method: 'PUT',
       body: { dataEntrega: date },
-    });
+    })
 
-    info("LOGISTICA", `Entrega reprogramada para orçamento #${id}`, {
+    info('LOGISTICA', `Entrega reprogramada para orçamento #${id}`, {
       nova_data: date,
-    });
+    })
 
     addToast({
-      title: "Agenda Atualizada",
-      description: "Horário de entrega reprogramado com sucesso.",
-      type: "success",
-    });
+      title: 'Agenda Atualizada',
+      description: 'Horário de entrega reprogramado com sucesso.',
+      type: 'success',
+    })
 
-    await refresh();
-  } catch (e) {
-    logError("LOGISTICA", `Erro ao reprogramar entrega #${id}`, {
-      error: e.message,
-    });
-    addToast({
-      title: "Erro ao mover",
-      description: "Não foi possível atualizar a data da entrega.",
-      type: "error",
-    });
+    await refresh()
   }
-};
+  catch (e) {
+    logError('LOGISTICA', `Erro ao reprogramar entrega #${id}`, {
+      error: e.message,
+    })
+    addToast({
+      title: 'Erro ao mover',
+      description: 'Não foi possível atualizar a data da entrega.',
+      type: 'error',
+    })
+  }
+}
 </script>
 
 <style scoped>

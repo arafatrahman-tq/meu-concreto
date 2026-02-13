@@ -14,23 +14,23 @@
 defineProps({
   size: {
     type: String,
-    default: "md",
-    validator: (value) => ["xs", "sm", "md", "lg", "xl", "full"].includes(value),
+    default: 'md',
+    validator: value => ['xs', 'sm', 'md', 'lg', 'xl', 'full'].includes(value),
   },
   className: {
     type: String,
-    default: "",
+    default: '',
   },
-});
+})
 
 const sizeClasses = {
-  xs: "h-4 w-16",
-  sm: "h-6 w-24",
-  md: "h-8 w-32",
-  lg: "h-12 w-48",
-  xl: "h-16 w-64",
-  full: "h-full w-full",
-};
+  xs: 'h-4 w-16',
+  sm: 'h-6 w-24',
+  md: 'h-8 w-32',
+  lg: 'h-12 w-48',
+  xl: 'h-16 w-64',
+  full: 'h-full w-full',
+}
 </script>
 
 <style scoped>

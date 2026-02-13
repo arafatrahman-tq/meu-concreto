@@ -25,7 +25,7 @@
             v-model="searchTerm"
             placeholder="Buscar por cliente ou ID..."
             class="pl-12 pr-4 py-3.5 bg-primary/2 border border-border rounded-2xl text-sm font-black uppercase tracking-widest text-primary placeholder:text-secondary/20 w-full md:w-80 focus:ring-2 focus:ring-brand/20 focus:border-brand/30 transition-all outline-none"
-          />
+          >
         </div>
       </div>
     </div>
@@ -39,7 +39,10 @@
       >
         <div class="flex justify-between items-start mb-4">
           <div :class="['p-3 rounded-2xl bg-primary/3', stat.color]">
-            <component :is="stat.icon" size="20" />
+            <component
+              :is="stat.icon"
+              size="20"
+            />
           </div>
           <span
             :class="[
@@ -77,8 +80,7 @@
           <td class="px-8 py-5">
             <span
               class="text-xs font-black text-secondary opacity-40 tabular-nums"
-              >#{{ String(venda.id).padStart(4, "0") }}</span
-            >
+            >#{{ String(venda.id).padStart(4, "0") }}</span>
           </td>
           <td class="px-8 py-5">
             <span
@@ -91,12 +93,10 @@
             <div class="flex flex-col">
               <span
                 class="text-sm font-black uppercase tracking-tight text-primary"
-                >{{ venda.orcamento?.nomeCliente || "---" }}</span
-              >
+              >{{ venda.orcamento?.nomeCliente || "---" }}</span>
               <span
                 class="text-[10px] font-black uppercase opacity-30 mt-0.5 tracking-widest"
-                >{{ venda.orcamento?.cpfCnpj || "---" }}</span
-              >
+              >{{ venda.orcamento?.cpfCnpj || "---" }}</span>
             </div>
           </td>
           <td class="px-8 py-5">
@@ -120,7 +120,7 @@
                   'w-2 h-2 rounded-full shadow-[0_0_10px]',
                   statusColor[venda.status],
                 ]"
-              ></div>
+              />
               <span
                 class="text-[10px] font-black uppercase tracking-widest"
                 :class="statusTextColor[venda.status]"
@@ -133,56 +133,59 @@
             <div class="flex items-center justify-end gap-2">
               <BaseTooltip text="Emitir NF-e">
                 <button
-                  @click="emitNfe(venda)"
                   class="p-2.5 rounded-xl bg-[#00AEEF]/10 text-[#00AEEF] hover:scale-110 active:scale-95 transition-all"
+                  @click="emitNfe(venda)"
                 >
                   <FileText size="16" />
                 </button>
               </BaseTooltip>
               <BaseTooltip text="Emitir NFS-e">
                 <button
-                  @click="emitNfse(venda)"
                   class="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-500 hover:scale-110 active:scale-95 transition-all"
+                  @click="emitNfse(venda)"
                 >
                   <FileBadge size="16" />
                 </button>
               </BaseTooltip>
               <BaseTooltip text="Emitir Pagamento">
                 <button
-                  @click="openPaymentModal(venda)"
                   class="p-2.5 rounded-xl bg-brand/10 text-brand hover:scale-110 active:scale-95 transition-all"
+                  @click="openPaymentModal(venda)"
                 >
                   <CreditCard size="16" />
                 </button>
               </BaseTooltip>
               <BaseTooltip text="WhatsApp">
                 <button
-                  @click="sendWhatsAppVenda(venda)"
                   class="p-2.5 rounded-xl bg-[#25D366]/10 text-[#25D366] hover:scale-110 active:scale-95 transition-all"
+                  @click="sendWhatsAppVenda(venda)"
                 >
                   <MessageSquare size="16" />
                 </button>
               </BaseTooltip>
               <BaseTooltip text="Imprimir">
                 <button
-                  @click="printVenda(venda)"
                   class="p-2.5 rounded-xl bg-orange-500/10 text-orange-500 hover:scale-110 active:scale-95 transition-all"
+                  @click="printVenda(venda)"
                 >
                   <Printer size="16" />
                 </button>
               </BaseTooltip>
               <BaseTooltip text="Visualizar">
                 <button
-                  @click="openViewModal(venda)"
                   class="p-2.5 rounded-xl text-secondary hover:text-brand hover:bg-primary/3 hover:scale-110 transition-all"
+                  @click="openViewModal(venda)"
                 >
                   <Eye size="16" />
                 </button>
               </BaseTooltip>
-              <BaseTooltip v-if="isAdmin" text="Excluir">
+              <BaseTooltip
+                v-if="isAdmin"
+                text="Excluir"
+              >
                 <button
-                  @click="confirmDelete(venda)"
                   class="p-2.5 rounded-xl text-secondary hover:text-rose-500 hover:bg-rose-500/10 hover:scale-110 transition-all"
+                  @click="confirmDelete(venda)"
                 >
                   <Trash2 size="16" />
                 </button>
@@ -193,11 +196,17 @@
       </BaseTable>
 
       <!-- Empty State & Load More -->
-      <div v-if="!filteredVendas.length && !pending" class="p-20 text-center">
+      <div
+        v-if="!filteredVendas.length && !pending"
+        class="p-20 text-center"
+      >
         <div
           class="w-16 h-16 bg-primary/2 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-border"
         >
-          <ShoppingBag size="32" class="text-secondary/20" />
+          <ShoppingBag
+            size="32"
+            class="text-secondary/20"
+          />
         </div>
         <h3 class="text-lg font-black uppercase tracking-tight text-primary">
           Nenhuma venda encontrada
@@ -214,26 +223,38 @@
         class="p-8 flex justify-center border-t border-border"
       >
         <button
-          @click="itemsToShow += 20"
           class="flex items-center gap-2 px-6 py-3 bg-primary/2 hover:bg-primary/3 text-primary text-xs font-black uppercase tracking-widest rounded-2xl transition-all hover:scale-105"
+          @click="itemsToShow += 20"
         >
-          <RefreshCw size="14" class="opacity-40" />
+          <RefreshCw
+            size="14"
+            class="opacity-40"
+          />
           Carregar mais vendas
         </button>
       </div>
     </div>
 
     <!-- View Detail Modal -->
-    <BaseModal v-model="showViewModal" title="Detalhes da Venda" size="xl">
-      <div v-if="selectedVenda" class="space-y-8 pt-4">
+    <BaseModal
+      v-model="showViewModal"
+      title="Detalhes da Venda"
+      size="xl"
+    >
+      <div
+        v-if="selectedVenda"
+        class="space-y-8 pt-4"
+      >
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div class="bg-primary/2 p-6 rounded-3xl border border-border">
             <div class="flex items-center gap-2 mb-4">
-              <User size="16" class="text-brand" />
+              <User
+                size="16"
+                class="text-brand"
+              />
               <span
                 class="text-[10px] font-black uppercase tracking-widest text-secondary"
-                >Cliente</span
-              >
+              >Cliente</span>
             </div>
             <p class="text-base font-black uppercase text-primary">
               {{ selectedVenda.orcamento?.nomeCliente }}
@@ -247,11 +268,13 @@
 
           <div class="bg-primary/2 p-6 rounded-3xl border border-border">
             <div class="flex items-center gap-2 mb-4">
-              <Calendar size="16" class="text-brand" />
+              <Calendar
+                size="16"
+                class="text-brand"
+              />
               <span
                 class="text-[10px] font-black uppercase tracking-widest text-secondary"
-                >Data da Venda</span
-              >
+              >Data da Venda</span>
             </div>
             <p class="text-base font-black uppercase text-primary">
               {{ formatDate(selectedVenda.dataVenda) }}
@@ -265,11 +288,13 @@
 
           <div class="bg-brand/5 p-6 rounded-3xl border border-brand/10">
             <div class="flex items-center gap-2 mb-4">
-              <DollarSign size="16" class="text-brand" />
+              <DollarSign
+                size="16"
+                class="text-brand"
+              />
               <span
                 class="text-[10px] font-black uppercase tracking-widest text-brand"
-                >Total da Venda</span
-              >
+              >Total da Venda</span>
             </div>
             <p class="text-2xl font-black uppercase text-brand">
               {{ formatCurrency(selectedVenda.valorTotal) }}
@@ -285,9 +310,12 @@
         </div>
 
         <!-- Seção de Pagamentos/Finanças -->
-        <div v-if="selectedVenda.pagamentos?.length" class="space-y-4">
+        <div
+          v-if="selectedVenda.pagamentos?.length"
+          class="space-y-4"
+        >
           <div class="flex items-center gap-2">
-            <div class="w-1.5 h-4 bg-amber-500 rounded-full"></div>
+            <div class="w-1.5 h-4 bg-amber-500 rounded-full" />
             <h4
               class="text-[10px] font-black uppercase tracking-[0.2em] text-primary"
             >
@@ -309,8 +337,14 @@
                       : 'bg-amber-500/10 text-amber-600',
                   ]"
                 >
-                  <CheckCircle2 v-if="pagto.status === 'PAGO'" size="18" />
-                  <Clock v-else size="18" />
+                  <CheckCircle2
+                    v-if="pagto.status === 'PAGO'"
+                    size="18"
+                  />
+                  <Clock
+                    v-else
+                    size="18"
+                  />
                 </div>
                 <div>
                   <p
@@ -353,7 +387,7 @@
           class="space-y-4"
         >
           <div class="flex items-center gap-2">
-            <div class="w-1.5 h-4 bg-emerald-500 rounded-full"></div>
+            <div class="w-1.5 h-4 bg-emerald-500 rounded-full" />
             <h4
               class="text-[10px] font-black uppercase tracking-[0.2em] text-primary"
             >
@@ -413,7 +447,7 @@
         <!-- Itens da Venda (origem orçamento) -->
         <div class="space-y-4">
           <div class="flex items-center gap-2">
-            <div class="w-1.5 h-4 bg-brand rounded-full"></div>
+            <div class="w-1.5 h-4 bg-brand rounded-full" />
             <h4
               class="text-[10px] font-black uppercase tracking-[0.2em] text-primary"
             >
@@ -459,72 +493,60 @@
                     }}</span>
                   </td>
                   <td class="px-6 py-4 text-center">
-                    <span class="text-xs font-black text-secondary tabular-nums"
-                      >{{ item.qtd }} m³</span
-                    >
+                    <span class="text-xs font-black text-secondary tabular-nums">{{ item.qtd }} m³</span>
                   </td>
                   <td class="px-6 py-4 text-right">
                     <span
                       class="text-xs font-black text-secondary tabular-nums"
-                      >{{ formatCurrency(item.valorUnit) }}</span
-                    >
+                    >{{ formatCurrency(item.valorUnit) }}</span>
                   </td>
                   <td class="px-6 py-4 text-right">
                     <span
                       class="text-xs font-black text-primary tabular-nums"
-                      >{{ formatCurrency(item.total) }}</span
-                    >
+                    >{{ formatCurrency(item.total) }}</span>
                   </td>
                 </tr>
                 <!-- Linha Extra: Bomba (se houver) -->
                 <tr v-if="selectedVenda.orcamento?.bombaNecessaria">
                   <td class="px-6 py-4">
                     <div class="flex items-center gap-2">
-                      <span class="text-xs font-black uppercase text-primary"
-                        >Serviço de Bombeamento</span
-                      >
+                      <span class="text-xs font-black uppercase text-primary">Serviço de Bombeamento</span>
                       <span
                         class="px-2 py-0.5 bg-brand/10 text-brand text-[8px] font-black rounded-full uppercase"
-                        >Adicional</span
-                      >
+                      >Adicional</span>
                     </div>
                   </td>
                   <td class="px-6 py-4 text-center">
-                    <span class="text-xs font-black text-secondary tabular-nums"
-                      >1 un</span
-                    >
+                    <span class="text-xs font-black text-secondary tabular-nums">1 un</span>
                   </td>
                   <td class="px-6 py-4 text-right">
                     <span
                       class="text-xs font-black text-secondary tabular-nums"
-                      >{{
-                        formatCurrency(selectedVenda.orcamento.valorBomba)
-                      }}</span
-                    >
+                    >{{
+                      formatCurrency(selectedVenda.orcamento.valorBomba)
+                    }}</span>
                   </td>
                   <td class="px-6 py-4 text-right">
                     <span
                       class="text-xs font-black text-primary tabular-nums"
-                      >{{
-                        formatCurrency(selectedVenda.orcamento.valorBomba)
-                      }}</span
-                    >
+                    >{{
+                      formatCurrency(selectedVenda.orcamento.valorBomba)
+                    }}</span>
                   </td>
                 </tr>
                 <!-- Linha Extra: Desconto (se houver) -->
                 <tr v-if="selectedVenda.orcamento?.valorDesconto > 0">
-                  <td class="px-6 py-4" colspan="3">
-                    <span class="text-xs font-black uppercase text-rose-500"
-                      >Desconto Aplicado</span
-                    >
+                  <td
+                    class="px-6 py-4"
+                    colspan="3"
+                  >
+                    <span class="text-xs font-black uppercase text-rose-500">Desconto Aplicado</span>
                   </td>
                   <td class="px-6 py-4 text-right">
-                    <span class="text-xs font-black text-rose-500 tabular-nums"
-                      >-
+                    <span class="text-xs font-black text-rose-500 tabular-nums">-
                       {{
                         formatCurrency(selectedVenda.orcamento.valorDesconto)
-                      }}</span
-                    >
+                      }}</span>
                   </td>
                 </tr>
               </tbody>
@@ -550,15 +572,15 @@
 
           <div class="flex items-center gap-3">
             <button
-              @click="printVenda(selectedVenda)"
               class="flex items-center gap-2 px-8 py-4 bg-brand text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-xl shadow-brand/20 outline-none"
+              @click="printVenda(selectedVenda)"
             >
               <Printer size="14" />
               Imprimir Comprovante
             </button>
             <button
-              @click="showViewModal = false"
               class="px-8 py-4 bg-primary text-background rounded-2xl text-[10px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all outline-none"
+              @click="showViewModal = false"
             >
               Fechar Detalhes
             </button>
@@ -568,7 +590,11 @@
     </BaseModal>
 
     <!-- Delete Confirmation Dialog -->
-    <BaseModal v-model="showDeleteDialog" title="Excluir Venda" size="md">
+    <BaseModal
+      v-model="showDeleteDialog"
+      title="Excluir Venda"
+      size="md"
+    >
       <div class="text-center space-y-4 pt-4">
         <div
           class="w-16 h-16 bg-rose-500/10 rounded-full flex items-center justify-center mx-auto text-rose-500"
@@ -580,26 +606,24 @@
         </h3>
         <p class="text-sm font-medium text-secondary opacity-60">
           Esta ação é irreversível. Deseja realmente excluir a venda
-          <span class="text-primary font-black"
-            >#{{ String(vendaToDelete?.id).padStart(4, "0") }}</span
-          >?
+          <span class="text-primary font-black">#{{ String(vendaToDelete?.id).padStart(4, "0") }}</span>?
         </p>
         <div class="flex gap-3 pt-6">
           <button
-            @click="showDeleteDialog = false"
             class="flex-1 py-4 bg-primary/2 border border-border rounded-2xl text-[10px] font-black uppercase tracking-widest text-secondary hover:bg-primary/5 transition-all outline-none"
+            @click="showDeleteDialog = false"
           >
             Cancelar
           </button>
           <button
-            @click="handleDelete"
             :disabled="loading"
             class="flex-1 py-4 bg-rose-500 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-rose-600 transition-all flex justify-center items-center gap-2 outline-none"
+            @click="handleDelete"
           >
             <span
               v-if="loading"
               class="w-3 h-3 border-2 border-white/20 border-t-white rounded-full animate-spin"
-            ></span>
+            />
             Excluir Permanentemente
           </button>
         </div>
@@ -607,7 +631,11 @@
     </BaseModal>
 
     <!-- Payment Emission Modal -->
-    <BaseModal v-model="showPaymentModal" title="Emitir Pagamento" size="md">
+    <BaseModal
+      v-model="showPaymentModal"
+      title="Emitir Pagamento"
+      size="md"
+    >
       <div class="space-y-6 pt-4">
         <div class="bg-primary/2 p-6 rounded-[2rem] border border-border">
           <div class="flex items-center gap-4 mb-6">
@@ -633,19 +661,18 @@
           <div class="space-y-4">
             <label
               class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2"
-              >Forma de Recebimento</label
-            >
+            >Forma de Recebimento</label>
             <div class="grid grid-cols-1 gap-3">
               <button
                 v-for="type in ['PIX', 'BOLETO', 'CREDIT_CARD']"
                 :key="type"
-                @click="paymentType = type"
                 class="flex items-center justify-between px-6 py-4 rounded-2xl border transition-all text-[10px] font-black uppercase tracking-widest outline-none"
                 :class="
                   paymentType === type
                     ? 'bg-brand text-white border-brand shadow-lg shadow-brand/20'
                     : 'bg-white border-border text-secondary hover:border-brand/30'
                 "
+                @click="paymentType = type"
               >
                 <span v-if="type === 'PIX'">PIX Dinâmico</span>
                 <span v-else-if="type === 'BOLETO'">Boleto Bancário</span>
@@ -653,7 +680,7 @@
                 <div
                   v-if="paymentType === type"
                   class="w-2 h-2 bg-white rounded-full"
-                ></div>
+                />
               </button>
             </div>
           </div>
@@ -675,21 +702,24 @@
 
         <div class="flex gap-3">
           <button
-            @click="showPaymentModal = false"
             class="flex-1 py-4 bg-primary/2 border border-border rounded-2xl text-[10px] font-black uppercase tracking-widest text-secondary outline-none hover:bg-primary/5 transition-all"
+            @click="showPaymentModal = false"
           >
             Cancelar
           </button>
           <button
-            @click="handlePaymentEmission"
             :disabled="loading"
             class="flex-1 py-4 bg-brand text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all flex justify-center items-center gap-3 shadow-xl shadow-brand/20 outline-none"
+            @click="handlePaymentEmission"
           >
-            <Send size="16" v-if="!loading" />
+            <Send
+              v-if="!loading"
+              size="16"
+            />
             <span
               v-else
               class="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"
-            ></span>
+            />
             Emitir e Enviar
           </button>
         </div>
@@ -699,13 +729,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
-import { useFetch, useToast } from "#imports";
-import { useLogger } from "~/composables/useLogger";
-import { useWhatsApp } from "~/composables/useWhatsApp";
-import { useCurrencyFormat } from "~/composables/useValidation";
-import { useRoute } from "vue-router";
-import { generateVendaPdf } from "~/utils/vendaPdf";
+import { ref, computed, onMounted } from 'vue'
+import { useFetch, useToast } from '#imports'
+import { useLogger } from '~/composables/useLogger'
+import { useWhatsApp } from '~/composables/useWhatsApp'
+import { useCurrencyFormat } from '~/composables/useValidation'
+import { useRoute } from 'vue-router'
+import { generateVendaPdf } from '~/utils/vendaPdf'
 import {
   Search,
   ShoppingBag,
@@ -727,323 +757,334 @@ import {
   Send,
   RefreshCw,
   Printer,
-} from "lucide-vue-next";
+} from 'lucide-vue-next'
 
-const { add: addToast } = useToast();
-const route = useRoute();
-const { user } = useAuth();
-const { info, error: logError } = useLogger();
-const { sendMessage: sendWS } = useWhatsApp();
-const { formatarCentavos } = useCurrencyFormat();
-const formatCurrency = formatarCentavos;
-const searchTerm = ref("");
-const itemsToShow = ref(20);
-const loading = ref(false);
-const showViewModal = ref(false);
-const showDeleteDialog = ref(false);
-const showPaymentModal = ref(false);
-const selectedVenda = ref(null);
-const vendaToDelete = ref(null);
-const paymentType = ref("PIX");
+const { add: addToast } = useToast()
+const route = useRoute()
+const { user } = useAuth()
+const { info, error: logError } = useLogger()
+const { sendMessage: sendWS } = useWhatsApp()
+const { formatarCentavos } = useCurrencyFormat()
+const formatCurrency = formatarCentavos
+const searchTerm = ref('')
+const itemsToShow = ref(20)
+const loading = ref(false)
+const showViewModal = ref(false)
+const showDeleteDialog = ref(false)
+const showPaymentModal = ref(false)
+const selectedVenda = ref(null)
+const vendaToDelete = ref(null)
+const paymentType = ref('PIX')
 
-const isAdmin = computed(() => user.value?.admin === 1);
+const isAdmin = computed(() => user.value?.admin === 1)
 
-const { data: vendas, pending, refresh } = await useFetch("/api/vendas");
+const { data: vendas, pending, refresh } = await useFetch('/api/vendas')
 
 onMounted(() => {
   if (route.query.id) {
-    const id = parseInt(route.query.id);
-    const venda = vendas.value?.find((v) => v.id === id);
+    const id = parseInt(route.query.id)
+    const venda = vendas.value?.find(v => v.id === id)
     if (venda) {
-      openViewModal(venda);
+      openViewModal(venda)
     }
   }
 
   if (route.query.q) {
-    searchTerm.value = String(route.query.q);
+    searchTerm.value = String(route.query.q)
   }
-});
+})
 
 // Stats Calculation
 const stats = computed(() => {
-  const list = vendas.value || [];
-  const totalVendido = list.reduce((acc, v) => acc + (v.valorTotal || 0), 0);
-  const pagas = list.filter((v) => v.status === "PAGA");
-  const totalRecebido = pagas.reduce((acc, v) => acc + (v.valorTotal || 0), 0);
-  const emAberto = list.length - pagas.length;
+  const list = vendas.value || []
+  const totalVendido = list.reduce((acc, v) => acc + (v.valorTotal || 0), 0)
+  const pagas = list.filter(v => v.status === 'PAGA')
+  const totalRecebido = pagas.reduce((acc, v) => acc + (v.valorTotal || 0), 0)
+  const emAberto = list.length - pagas.length
 
-  const ticketMedio = list.length > 0 ? totalVendido / list.length : 0;
-  const taxaConversao =
-    list.length > 0 ? Math.round((pagas.length / list.length) * 100) : 0;
+  const ticketMedio = list.length > 0 ? totalVendido / list.length : 0
+  const taxaConversao
+    = list.length > 0 ? Math.round((pagas.length / list.length) * 100) : 0
 
   return [
     {
-      label: "Total em Vendas",
+      label: 'Total em Vendas',
       value: formatCurrency(totalVendido),
       icon: ShoppingBag,
-      color: "text-brand",
+      color: 'text-brand',
       trend: `${list.length} pedidos`,
-      badgeBg: "bg-brand/10",
-      badgeText: "text-brand",
+      badgeBg: 'bg-brand/10',
+      badgeText: 'text-brand',
     },
     {
-      label: "Total Recebido",
+      label: 'Total Recebido',
       value: formatCurrency(totalRecebido),
       icon: DollarSign,
-      color: "text-emerald-500",
+      color: 'text-emerald-500',
       trend: `${taxaConversao}% liquidez`,
-      badgeBg: "bg-emerald-500/10",
-      badgeText: "text-emerald-500",
+      badgeBg: 'bg-emerald-500/10',
+      badgeText: 'text-emerald-500',
     },
     {
-      label: "Ticket Médio",
+      label: 'Ticket Médio',
       value: formatCurrency(ticketMedio),
       icon: Clock,
-      color: "text-blue-500",
-      trend: "Base unitária",
-      badgeBg: "bg-blue-500/10",
-      badgeText: "text-blue-500",
+      color: 'text-blue-500',
+      trend: 'Base unitária',
+      badgeBg: 'bg-blue-500/10',
+      badgeText: 'text-blue-500',
     },
     {
-      label: "Pedidos em Aberto",
+      label: 'Pedidos em Aberto',
       value: String(emAberto),
       icon: AlertTriangle,
-      color: "text-amber-500",
-      trend: "Aguardando pgto",
-      badgeBg: "bg-amber-500/10",
-      badgeText: "text-amber-500",
+      color: 'text-amber-500',
+      trend: 'Aguardando pgto',
+      badgeBg: 'bg-amber-500/10',
+      badgeText: 'text-amber-500',
     },
-  ];
-});
+  ]
+})
 
 const filteredVendas = computed(() => {
-  if (!vendas.value) return [];
+  if (!vendas.value) return []
   return vendas.value.filter((v) => {
-    const query = searchTerm.value.toLowerCase();
-    const clientName = v.orcamento?.nomeCliente?.toLowerCase() || "";
-    const id = String(v.id);
-    const idOrc = String(v.idOrcamento);
+    const query = searchTerm.value.toLowerCase()
+    const clientName = v.orcamento?.nomeCliente?.toLowerCase() || ''
+    const id = String(v.id)
+    const idOrc = String(v.idOrcamento)
     return (
       clientName.includes(query) || id.includes(query) || idOrc.includes(query)
-    );
-  });
-});
+    )
+  })
+})
 
 const displayedVendas = computed(() =>
   filteredVendas.value.slice(0, itemsToShow.value),
-);
+)
 
 const statusColor = {
-  ABERTA: "bg-blue-500 shadow-blue-500/20",
-  PAGA: "bg-emerald-500 shadow-emerald-500/20",
-  CANCELADA: "bg-rose-500 shadow-rose-500/20",
-  NF_EMITIDA: "bg-[#00AEEF] shadow-[#00AEEF]/20",
-};
+  ABERTA: 'bg-blue-500 shadow-blue-500/20',
+  PAGA: 'bg-emerald-500 shadow-emerald-500/20',
+  CANCELADA: 'bg-rose-500 shadow-rose-500/20',
+  NF_EMITIDA: 'bg-[#00AEEF] shadow-[#00AEEF]/20',
+}
 
 const statusTextColor = {
-  ABERTA: "text-blue-600 dark:text-blue-400",
-  PAGA: "text-emerald-600 dark:text-emerald-400",
-  CANCELADA: "text-rose-600 dark:text-rose-400",
-  NF_EMITIDA: "text-[#00AEEF]",
-};
+  ABERTA: 'text-blue-600 dark:text-blue-400',
+  PAGA: 'text-emerald-600 dark:text-emerald-400',
+  CANCELADA: 'text-rose-600 dark:text-rose-400',
+  NF_EMITIDA: 'text-[#00AEEF]',
+}
 
 const openViewModal = (venda) => {
-  selectedVenda.value = venda;
-  showViewModal.value = true;
-};
+  selectedVenda.value = venda
+  showViewModal.value = true
+}
 
 const confirmDelete = (venda) => {
-  vendaToDelete.value = venda;
-  showDeleteDialog.value = true;
-};
+  vendaToDelete.value = venda
+  showDeleteDialog.value = true
+}
 
 const handleDelete = async () => {
-  loading.value = true;
+  loading.value = true
   try {
-    await $fetch(`/api/vendas/${vendaToDelete.value.id}`, { method: "DELETE" });
+    await $fetch(`/api/vendas/${vendaToDelete.value.id}`, { method: 'DELETE' })
     addToast({
-      title: "Excluído",
-      description: "Venda removida com sucesso.",
-      type: "success",
-    });
-    info("VENDAS", `Venda #${vendaToDelete.value.id} removida`, {
+      title: 'Excluído',
+      description: 'Venda removida com sucesso.',
+      type: 'success',
+    })
+    info('VENDAS', `Venda #${vendaToDelete.value.id} removida`, {
       venda: vendaToDelete.value,
-    });
-    refresh();
-    showDeleteDialog.value = false;
-  } catch (err) {
-    const msg = err.data?.message || err.message || "Erro ao remover venda.";
-    addToast({
-      title: "Erro",
-      description: msg,
-      type: "error",
-    });
-    logError("VENDAS", `Erro ao remover venda #${vendaToDelete.value?.id}`, {
-      error: msg,
-    });
-  } finally {
-    loading.value = false;
+    })
+    refresh()
+    showDeleteDialog.value = false
   }
-};
+  catch (err) {
+    const msg = err.data?.message || err.message || 'Erro ao remover venda.'
+    addToast({
+      title: 'Erro',
+      description: msg,
+      type: 'error',
+    })
+    logError('VENDAS', `Erro ao remover venda #${vendaToDelete.value?.id}`, {
+      error: msg,
+    })
+  }
+  finally {
+    loading.value = false
+  }
+}
 
 const emitNfe = async (venda) => {
-  loading.value = true;
+  loading.value = true
   try {
-    await $fetch(`/api/vendas/${venda.id}/nfe`, { method: "POST" });
+    await $fetch(`/api/vendas/${venda.id}/nfe`, { method: 'POST' })
     addToast({
-      title: "NF-e Enviada",
-      description: "Solicitação de NF-e processada com sucesso.",
-      type: "success",
-    });
-    refresh();
-  } catch (err) {
-    addToast({
-      title: "Erro Fiscal",
-      description: err.data?.message || "Falha ao emitir NF-e",
-      type: "error",
-    });
-  } finally {
-    loading.value = false;
+      title: 'NF-e Enviada',
+      description: 'Solicitação de NF-e processada com sucesso.',
+      type: 'success',
+    })
+    refresh()
   }
-};
+  catch (err) {
+    addToast({
+      title: 'Erro Fiscal',
+      description: err.data?.message || 'Falha ao emitir NF-e',
+      type: 'error',
+    })
+  }
+  finally {
+    loading.value = false
+  }
+}
 
 const emitNfse = async (venda) => {
-  loading.value = true;
+  loading.value = true
   try {
-    await $fetch(`/api/vendas/${venda.id}/nfse`, { method: "POST" });
+    await $fetch(`/api/vendas/${venda.id}/nfse`, { method: 'POST' })
     addToast({
-      title: "NFS-e Enviada",
-      description: "Solicitação de NFS-e processada com sucesso.",
-      type: "success",
-    });
-    refresh();
-  } catch (err) {
-    addToast({
-      title: "Erro Fiscal",
-      description: err.data?.message || "Falha ao emitir NFS-e",
-      type: "error",
-    });
-  } finally {
-    loading.value = false;
+      title: 'NFS-e Enviada',
+      description: 'Solicitação de NFS-e processada com sucesso.',
+      type: 'success',
+    })
+    refresh()
   }
-};
+  catch (err) {
+    addToast({
+      title: 'Erro Fiscal',
+      description: err.data?.message || 'Falha ao emitir NFS-e',
+      type: 'error',
+    })
+  }
+  finally {
+    loading.value = false
+  }
+}
 
 const printVenda = async (venda) => {
-  loading.value = true;
+  loading.value = true
   try {
-    const data = await $fetch(`/api/vendas/${venda.id}/comprovante`);
-    generateVendaPdf(data);
+    const data = await $fetch(`/api/vendas/${venda.id}/comprovante`)
+    generateVendaPdf(data)
     addToast({
-      title: "PDF Gerado",
-      description: "O comprovante da venda foi gerado com sucesso.",
-      type: "success",
-    });
-    info("VENDAS", `PDF de comprovante gerado para venda #${venda.id}`);
-  } catch (err) {
-    addToast({
-      title: "Erro ao gerar PDF",
-      description: "Não foi possível carregar os dados técnicos da venda.",
-      type: "error",
-    });
-    logError("VENDAS", `Erro ao gerar PDF da venda #${venda.id}`, {
-      error: err.message,
-    });
-  } finally {
-    loading.value = false;
+      title: 'PDF Gerado',
+      description: 'O comprovante da venda foi gerado com sucesso.',
+      type: 'success',
+    })
+    info('VENDAS', `PDF de comprovante gerado para venda #${venda.id}`)
   }
-};
+  catch (err) {
+    addToast({
+      title: 'Erro ao gerar PDF',
+      description: 'Não foi possível carregar os dados técnicos da venda.',
+      type: 'error',
+    })
+    logError('VENDAS', `Erro ao gerar PDF da venda #${venda.id}`, {
+      error: err.message,
+    })
+  }
+  finally {
+    loading.value = false
+  }
+}
 
 const openPaymentModal = (venda) => {
-  selectedVenda.value = venda;
-  showPaymentModal.value = true;
-};
+  selectedVenda.value = venda
+  showPaymentModal.value = true
+}
 
 const handlePaymentEmission = async () => {
-  if (!selectedVenda.value) return;
-  loading.value = true;
+  if (!selectedVenda.value) return
+  loading.value = true
   try {
     await $fetch(`/api/vendas/${selectedVenda.value.id}/pagamento`, {
-      method: "POST",
+      method: 'POST',
       body: { tipo: paymentType.value },
-    });
+    })
     addToast({
-      title: "Pagamento Emitido",
-      description: "Cobrança gerada e enviada via WhatsApp.",
-      type: "success",
-    });
-    showPaymentModal.value = false;
-    refresh();
-  } catch (err) {
-    addToast({
-      title: "Erro",
-      description: err.data?.message || "Falha ao emitir pagamento",
-      type: "error",
-    });
-  } finally {
-    loading.value = false;
+      title: 'Pagamento Emitido',
+      description: 'Cobrança gerada e enviada via WhatsApp.',
+      type: 'success',
+    })
+    showPaymentModal.value = false
+    refresh()
   }
-};
+  catch (err) {
+    addToast({
+      title: 'Erro',
+      description: err.data?.message || 'Falha ao emitir pagamento',
+      type: 'error',
+    })
+  }
+  finally {
+    loading.value = false
+  }
+}
 
 const sendWhatsAppVenda = async (venda) => {
-  const telefone = venda.orcamento?.telefone;
+  const telefone = venda.orcamento?.telefone
   if (!telefone) {
     addToast({
-      title: "Atenção",
-      description: "Cliente sem telefone cadastrado.",
-      type: "warn",
-    });
-    return;
+      title: 'Atenção',
+      description: 'Cliente sem telefone cadastrado.',
+      type: 'warn',
+    })
+    return
   }
 
   // Layout Estruturado (Estilo Fiscal)
-  const line = "━━━━━━━━━━━━━━━━━━━━━━━━";
-  const doubleLine = "════════════════════════";
+  const line = '━━━━━━━━━━━━━━━━━━━━━━━━'
+  const doubleLine = '════════════════════════'
 
   const empresaNome = user.value?.empresa?.empresa
-    ? `${user.value.empresa.empresa}${user.value.empresa.filial ? ` - ${user.value.empresa.filial}` : ""}`.toUpperCase()
-    : "SISTEMA MEU CONCRETO";
-  const codVenda = String(venda.id).padStart(4, "0");
-  const dataVenda = new Intl.DateTimeFormat("pt-BR").format(
+    ? `${user.value.empresa.empresa}${user.value.empresa.filial ? ` - ${user.value.empresa.filial}` : ''}`.toUpperCase()
+    : 'SISTEMA MEU CONCRETO'
+  const codVenda = String(venda.id).padStart(4, '0')
+  const dataVenda = new Intl.DateTimeFormat('pt-BR').format(
     new Date(venda.createdAt),
-  );
+  )
 
-  const message =
-    `*${doubleLine}*\n` +
-    `*${empresaNome}*\n` +
-    `*${doubleLine}*\n\n` +
-    `*PEDIDO DE VENDA CONFIRMADO: #${codVenda}*\n` +
-    `*DATA:* ${dataVenda}\n\n` +
-    `*CLIENTE:* ${String(venda.orcamento?.nomeCliente || "CLIENTE").toUpperCase()}\n\n` +
-    `*${line}*\n` +
-    `*DETALHES DO PEDIDO*\n` +
-    `*${line}*\n` +
-    `• PRODUTO: ${String(venda.orcamento?.produtoNome || "CONCRETO").toUpperCase()}\n` +
-    `• QTD TOTAL: ${Number(venda.orcamento?.qtd || 0).toFixed(2)}m³\n` +
-    `*${line}*\n\n` +
-    `*VALOR TOTAL:* ${formatCurrency(venda.valorTotal)}\n` +
-    `*STATUS:* ✅ ${venda.status}\n\n` +
-    `*${line}*\n` +
-    `_Obrigado pela preferência! Em breve entraremos em contato para agendamento da entrega._`;
+  const message
+    = `*${doubleLine}*\n`
+      + `*${empresaNome}*\n`
+      + `*${doubleLine}*\n\n`
+      + `*PEDIDO DE VENDA CONFIRMADO: #${codVenda}*\n`
+      + `*DATA:* ${dataVenda}\n\n`
+      + `*CLIENTE:* ${String(venda.orcamento?.nomeCliente || 'CLIENTE').toUpperCase()}\n\n`
+      + `*${line}*\n`
+      + `*DETALHES DO PEDIDO*\n`
+      + `*${line}*\n`
+      + `• PRODUTO: ${String(venda.orcamento?.produtoNome || 'CONCRETO').toUpperCase()}\n`
+      + `• QTD TOTAL: ${Number(venda.orcamento?.qtd || 0).toFixed(2)}m³\n`
+      + `*${line}*\n\n`
+      + `*VALOR TOTAL:* ${formatCurrency(venda.valorTotal)}\n`
+      + `*STATUS:* ✅ ${venda.status}\n\n`
+      + `*${line}*\n`
+      + `_Obrigado pela preferência! Em breve entraremos em contato para agendamento da entrega._`
 
   try {
-    await sendWS(telefone, { text: message });
-  } catch (e) {
+    await sendWS(telefone, { text: message })
+  }
+  catch (e) {
     // useWhatsApp handles toast
   }
-};
+}
 
 const formatDate = (date) => {
-  if (!date) return "---";
-  return new Date(date).toLocaleDateString("pt-BR");
-};
+  if (!date) return '---'
+  return new Date(date).toLocaleDateString('pt-BR')
+}
 
 const formatTime = (date) => {
-  if (!date) return "---";
-  return new Date(date).toLocaleTimeString("pt-BR", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-};
+  if (!date) return '---'
+  return new Date(date).toLocaleTimeString('pt-BR', {
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+}
 </script>
 
 <style scoped>

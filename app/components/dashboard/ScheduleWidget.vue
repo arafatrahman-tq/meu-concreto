@@ -14,8 +14,8 @@
         </p>
       </div>
       <button
-        @click="navigateTo('/agenda')"
         class="w-12 h-12 rounded-2xl flex items-center justify-center bg-primary/3 text-secondary/40 hover:text-brand transition-all"
+        @click="navigateTo('/agenda')"
       >
         <MoreHorizontal size="24" />
       </button>
@@ -28,23 +28,22 @@
       <div
         v-for="day in weekDays"
         :key="day.dateStr"
-        @click="selectedDate = day.dateStr"
         class="flex flex-col gap-2 p-4 rounded-xl transition-all cursor-pointer min-w-18"
         :class="
           selectedDate === day.dateStr
             ? 'bg-brand text-white shadow-xl shadow-brand/20 scale-105'
             : 'text-secondary hover:bg-primary/3'
         "
+        @click="selectedDate = day.dateStr"
       >
         <span
           class="font-black opacity-60 text-[10px] uppercase tracking-widest"
-          >{{ day.label }}</span
-        >
+        >{{ day.label }}</span>
         <span class="font-black text-xl">{{ day.day }}</span>
         <div
           v-if="day.hasEvents && selectedDate !== day.dateStr"
           class="w-1 h-1 rounded-full bg-brand mx-auto"
-        ></div>
+        />
       </div>
     </div>
 
@@ -68,9 +67,8 @@
         >
           <span
             class="text-xs font-black uppercase tracking-widest opacity-40 group-hover:opacity-100 group-hover:text-brand transition-all"
-            >{{ event.time }}</span
-          >
-          <div class="w-px h-full bg-border group-last:hidden min-h-16"></div>
+          >{{ event.time }}</span>
+          <div class="w-px h-full bg-border group-last:hidden min-h-16" />
         </div>
 
         <div
@@ -117,46 +115,46 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
-import { MoreHorizontal, MapPin, CheckCircle2 } from "lucide-vue-next";
-import { navigateTo } from "#imports";
+import { ref, computed } from 'vue'
+import { MoreHorizontal, MapPin, CheckCircle2 } from 'lucide-vue-next'
+import { navigateTo } from '#imports'
 
 const props = defineProps({
   events: {
     type: Array,
     default: () => [],
   },
-});
+})
 
 const getLocalDateStr = (date) => {
-  const d = new Date(date);
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-};
+  const d = new Date(date)
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
 
 // Garantimos que 'now' seja o mesmo no server e client
-const now = useState("schedule_now", () => new Date()).value;
-const selectedDate = ref(getLocalDateStr(now));
+const now = useState('schedule_now', () => new Date()).value
+const selectedDate = ref(getLocalDateStr(now))
 
 const weekDays = computed(() => {
-  const days = [];
-  const names = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+  const days = []
+  const names = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
   for (let i = -2; i < 5; i++) {
-    const d = new Date(now);
-    d.setDate(now.getDate() + i);
-    const dateStr = getLocalDateStr(d);
+    const d = new Date(now)
+    d.setDate(now.getDate() + i)
+    const dateStr = getLocalDateStr(d)
     days.push({
       label: names[d.getDay()],
       day: d.getDate(),
       dateStr,
-      hasEvents: props.events.some((e) => e.date === dateStr),
-    });
+      hasEvents: props.events.some(e => e.date === dateStr),
+    })
   }
-  return days;
-});
+  return days
+})
 
 const filteredEvents = computed(() => {
-  return props.events.filter((e) => e.date === selectedDate.value);
-});
+  return props.events.filter(e => e.date === selectedDate.value)
+})
 </script>
 
 <style scoped>

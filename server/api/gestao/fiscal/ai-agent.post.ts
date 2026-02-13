@@ -1,24 +1,24 @@
-import { requireAuth } from '../../../utils/auth';
+import { requireAuth } from '../../../utils/auth'
 
 export default defineEventHandler(async (event) => {
-    const user = requireAuth(event);
-    if (user.admin !== 1) {
-        throw createError({ statusCode: 403, message: 'Não autorizado' });
-    }
+  const user = requireAuth(event)
+  if (user.admin !== 1) {
+    throw createError({ statusCode: 403, message: 'Não autorizado' })
+  }
 
-    const { prompt, apiKey } = await readBody(event);
+  const { prompt, apiKey } = await readBody(event)
 
-    if (!apiKey) {
-        throw createError({ statusCode: 400, message: 'Google Gemini API Key is required' });
-    }
+  if (!apiKey) {
+    throw createError({ statusCode: 400, message: 'Google Gemini API Key is required' })
+  }
 
-    // 1. Coletar contexto do sistema para o Agente
-    const [schemaContent, rulesContent] = await Promise.all([
-        import('fs/promises').then(fs => fs.readFile('server/database/schema.ts', 'utf-8')),
-        import('fs/promises').then(fs => fs.readFile('server/utils/fiscal/rules.ts', 'utf-8'))
-    ]);
+  // 1. Coletar contexto do sistema para o Agente
+  const [schemaContent, rulesContent] = await Promise.all([
+    import('fs/promises').then(fs => fs.readFile('server/database/schema.ts', 'utf-8')),
+    import('fs/promises').then(fs => fs.readFile('server/utils/fiscal/rules.ts', 'utf-8')),
+  ])
 
-    const systemPrompt = `
+  const systemPrompt = `
 You are the "Fiscal Specialist AI Orchestrator" for the 'Meu Concreto' platform.
 Your objective is to help the user update fiscal rules and database mappings with a "Zero-Error Production" mindset.
 
@@ -68,36 +68,37 @@ Return a JSON with:
   "content": "Sua explicação detalhada em Markdown incluindo o 'Relatório de Validação Automática'",
   "suggestion": { ... object if applicable ... }
 }
-`;
+`
 
-    try {
-        const model = 'gemini-3-flash-preview';
-        const response: any = await $fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
-            method: 'POST',
-            body: {
-                contents: [{
-                    parts: [{ text: systemPrompt }]
-                }],
-                generationConfig: {
-                    responseMimeType: "application/json",
-                    thinkingConfig: {
-                        thinkingLevel: "low"
-                    }
-                }
-            }
-        });
+  try {
+    const model = 'gemini-3-flash-preview'
+    const response: any = await $fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
+      method: 'POST',
+      body: {
+        contents: [{
+          parts: [{ text: systemPrompt }],
+        }],
+        generationConfig: {
+          responseMimeType: 'application/json',
+          thinkingConfig: {
+            thinkingLevel: 'low',
+          },
+        },
+      },
+    })
 
-        const resultText = response.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (!resultText) {
-            throw new Error('Gemini retornou uma resposta vazia');
-        }
-
-        return JSON.parse(resultText);
-    } catch (error: any) {
-        console.error('AI Agent Error:', error);
-        throw createError({
-            statusCode: 500,
-            message: 'Erro no processamento do Agente AI: ' + (error.message || 'Falha na API Gemini')
-        });
+    const resultText = response.candidates?.[0]?.content?.parts?.[0]?.text
+    if (!resultText) {
+      throw new Error('Gemini retornou uma resposta vazia')
     }
-});
+
+    return JSON.parse(resultText)
+  }
+  catch (error: any) {
+    console.error('AI Agent Error:', error)
+    throw createError({
+      statusCode: 500,
+      message: 'Erro no processamento do Agente AI: ' + (error.message || 'Falha na API Gemini'),
+    })
+  }
+})

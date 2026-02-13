@@ -1,4 +1,4 @@
-import { db } from "../database/db";
+import { db } from '../database/db'
 
 /**
  * Healthcheck endpoint para monitoramento
@@ -8,25 +8,26 @@ export default defineEventHandler(async () => {
   try {
     // Verificar conexão com banco de dados
     // Test query simples
-    await db.query.empresas.findFirst();
-    
+    await db.query.empresas.findFirst()
+
     return {
-      status: "ok",
+      status: 'ok',
       timestamp: new Date().toISOString(),
       uptime: process.uptime(),
-      database: "connected",
-      version: "1.0.0",
-    };
-  } catch (error) {
+      database: 'connected',
+      version: '1.0.0',
+    }
+  }
+  catch (error) {
     throw createError({
       statusCode: 503,
-      statusMessage: "Service Unavailable",
+      statusMessage: 'Service Unavailable',
       data: {
-        status: "error",
+        status: 'error',
         timestamp: new Date().toISOString(),
-        database: "disconnected",
-        error: error instanceof Error ? error.message : "Unknown error",
+        database: 'disconnected',
+        error: error instanceof Error ? error.message : 'Unknown error',
       },
-    });
+    })
   }
-});
+})

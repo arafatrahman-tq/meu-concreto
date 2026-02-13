@@ -1,14 +1,14 @@
-import { useAuth } from "./useAuth";
+import { useAuth } from './useAuth'
 
 export interface LogData {
-  nivel: "INFO" | "WARN" | "ERROR" | "DEBUG";
-  modulo: string;
-  mensagem: string;
-  dados?: any;
+  nivel: 'INFO' | 'WARN' | 'ERROR' | 'DEBUG'
+  modulo: string
+  mensagem: string
+  dados?: any
 }
 
 export const useLogger = () => {
-  const { user } = useAuth();
+  const { user } = useAuth()
 
   const log = async (data: LogData) => {
     try {
@@ -17,27 +17,28 @@ export const useLogger = () => {
         dados: data.dados ? JSON.stringify(data.dados) : undefined,
         idUsuario: user.value?.id,
         idEmpresa: user.value?.idEmpresa,
-        origem: "WEB",
-      };
+        origem: 'WEB',
+      }
 
-      await $fetch("/api/system-logs", {
-        method: "POST",
+      await $fetch('/api/system-logs', {
+        method: 'POST',
         body: payload,
-      });
-    } catch (err) {
-      console.error("Falha ao registrar log no servidor:", err);
+      })
     }
-  };
+    catch (err) {
+      console.error('Falha ao registrar log no servidor:', err)
+    }
+  }
 
   return {
     log,
     info: (modulo: string, mensagem: string, dados?: any) =>
-      log({ nivel: "INFO", modulo, mensagem, dados }),
+      log({ nivel: 'INFO', modulo, mensagem, dados }),
     warn: (modulo: string, mensagem: string, dados?: any) =>
-      log({ nivel: "WARN", modulo, mensagem, dados }),
+      log({ nivel: 'WARN', modulo, mensagem, dados }),
     error: (modulo: string, mensagem: string, dados?: any) =>
-      log({ nivel: "ERROR", modulo, mensagem, dados }),
+      log({ nivel: 'ERROR', modulo, mensagem, dados }),
     debug: (modulo: string, mensagem: string, dados?: any) =>
-      log({ nivel: "DEBUG", modulo, mensagem, dados }),
-  };
-};
+      log({ nivel: 'DEBUG', modulo, mensagem, dados }),
+  }
+}

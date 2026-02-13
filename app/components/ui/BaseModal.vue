@@ -44,8 +44,8 @@
               </p>
             </div>
             <button
-              @click="close"
               class="w-10 h-10 rounded-2xl flex items-center justify-center text-muted hover:text-primary hover:bg-primary/3 transition-all"
+              @click="close"
             >
               <X size="20" />
             </button>
@@ -70,8 +70,8 @@
 </template>
 
 <script setup>
-import { X } from "lucide-vue-next";
-import { computed } from "vue";
+import { X } from 'lucide-vue-next'
+import { computed } from 'vue'
 
 const props = defineProps({
   modelValue: { type: Boolean, default: undefined },
@@ -80,19 +80,19 @@ const props = defineProps({
   subtitle: String,
   size: {
     type: String,
-    default: "md",
+    default: 'md',
   },
-});
+})
 
-const emit = defineEmits(["update:modelValue", "update:show", "close"]);
+const emit = defineEmits(['update:modelValue', 'update:show', 'close'])
 
 const isOpen = computed(() => {
-  return props.modelValue !== undefined ? props.modelValue : props.show;
-});
+  return props.modelValue !== undefined ? props.modelValue : props.show
+})
 
 const close = () => {
-  emit("update:modelValue", false);
-  emit("update:show", false);
-  emit("close");
-};
+  emit('update:modelValue', false)
+  emit('update:show', false)
+  emit('close')
+}
 </script>

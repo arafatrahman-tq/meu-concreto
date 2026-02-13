@@ -42,7 +42,7 @@ defineProps({
     type: Number,
     default: 5,
   },
-});
+})
 </script>
 
 <style scoped>

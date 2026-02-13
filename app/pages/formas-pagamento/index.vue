@@ -25,11 +25,11 @@
             v-model="searchTerm"
             placeholder="Buscar condição..."
             class="pl-12 pr-4 py-3.5 bg-primary/2 border border-border rounded-2xl text-sm font-black uppercase tracking-widest text-primary placeholder:text-secondary/20 w-full md:w-64 focus:ring-2 focus:ring-brand/20 focus:border-brand/30 transition-all outline-none"
-          />
+          >
         </div>
         <button
-          @click="openAddModal"
           class="bg-brand text-white px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:scale-[1.05] active:scale-[0.98] transition-all flex items-center gap-2 shadow-xl shadow-brand/20 outline-none"
+          @click="openAddModal"
         >
           <Plus size="18" />
           Nova Condição
@@ -63,10 +63,11 @@
           </td>
           <td class="px-6 py-4 text-secondary">
             <div class="flex items-center gap-2">
-              <Clock size="14" class="opacity-40" />
-              <span class="text-xs font-bold text-primary"
-                >{{ forma.dias }} dias</span
-              >
+              <Clock
+                size="14"
+                class="opacity-40"
+              />
+              <span class="text-xs font-bold text-primary">{{ forma.dias }} dias</span>
             </div>
           </td>
           <td class="px-6 py-4">
@@ -87,16 +88,16 @@
             <div class="flex items-center justify-end gap-2">
               <BaseTooltip content="Editar">
                 <button
-                  @click="openEditModal(forma)"
                   class="p-2.5 rounded-xl border border-gray-100 dark:border-white/10 text-secondary hover:text-brand hover:bg-white dark:hover:bg-white/5 transition-all"
+                  @click="openEditModal(forma)"
                 >
                   <Edit3 size="16" />
                 </button>
               </BaseTooltip>
               <BaseTooltip content="Excluir">
                 <button
-                  @click="confirmDelete(forma)"
                   class="p-2.5 rounded-xl border border-gray-100 dark:border-white/10 text-secondary hover:text-rose-500 hover:bg-white dark:hover:bg-white/5 transition-all"
+                  @click="confirmDelete(forma)"
                 >
                   <Trash2 size="16" />
                 </button>
@@ -107,11 +108,17 @@
       </BaseTable>
 
       <!-- Empty State -->
-      <div v-if="!filteredFormas.length" class="p-20 text-center">
+      <div
+        v-if="!filteredFormas.length"
+        class="p-20 text-center"
+      >
         <div
           class="w-16 h-16 bg-primary/2 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-border"
         >
-          <CreditCard size="32" class="text-secondary/20" />
+          <CreditCard
+            size="32"
+            class="text-secondary/20"
+          />
         </div>
         <h3 class="text-lg font-bold text-primary tracking-tight">
           Nenhuma condição encontrada
@@ -133,12 +140,14 @@
       "
       size="md"
     >
-      <form @submit.prevent="saveForma" class="space-y-6">
+      <form
+        class="space-y-6"
+        @submit.prevent="saveForma"
+      >
         <div class="space-y-1.5">
           <label
             class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2 block"
-            >Descrição da Condição <span class="text-brand">*</span></label
-          >
+          >Descrição da Condição <span class="text-brand">*</span></label>
           <BaseInput
             v-model="form.formaPagamento"
             placeholder="Ex: Boleto 30 Dias"
@@ -150,9 +159,8 @@
         <div class="space-y-1.5">
           <label
             class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2 block"
-            >Prazo para Vencimento (Dias)
-            <span class="text-brand">*</span></label
-          >
+          >Prazo para Vencimento (Dias)
+            <span class="text-brand">*</span></label>
           <BaseInput
             v-model="form.dias"
             placeholder="Ex: 30 ou 30, 60, 90"
@@ -169,8 +177,7 @@
         <div class="space-y-1.5">
           <label
             class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2 block"
-            >Vincular ao Asaas</label
-          >
+          >Vincular ao Asaas</label>
           <BaseSelect
             v-model="form.tipoAsaas"
             :options="[
@@ -204,8 +211,8 @@
         <div class="flex gap-4 pt-4">
           <button
             type="button"
-            @click="showModal = false"
             class="flex-1 px-8 py-4 rounded-2xl border border-border text-secondary text-[10px] font-black uppercase tracking-widest hover:bg-primary/2 transition-all outline-none"
+            @click="showModal = false"
           >
             Cancelar
           </button>
@@ -232,7 +239,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed } from "vue";
+import { ref, reactive, computed } from 'vue'
 import {
   CreditCard,
   Plus,
@@ -241,125 +248,128 @@ import {
   Clock,
   Search,
   Zap,
-} from "lucide-vue-next";
-import { useToast } from "~/composables/useToast";
-import { useLogger } from "~/composables/useLogger";
+} from 'lucide-vue-next'
+import { useToast } from '~/composables/useToast'
+import { useLogger } from '~/composables/useLogger'
 
-definePageMeta({ layout: "default" });
+definePageMeta({ layout: 'default' })
 
-const { add: addToast } = useToast();
-const { info, error: logError } = useLogger();
-const { data: formas, refresh } = await useFetch("/api/formas-pagamento");
+const { add: addToast } = useToast()
+const { info, error: logError } = useLogger()
+const { data: formas, refresh } = await useFetch('/api/formas-pagamento')
 
-const searchTerm = ref("");
-const loading = ref(false);
-const error = ref("");
-const showModal = ref(false);
-const isEditing = ref(false);
-const showDeleteDialog = ref(false);
-const formaToDelete = ref(null);
+const searchTerm = ref('')
+const loading = ref(false)
+const error = ref('')
+const showModal = ref(false)
+const isEditing = ref(false)
+const showDeleteDialog = ref(false)
+const formaToDelete = ref(null)
 
 const form = reactive({
   id: null,
-  formaPagamento: "",
+  formaPagamento: '',
   dias: 0,
-  tipoAsaas: "UNDEFINED",
-});
+  tipoAsaas: 'UNDEFINED',
+})
 
 const filteredFormas = computed(() => {
-  if (!formas.value) return [];
-  const term = searchTerm.value.toLowerCase();
-  return formas.value.filter((f) =>
+  if (!formas.value) return []
+  const term = searchTerm.value.toLowerCase()
+  return formas.value.filter(f =>
     f.formaPagamento.toLowerCase().includes(term),
-  );
-});
+  )
+})
 
 const openAddModal = () => {
-  isEditing.value = false;
+  isEditing.value = false
   Object.assign(form, {
     id: null,
-    formaPagamento: "",
+    formaPagamento: '',
     dias: 0,
-    tipoAsaas: "UNDEFINED",
-  });
-  showModal.value = true;
-  error.value = "";
-};
+    tipoAsaas: 'UNDEFINED',
+  })
+  showModal.value = true
+  error.value = ''
+}
 
 const openEditModal = (f) => {
-  isEditing.value = true;
-  Object.assign(form, f);
-  if (!form.tipoAsaas) form.tipoAsaas = "UNDEFINED";
-  showModal.value = true;
-  error.value = "";
-};
+  isEditing.value = true
+  Object.assign(form, f)
+  if (!form.tipoAsaas) form.tipoAsaas = 'UNDEFINED'
+  showModal.value = true
+  error.value = ''
+}
 
 const saveForma = async () => {
-  loading.value = true;
-  error.value = "";
+  loading.value = true
+  error.value = ''
 
   try {
     const url = isEditing.value
       ? `/api/formas-pagamento/${form.id}`
-      : "/api/formas-pagamento";
-    const method = isEditing.value ? "PUT" : "POST";
+      : '/api/formas-pagamento'
+    const method = isEditing.value ? 'PUT' : 'POST'
 
     await $fetch(url, {
       method,
       body: form,
-    });
+    })
 
-    addToast(isEditing.value ? "Condição atualizada!" : "Condição cadastrada!");
+    addToast(isEditing.value ? 'Condição atualizada!' : 'Condição cadastrada!')
     info(
-      "FORMA_PGTO",
-      `${isEditing.value ? "Edição" : "Cadastro"} de forma de pagamento: ${form.formaPagamento}`,
+      'FORMA_PGTO',
+      `${isEditing.value ? 'Edição' : 'Cadastro'} de forma de pagamento: ${form.formaPagamento}`,
       { forma: form },
-    );
-    showModal.value = false;
-    refresh();
-  } catch (err) {
-    const msg =
-      err.data?.message || err.message || "Erro ao salvar forma de pagamento.";
-    addToast(msg, "error");
-    error.value = msg;
-    logError(
-      "FORMA_PGTO",
-      `Erro ao ${isEditing.value ? "editar" : "cadastrar"} forma de pagamento`,
-      { error: msg, form },
-    );
-  } finally {
-    loading.value = false;
+    )
+    showModal.value = false
+    refresh()
   }
-};
+  catch (err) {
+    const msg
+      = err.data?.message || err.message || 'Erro ao salvar forma de pagamento.'
+    addToast(msg, 'error')
+    error.value = msg
+    logError(
+      'FORMA_PGTO',
+      `Erro ao ${isEditing.value ? 'editar' : 'cadastrar'} forma de pagamento`,
+      { error: msg, form },
+    )
+  }
+  finally {
+    loading.value = false
+  }
+}
 
 const confirmDelete = (f) => {
-  formaToDelete.value = f;
-  showDeleteDialog.value = true;
-};
+  formaToDelete.value = f
+  showDeleteDialog.value = true
+}
 
 const handleDelete = async () => {
   try {
     await $fetch(`/api/formas-pagamento/${formaToDelete.value.id}`, {
-      method: "DELETE",
-    });
+      method: 'DELETE',
+    })
 
-    addToast("Condição excluída!", "success");
+    addToast('Condição excluída!', 'success')
     info(
-      "FORMA_PGTO",
+      'FORMA_PGTO',
       `Forma de pagamento excluída: ${formaToDelete.value.formaPagamento}`,
       { id: formaToDelete.value.id },
-    );
-    showDeleteDialog.value = false;
-    refresh();
-  } catch (err) {
-    const msg =
-      err.data?.message || err.message || "Erro ao excluir forma de pagamento.";
-    addToast(msg, "error");
+    )
+    showDeleteDialog.value = false
+    refresh()
+  }
+  catch (err) {
+    const msg
+      = err.data?.message || err.message || 'Erro ao excluir forma de pagamento.'
+    addToast(msg, 'error')
     logError(
-      "FORMA_PGTO",
+      'FORMA_PGTO',
       `Erro ao excluir forma de pagamento: ${formaToDelete.value?.formaPagamento}`,
       { error: msg, id: formaToDelete.value?.id },
-    );
+    )
   }
-};
+}
 </script>

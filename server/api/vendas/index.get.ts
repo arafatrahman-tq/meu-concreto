@@ -1,16 +1,16 @@
-import { db } from "../../database/db";
-import { vendas, pagamentos } from "../../database/schema";
-import { and, eq, isNull, inArray } from "drizzle-orm";
-import { requireAuth } from "../../utils/auth";
+import { db } from '../../database/db'
+import { vendas, pagamentos } from '../../database/schema'
+import { and, eq, isNull, inArray } from 'drizzle-orm'
+import { requireAuth } from '../../utils/auth'
 
 export default defineEventHandler(async (event) => {
-  const user = requireAuth(event);
+  const user = requireAuth(event)
 
   try {
     const whereConditions = [
       isNull(vendas.deletedAt),
       eq(vendas.idEmpresa, user.idEmpresa),
-    ];
+    ]
 
     const result = await db.query.vendas.findMany({
       where: and(...whereConditions),
@@ -26,12 +26,13 @@ export default defineEventHandler(async (event) => {
         },
       },
       orderBy: (vendas, { desc }) => [desc(vendas.createdAt)],
-    });
-    return result;
-  } catch (error: any) {
+    })
+    return result
+  }
+  catch (error: any) {
     throw createError({
       statusCode: error.statusCode || 500,
       message: error.message,
-    });
+    })
   }
-});
+})

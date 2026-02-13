@@ -21,13 +21,15 @@
       </div>
     </div>
 
-    <form @submit.prevent="handleSubmit" class="space-y-6 py-2">
+    <form
+      class="space-y-6 py-2"
+      @submit.prevent="handleSubmit"
+    >
       <div class="space-y-4">
         <div>
           <label
             class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 mb-2 block"
-            >Material <span class="text-brand">*</span></label
-          >
+          >Material <span class="text-brand">*</span></label>
           <BaseSelect
             v-model="form.idInsumo"
             :options="insumosOptions"
@@ -41,8 +43,7 @@
           <div>
             <label
               class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 mb-2 block"
-              >Tipo de Movimento <span class="text-brand">*</span></label
-            >
+            >Tipo de Movimento <span class="text-brand">*</span></label>
             <BaseSelect
               v-model="form.tipo"
               :options="tipos"
@@ -70,8 +71,7 @@
         <div>
           <label
             class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 mb-2 block"
-            >Observação / Justificativa</label
-          >
+          >Observação / Justificativa</label>
           <BaseInput
             v-model="form.observacao"
             placeholder="EX: COMPRA NF 1234 OU QUEBRA DE EMBALAGEM..."
@@ -83,8 +83,8 @@
       <div class="flex justify-end gap-3 pt-6">
         <button
           type="button"
-          @click="isOpen = false"
           class="px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest text-secondary hover:bg-primary/3 transition-all"
+          @click="isOpen = false"
         >
           Cancelar
         </button>
@@ -101,69 +101,71 @@
 </template>
 
 <script setup>
-import { ref, reactive, watch, computed } from "vue";
-import { Package, Layers, FileText, Info } from "lucide-vue-next";
-import { useLogger } from "~/composables/useLogger";
+import { ref, reactive, watch, computed } from 'vue'
+import { Package, Layers, FileText, Info } from 'lucide-vue-next'
+import { useLogger } from '~/composables/useLogger'
 
-const emit = defineEmits(["close", "saved"]);
+const emit = defineEmits(['close', 'saved'])
 
-const isOpen = ref(true);
-const loading = ref(false);
-const { info, error: logError } = useLogger();
+const isOpen = ref(true)
+const loading = ref(false)
+const { info, error: logError } = useLogger()
 
-const { data: insumos } = useFetch("/api/insumos");
+const { data: insumos } = useFetch('/api/insumos')
 
 const insumosOptions = computed(() => {
-  if (!insumos.value) return [];
-  return insumos.value.map((i) => ({ label: i.nome, value: i.id }));
-});
+  if (!insumos.value) return []
+  return insumos.value.map(i => ({ label: i.nome, value: i.id }))
+})
 
 const tipos = [
-  { label: "ENTRADA DE CARGA (COMPRA)", value: "ENTRADA" },
-  { label: "PERDA IDENTIFICADA (SAÍDA)", value: "SAIDA_REAL" },
-  { label: "CORREÇÃO DE SALDO (INVENTÁRIO)", value: "AJUSTE" },
-];
+  { label: 'ENTRADA DE CARGA (COMPRA)', value: 'ENTRADA' },
+  { label: 'PERDA IDENTIFICADA (SAÍDA)', value: 'SAIDA_REAL' },
+  { label: 'CORREÇÃO DE SALDO (INVENTÁRIO)', value: 'AJUSTE' },
+]
 
 const form = reactive({
   idInsumo: null,
-  tipo: "AJUSTE",
+  tipo: 'AJUSTE',
   quantidade: 0,
-  observacao: "",
-});
+  observacao: '',
+})
 
 watch(isOpen, (val) => {
-  if (!val) emit("close");
-});
+  if (!val) emit('close')
+})
 
 const handleSubmit = async () => {
-  if (!form.idInsumo) return alert("Selecione um material");
+  if (!form.idInsumo) return alert('Selecione um material')
 
-  loading.value = true;
+  loading.value = true
   try {
-    const selectedInsumo = insumos.value?.find((i) => i.id === form.idInsumo);
-    await $fetch("/api/insumos/ajuste", { method: "POST", body: form });
+    const selectedInsumo = insumos.value?.find(i => i.id === form.idInsumo)
+    await $fetch('/api/insumos/ajuste', { method: 'POST', body: form })
 
     info(
-      "INSUMOS",
-      `Ajuste de estoque realizado: ${selectedInsumo?.nome || "Material #" + form.idInsumo}`,
+      'INSUMOS',
+      `Ajuste de estoque realizado: ${selectedInsumo?.nome || 'Material #' + form.idInsumo}`,
       {
         materialId: form.idInsumo,
         tipo: form.tipo,
         quantidade: form.quantidade,
         obs: form.observacao,
       },
-    );
+    )
 
-    emit("saved");
-    isOpen.value = false;
-  } catch (e) {
-    logError("INSUMOS", "Erro ao realizar ajuste de estoque", {
+    emit('saved')
+    isOpen.value = false
+  }
+  catch (e) {
+    logError('INSUMOS', 'Erro ao realizar ajuste de estoque', {
       error: e.message,
       form,
-    });
-    alert("Erro ao processar ajuste: " + (e.data?.message || e.message));
-  } finally {
-    loading.value = false;
+    })
+    alert('Erro ao processar ajuste: ' + (e.data?.message || e.message))
   }
-};
+  finally {
+    loading.value = false
+  }
+}
 </script>

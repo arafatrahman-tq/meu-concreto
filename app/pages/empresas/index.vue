@@ -25,11 +25,11 @@
             v-model="searchTerm"
             placeholder="Buscar unidade ou CNPJ..."
             class="pl-12 pr-4 py-3.5 bg-primary/2 border border-border rounded-2xl text-sm font-black uppercase tracking-widest text-primary placeholder:text-secondary/20 w-full md:w-80 focus:ring-2 focus:ring-brand/20 focus:border-brand/30 transition-all outline-none"
-          />
+          >
         </div>
         <button
-          @click="openAddModal"
           class="bg-brand text-white px-8 py-4 rounded-2xl text-xs font-black uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-3 shadow-xl shadow-brand/20"
+          @click="openAddModal"
         >
           <Plus size="20" />
           Nova Empresa
@@ -58,7 +58,7 @@
                 <img
                   :src="empresa.logo"
                   class="max-w-full max-h-full object-contain"
-                />
+                >
               </div>
               <div
                 v-else
@@ -69,13 +69,11 @@
               <div class="flex flex-col">
                 <span
                   class="text-sm font-black uppercase tracking-tight text-primary"
-                  >{{ empresa.empresa }}</span
-                >
+                >{{ empresa.empresa }}</span>
                 <span
                   v-if="empresa.filial"
                   class="text-[9px] font-black uppercase tracking-widest text-brand"
-                  >{{ empresa.filial }}</span
-                >
+                >{{ empresa.filial }}</span>
               </div>
             </div>
           </td>
@@ -86,18 +84,23 @@
               }}</span>
               <span
                 class="text-[10px] font-black uppercase tracking-widest text-secondary opacity-40"
-                >IE: {{ empresa.ie || "Isento" }}</span
-              >
+              >IE: {{ empresa.ie || "Isento" }}</span>
             </div>
           </td>
           <td class="px-8 py-5 text-secondary">
             <div class="flex flex-col gap-0.5 text-xs font-bold">
               <div class="flex items-center gap-2">
-                <Phone size="12" class="opacity-30" />
+                <Phone
+                  size="12"
+                  class="opacity-30"
+                />
                 <span>{{ formatPhone(empresa.telefone) }}</span>
               </div>
               <div class="flex items-center gap-2">
-                <Mail size="12" class="opacity-30" />
+                <Mail
+                  size="12"
+                  class="opacity-30"
+                />
                 <span class="lowercase opacity-60">{{ empresa.email }}</span>
               </div>
             </div>
@@ -109,24 +112,23 @@
               }}</span>
               <span
                 class="text-[10px] font-bold text-secondary opacity-40 uppercase tracking-tight"
-                >{{ empresa.bairro }}</span
-              >
+              >{{ empresa.bairro }}</span>
             </div>
           </td>
           <td class="px-8 py-5">
             <div class="flex items-center justify-end gap-2">
               <BaseTooltip text="Editar">
                 <button
-                  @click="openEditModal(empresa)"
                   class="p-2.5 rounded-xl bg-primary/3 text-secondary hover:text-brand hover:scale-110 active:scale-95 transition-all"
+                  @click="openEditModal(empresa)"
                 >
                   <Edit3 size="16" />
                 </button>
               </BaseTooltip>
               <BaseTooltip text="Excluir">
                 <button
-                  @click="confirmDelete(empresa)"
                   class="p-2.5 rounded-xl bg-primary/3 text-secondary hover:text-rose-500 hover:scale-110 active:scale-95 transition-all"
+                  @click="confirmDelete(empresa)"
                 >
                   <Trash2 size="16" />
                 </button>
@@ -137,11 +139,17 @@
       </BaseTable>
 
       <!-- Empty State -->
-      <div v-if="!filteredEmpresas.length && !pending" class="p-20 text-center">
+      <div
+        v-if="!filteredEmpresas.length && !pending"
+        class="p-20 text-center"
+      >
         <div
           class="w-16 h-16 bg-primary/2 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-border"
         >
-          <Building2 size="32" class="text-secondary/20" />
+          <Building2
+            size="32"
+            class="text-secondary/20"
+          />
         </div>
         <h3 class="text-lg font-black uppercase tracking-tight text-primary">
           Nenhuma empresa encontrada
@@ -160,8 +168,8 @@
       class="flex justify-center py-8"
     >
       <button
-        @click="itemsToShow += 10"
         class="bg-surface border border-border px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] text-secondary hover:text-brand hover:border-brand/30 transition-all flex items-center gap-3 group"
+        @click="itemsToShow += 10"
       >
         <RefreshCw
           size="14"
@@ -177,14 +185,16 @@
       :title="isEditing ? 'Editar Empresa' : 'Nova Unidade Empresarial'"
       size="md"
     >
-      <form @submit.prevent="saveEmpresa" class="space-y-6 pt-4">
+      <form
+        class="space-y-6 pt-4"
+        @submit.prevent="saveEmpresa"
+      >
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="md:col-span-2">
             <label
               class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2 mb-1.5 block"
-              >Nome da Empresa / Razão Social
-              <span class="text-brand">*</span></label
-            >
+            >Nome da Empresa / Razão Social
+              <span class="text-brand">*</span></label>
             <BaseInput
               v-model="form.empresa"
               placeholder="Ex: Concreteira Matriz LTDA"
@@ -196,8 +206,7 @@
           <div class="md:col-span-1">
             <label
               class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2 mb-1.5 block"
-              >CNPJ <span class="text-brand">*</span></label
-            >
+            >CNPJ <span class="text-brand">*</span></label>
             <BaseInput
               v-model="form.cnpj"
               placeholder="00.000.000/0000-00"
@@ -209,16 +218,17 @@
           <div class="md:col-span-1">
             <label
               class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2 mb-1.5 block"
-              >Inscrição Estadual</label
-            >
-            <BaseInput v-model="form.ie" placeholder="000.000.000.000" />
+            >Inscrição Estadual</label>
+            <BaseInput
+              v-model="form.ie"
+              placeholder="000.000.000.000"
+            />
           </div>
 
           <div class="md:col-span-2">
             <label
               class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2 mb-1.5 block"
-              >Identificação da Filial</label
-            >
+            >Identificação da Filial</label>
             <BaseInput
               v-model="form.filial"
               placeholder="Ex: Matriz, Filial 02..."
@@ -229,8 +239,7 @@
           <div class="md:col-span-1">
             <label
               class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2 mb-1.5 block"
-              >E-mail Corporativo</label
-            >
+            >E-mail Corporativo</label>
             <BaseInput
               v-model="form.email"
               placeholder="contato@empresa.com"
@@ -241,8 +250,7 @@
           <div class="md:col-span-1">
             <label
               class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2 mb-1.5 block"
-              >Telefone</label
-            >
+            >Telefone</label>
             <BaseInput
               v-model="form.telefone"
               placeholder="(00) 0000-0000"
@@ -254,8 +262,7 @@
           <div class="md:col-span-2">
             <label
               class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2 mb-1.5 block"
-              >Endereço Completo</label
-            >
+            >Endereço Completo</label>
             <BaseInput
               v-model="form.endereco"
               placeholder="Rua, Número, Complemento"
@@ -266,16 +273,17 @@
           <div class="md:col-span-1">
             <label
               class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2 mb-1.5 block"
-              >Bairro</label
-            >
-            <BaseInput v-model="form.bairro" placeholder="Bairro" />
+            >Bairro</label>
+            <BaseInput
+              v-model="form.bairro"
+              placeholder="Bairro"
+            />
           </div>
 
           <div class="md:col-span-1">
             <label
               class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2 mb-1.5 block"
-              >URL do Logo (Base64 ou Link)</label
-            >
+            >URL do Logo (Base64 ou Link)</label>
             <BaseInput
               v-model="form.logo"
               placeholder="https://..."
@@ -289,7 +297,10 @@
           <h4
             class="text-[10px] font-black uppercase tracking-[0.2em] text-primary mb-4 flex items-center gap-2"
           >
-            <Activity size="14" class="text-brand" />
+            <Activity
+              size="14"
+              class="text-brand"
+            />
             Configuração Fiscal para Emissão
           </h4>
 
@@ -302,7 +313,10 @@
                 <BaseTooltip
                   text="Define as alíquotas de impostos. Simples Nacional é o padrão para pequenas empresas."
                 >
-                  <HelpCircle size="10" class="cursor-help" />
+                  <HelpCircle
+                    size="10"
+                    class="cursor-help"
+                  />
                 </BaseTooltip>
               </label>
               <BaseSelect
@@ -323,7 +337,10 @@
                 <BaseTooltip
                   text="Código da LC 116/03 usado para emissão de NFS-e. 07.02 é o padrão para serviços de concretagem."
                 >
-                  <HelpCircle size="10" class="cursor-help" />
+                  <HelpCircle
+                    size="10"
+                    class="cursor-help"
+                  />
                 </BaseTooltip>
               </label>
               <BaseInput
@@ -345,7 +362,7 @@
           <template v-if="loading">
             <div
               class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"
-            ></div>
+            />
             Processando...
           </template>
           <template v-else>
@@ -368,7 +385,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed } from "vue";
+import { ref, reactive, computed } from 'vue'
 import {
   Search,
   Plus,
@@ -383,175 +400,179 @@ import {
   X,
   RefreshCw,
   HelpCircle,
-} from "lucide-vue-next";
-import { useToast } from "~/composables/useToast";
-import { useLogger } from "~/composables/useLogger";
-import { useAuth } from "~/composables/useAuth";
+} from 'lucide-vue-next'
+import { useToast } from '~/composables/useToast'
+import { useLogger } from '~/composables/useLogger'
+import { useAuth } from '~/composables/useAuth'
 
 definePageMeta({
-  layout: "default",
-  middleware: ["admin"],
-});
+  layout: 'default',
+  middleware: ['admin'],
+})
 
-const { add: addToast } = useToast();
-const { info, error: logError } = useLogger();
-const { user } = useAuth();
+const { add: addToast } = useToast()
+const { info, error: logError } = useLogger()
+const { user } = useAuth()
 
-const { data: empresas, refresh, pending } = useFetch("/api/empresas");
+const { data: empresas, refresh, pending } = useFetch('/api/empresas')
 
-const searchTerm = ref("");
-const itemsToShow = ref(10);
-const loading = ref(false);
-const showModal = ref(false);
-const isEditing = ref(false);
-const showDeleteDialog = ref(false);
-const empresaToDelete = ref(null);
+const searchTerm = ref('')
+const itemsToShow = ref(10)
+const loading = ref(false)
+const showModal = ref(false)
+const isEditing = ref(false)
+const showDeleteDialog = ref(false)
+const empresaToDelete = ref(null)
 
 const form = reactive({
   id: null,
-  empresa: "",
-  cnpj: "",
-  ie: "",
-  logo: "",
-  endereco: "",
-  bairro: "",
-  telefone: "",
-  email: "",
-  filial: "",
+  empresa: '',
+  cnpj: '',
+  ie: '',
+  logo: '',
+  endereco: '',
+  bairro: '',
+  telefone: '',
+  email: '',
+  filial: '',
   crt: 1,
-  codigoServicoMunicipal: "07.02",
-});
+  codigoServicoMunicipal: '07.02',
+})
 
 const filteredEmpresas = computed(() => {
-  if (!empresas.value) return [];
-  const term = searchTerm.value.toLowerCase();
+  if (!empresas.value) return []
+  const term = searchTerm.value.toLowerCase()
   return empresas.value.filter(
-    (e) =>
-      e.empresa.toLowerCase().includes(term) ||
-      e.cnpj.includes(term) ||
-      (e.filial && e.filial.toLowerCase().includes(term)),
-  );
-});
+    e =>
+      e.empresa.toLowerCase().includes(term)
+      || e.cnpj.includes(term)
+      || (e.filial && e.filial.toLowerCase().includes(term)),
+  )
+})
 
 const displayedEmpresas = computed(() => {
-  return filteredEmpresas.value.slice(0, itemsToShow.value);
-});
+  return filteredEmpresas.value.slice(0, itemsToShow.value)
+})
 
 const openAddModal = () => {
-  isEditing.value = false;
+  isEditing.value = false
   Object.assign(form, {
     id: null,
-    empresa: "",
-    cnpj: "",
-    ie: "",
-    logo: "",
-    endereco: "",
-    bairro: "",
-    telefone: "",
-    email: "",
-    filial: "",
+    empresa: '',
+    cnpj: '',
+    ie: '',
+    logo: '',
+    endereco: '',
+    bairro: '',
+    telefone: '',
+    email: '',
+    filial: '',
     crt: 1,
-    codigoServicoMunicipal: "07.02",
-  });
-  showModal.value = true;
-};
+    codigoServicoMunicipal: '07.02',
+  })
+  showModal.value = true
+}
 
 const openEditModal = (emp) => {
-  isEditing.value = true;
-  Object.assign(form, { ...emp });
-  showModal.value = true;
-};
+  isEditing.value = true
+  Object.assign(form, { ...emp })
+  showModal.value = true
+}
 
 const saveEmpresa = async () => {
-  loading.value = true;
+  loading.value = true
   try {
-    const url = isEditing.value ? `/api/empresas/${form.id}` : "/api/empresas";
-    const method = isEditing.value ? "PUT" : "POST";
+    const url = isEditing.value ? `/api/empresas/${form.id}` : '/api/empresas'
+    const method = isEditing.value ? 'PUT' : 'POST'
 
     await $fetch(url, {
       method,
       body: form,
-    });
+    })
 
     addToast({
-      title: isEditing.value ? "Empresa Atualizada" : "Empresa Cadastrada",
+      title: isEditing.value ? 'Empresa Atualizada' : 'Empresa Cadastrada',
       description: `A unidade ${form.empresa} foi salva com sucesso.`,
-      type: "success",
-    });
+      type: 'success',
+    })
 
     info(
-      "EMPRESAS",
-      `${isEditing.value ? "Edição" : "Cadastro"} de empresa: ${form.empresa}`,
-    );
-    showModal.value = false;
-    refresh();
-  } catch (err) {
-    const validationErrors = err.data?.data;
+      'EMPRESAS',
+      `${isEditing.value ? 'Edição' : 'Cadastro'} de empresa: ${form.empresa}`,
+    )
+    showModal.value = false
+    refresh()
+  }
+  catch (err) {
+    const validationErrors = err.data?.data
     const errorMessage = validationErrors
-      ? validationErrors.map((e) => e.message).join(". ")
-      : err.data?.message || "Não foi possível salvar os dados.";
+      ? validationErrors.map(e => e.message).join('. ')
+      : err.data?.message || 'Não foi possível salvar os dados.'
 
     addToast({
-      title: "Erro no Processamento",
+      title: 'Erro no Processamento',
       description: errorMessage,
-      type: "error",
-    });
-    logError("EMPRESAS", "Erro ao salvar empresa", {
+      type: 'error',
+    })
+    logError('EMPRESAS', 'Erro ao salvar empresa', {
       error: err.message,
       form,
-    });
-  } finally {
-    loading.value = false;
+    })
   }
-};
+  finally {
+    loading.value = false
+  }
+}
 
 const confirmDelete = (emp) => {
-  empresaToDelete.value = emp;
-  showDeleteDialog.value = true;
-};
+  empresaToDelete.value = emp
+  showDeleteDialog.value = true
+}
 
 const handleDelete = async () => {
   try {
     await $fetch(`/api/empresas/${empresaToDelete.value.id}`, {
-      method: "DELETE",
-    });
+      method: 'DELETE',
+    })
     addToast({
-      title: "Removido",
-      description: "Empresa removida com sucesso.",
-      type: "success",
-    });
-    info("EMPRESAS", `Remoção de empresa ID: ${empresaToDelete.value.id}`);
-    refresh();
-  } catch (err) {
-    addToast({
-      title: "Erro",
-      description:
-        err.data?.message ||
-        "Esta empresa não pode ser removida. Verifique se existem usuários ou dados vinculados a ela.",
-      type: "error",
-    });
-    logError("EMPRESAS", "Erro ao remover empresa", { error: err.message });
-  } finally {
-    showDeleteDialog.value = false;
+      title: 'Removido',
+      description: 'Empresa removida com sucesso.',
+      type: 'success',
+    })
+    info('EMPRESAS', `Remoção de empresa ID: ${empresaToDelete.value.id}`)
+    refresh()
   }
-};
+  catch (err) {
+    addToast({
+      title: 'Erro',
+      description:
+        err.data?.message
+        || 'Esta empresa não pode ser removida. Verifique se existem usuários ou dados vinculados a ela.',
+      type: 'error',
+    })
+    logError('EMPRESAS', 'Erro ao remover empresa', { error: err.message })
+  }
+  finally {
+    showDeleteDialog.value = false
+  }
+}
 
 // Helpers
 const formatCnpj = (val) => {
-  if (!val) return "";
-  const clean = val.replace(/\D/g, "");
+  if (!val) return ''
+  const clean = val.replace(/\D/g, '')
   return clean.replace(
     /^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/,
-    "$1.$2.$3/$4-$5",
-  );
-};
+    '$1.$2.$3/$4-$5',
+  )
+}
 
 const formatPhone = (val) => {
-  if (!val) return "Não informado";
-  const clean = val.replace(/\D/g, "");
+  if (!val) return 'Não informado'
+  const clean = val.replace(/\D/g, '')
   if (clean.length === 11) {
-    return clean.replace(/^(\d{2})(\d{5})(\d{4})$/, "($1) $2-$3");
+    return clean.replace(/^(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3')
   }
-  return clean.replace(/^(\d{2})(\d{4})(\d{4})$/, "($1) $2-$3");
-};
+  return clean.replace(/^(\d{2})(\d{4})(\d{4})$/, '($1) $2-$3')
+}
 </script>

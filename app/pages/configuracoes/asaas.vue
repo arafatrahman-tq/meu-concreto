@@ -15,14 +15,24 @@
         </p>
       </div>
 
-      <div v-if="user?.admin === 1" class="flex items-center gap-3">
+      <div
+        v-if="user?.admin === 1"
+        class="flex items-center gap-3"
+      >
         <button
-          @click="saveConfig"
           :disabled="saving"
           class="bg-brand text-white px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-3 shadow-xl shadow-brand/20 disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed outline-none"
+          @click="saveConfig"
         >
-          <Save size="20" v-if="!saving" />
-          <RefreshCw v-else size="20" class="animate-spin" />
+          <Save
+            v-if="!saving"
+            size="20"
+          />
+          <RefreshCw
+            v-else
+            size="20"
+            class="animate-spin"
+          />
           {{ saving ? "Processando" : "Salvar Alterações" }}
         </button>
       </div>
@@ -47,20 +57,26 @@
       </div>
     </div>
 
-    <div v-if="pending" class="flex justify-center py-20">
+    <div
+      v-if="pending"
+      class="flex justify-center py-20"
+    >
       <div
         class="w-10 h-10 border-4 border-brand/20 border-t-brand rounded-full animate-spin"
-      ></div>
+      />
     </div>
 
-    <div v-else class="grid grid-cols-1 xl:grid-cols-12 gap-8">
+    <div
+      v-else
+      class="grid grid-cols-1 xl:grid-cols-12 gap-8"
+    >
       <!-- Main Content (8 cols) -->
       <div class="xl:col-span-8 space-y-8">
         <!-- Credenciais -->
         <div class="space-y-4">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
-              <div class="w-1.5 h-4 bg-brand rounded-full"></div>
+              <div class="w-1.5 h-4 bg-brand rounded-full" />
               <h3
                 class="text-[10px] font-black uppercase tracking-[0.2em] text-primary"
               >
@@ -76,7 +92,7 @@
                   'w-2 h-2 rounded-full animate-pulse',
                   config.ativo ? 'bg-emerald-500' : 'bg-slate-300',
                 ]"
-              ></div>
+              />
               <span
                 class="text-[8px] font-black uppercase tracking-widest text-secondary opacity-60"
               >
@@ -94,8 +110,7 @@
               <div class="flex items-center gap-2 ml-2">
                 <label
                   class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40"
-                  >Chave de API (Secret Key)</label
-                >
+                >Chave de API (Secret Key)</label>
                 <BaseTooltip
                   text="Obtenha sua chave de API no painel do Asaas em Configurações > Integrações."
                 >
@@ -123,8 +138,7 @@
               <div class="space-y-2">
                 <label
                   class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2"
-                  >Ambiente</label
-                >
+                >Ambiente</label>
                 <BaseSelect
                   v-model="config.environment"
                   :disabled="user?.admin !== 1"
@@ -170,7 +184,7 @@
         <!-- Webhook -->
         <div class="space-y-4">
           <div class="flex items-center gap-2">
-            <div class="w-1.5 h-4 bg-primary rounded-full"></div>
+            <div class="w-1.5 h-4 bg-primary rounded-full" />
             <h3
               class="text-[10px] font-black uppercase tracking-[0.2em] text-primary"
             >
@@ -185,8 +199,7 @@
               <div class="flex items-center gap-2 ml-2">
                 <label
                   class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40"
-                  >Webhook Token Key</label
-                >
+                >Webhook Token Key</label>
                 <BaseTooltip
                   text="O Token de Webhook é usado para validar se as notificações enviadas pelo Asaas são legítimas."
                 >
@@ -242,7 +255,10 @@
           <h3
             class="text-[10px] font-black text-secondary uppercase tracking-[0.25em] mb-8 opacity-40 flex items-center gap-2"
           >
-            <Zap size="14" class="text-brand" />
+            <Zap
+              size="14"
+              class="text-brand"
+            />
             Recursos Ativos
           </h3>
           <ul class="space-y-6">
@@ -254,7 +270,10 @@
               <div
                 class="w-10 h-10 rounded-xl bg-primary/2 flex items-center justify-center text-secondary group-hover:bg-brand group-hover:text-white transition-all shadow-sm"
               >
-                <component :is="feature.icon" size="18" />
+                <component
+                  :is="feature.icon"
+                  size="18"
+                />
               </div>
               <div>
                 <p
@@ -305,10 +324,6 @@
 </template>
 
 <script setup>
-definePageMeta({
-  layout: "default",
-  middleware: ["admin"],
-});
 import {
   CreditCard,
   Key,
@@ -326,76 +341,83 @@ import {
   Globe,
   ShieldAlert,
   Activity,
-} from "lucide-vue-next";
-import { ref } from "vue";
+} from 'lucide-vue-next'
+import { ref } from 'vue'
 
-const { user } = useAuth();
-const { add: addToast } = useToast();
+definePageMeta({
+  layout: 'default',
+  middleware: ['admin'],
+})
+
+const { user } = useAuth()
+const { add: addToast } = useToast()
 
 const config = ref({
-  apiKey: "",
-  environment: "sandbox",
-  webhookToken: "",
+  apiKey: '',
+  environment: 'sandbox',
+  webhookToken: '',
   ativo: false,
-});
+})
 
-const saving = ref(false);
+const saving = ref(false)
 const features = [
   {
-    name: "Pix & Boleto",
+    name: 'Pix & Boleto',
     icon: Zap,
-    description: "Geração instantânea de QR Code",
+    description: 'Geração instantânea de QR Code',
   },
   {
-    name: "Régua de Cobrança",
+    name: 'Régua de Cobrança',
     icon: Bell,
-    description: "Lembretes automáticos via E-mail/SMS",
+    description: 'Lembretes automáticos via E-mail/SMS',
   },
   {
-    name: "Baixas Automáticas",
+    name: 'Baixas Automáticas',
     icon: TrendingUp,
-    description: "Conciliação em tempo real",
+    description: 'Conciliação em tempo real',
   },
   {
-    name: "Link de Pagamento",
+    name: 'Link de Pagamento',
     icon: FileText,
-    description: "Envio rápido para clientes",
+    description: 'Envio rápido para clientes',
   },
-];
+]
 
-const { data, pending } = await useFetch("/api/configuracoes/asaas");
+const { data, pending } = await useFetch('/api/configuracoes/asaas')
 if (data.value) {
-  config.value = { ...data.value };
+  config.value = { ...data.value }
 }
 
 const saveConfig = async () => {
   if (!config.value.apiKey && config.value.ativo) {
     return addToast({
-      title: "Atenção",
-      description: "Informe a Chave de API para ativar a integração.",
-      type: "error",
-    });
+      title: 'Atenção',
+      description: 'Informe a Chave de API para ativar a integração.',
+      type: 'error',
+    })
   }
 
-  saving.value = true;
+  saving.value = true
   try {
-    await $fetch("/api/configuracoes/asaas", {
-      method: "PUT",
+    await $fetch('/api/configuracoes/asaas', {
+      method: 'PUT',
       body: config.value,
-    });
+    })
     addToast({
-      title: "Sucesso",
-      description: "Configurações do Asaas atualizadas.",
-      type: "success",
-    });
-  } catch (error) {
-    addToast({
-      title: "Erro",
-      description: error.data?.message || "Erro ao processar.",
-      type: "error",
-    });
-  } finally {
-    saving.value = false;
+      title: 'Sucesso',
+      description: 'Configurações do Asaas atualizadas.',
+      type: 'success',
+    })
   }
-};
+  catch (error) {
+    addToast({
+      title: 'Erro',
+      description: error.data?.message || 'Erro ao processar.',
+      type: 'error',
+    })
+  }
+  finally {
+    saving.value = false
+  }
+}
 </script>

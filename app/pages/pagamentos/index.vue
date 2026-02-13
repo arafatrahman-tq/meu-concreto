@@ -25,7 +25,7 @@
             v-model="searchTerm"
             placeholder="Buscar por cliente, ID ou venda..."
             class="pl-12 pr-4 py-3.5 bg-primary/2 border border-border rounded-2xl text-sm font-black uppercase tracking-widest text-primary placeholder:text-secondary/20 w-full md:w-80 focus:ring-2 focus:ring-brand/20 focus:border-brand/30 transition-all outline-none"
-          />
+          >
         </div>
       </div>
     </div>
@@ -39,7 +39,10 @@
       >
         <div class="flex justify-between items-start mb-4">
           <div :class="['p-3 rounded-2xl bg-primary/3', stat.color]">
-            <component :is="stat.icon" size="20" />
+            <component
+              :is="stat.icon"
+              size="20"
+            />
           </div>
           <span
             :class="[
@@ -85,8 +88,7 @@
           <td class="px-8 py-5">
             <span
               class="text-xs font-black text-secondary opacity-40 tabular-nums"
-              >#{{ String(pgto.id).padStart(4, "0") }}</span
-            >
+            >#{{ String(pgto.id).padStart(4, "0") }}</span>
           </td>
           <td class="px-8 py-5">
             <div class="flex flex-col">
@@ -112,15 +114,13 @@
             <div class="flex flex-col">
               <span
                 class="text-sm font-black uppercase tracking-tight text-primary"
-                >{{
-                  pgto.venda?.orcamento?.nomeCliente ||
-                  "Cliente não identificado"
-                }}</span
-              >
+              >{{
+                pgto.venda?.orcamento?.nomeCliente
+                  || "Cliente não identificado"
+              }}</span>
               <span
                 class="text-[10px] font-black uppercase opacity-30 mt-0.5 tracking-widest"
-                >Venda #{{ String(pgto.idVenda).padStart(4, "0") }}</span
-              >
+              >Venda #{{ String(pgto.idVenda).padStart(4, "0") }}</span>
             </div>
           </td>
           <td class="px-8 py-5">
@@ -137,7 +137,7 @@
                   'w-2 h-2 rounded-full shadow-[0_0_10px]',
                   statusColor[getDisplayStatus(pgto)],
                 ]"
-              ></div>
+              />
               <span
                 class="text-[10px] font-black uppercase tracking-widest"
                 :class="statusTextColor[getDisplayStatus(pgto)]"
@@ -182,24 +182,27 @@
                 text="Registrar Pagamento"
               >
                 <button
-                  @click="openPaymentModal(pgto)"
                   class="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-500 hover:scale-110 active:scale-95 transition-all"
+                  @click="openPaymentModal(pgto)"
                 >
                   <CheckCircle2 size="16" />
                 </button>
               </BaseTooltip>
               <BaseTooltip text="Visualizar">
                 <button
-                  @click="openViewModal(pgto)"
                   class="p-2.5 rounded-xl text-secondary hover:text-brand hover:bg-primary/3 hover:scale-110 transition-all"
+                  @click="openViewModal(pgto)"
                 >
                   <Eye size="16" />
                 </button>
               </BaseTooltip>
-              <BaseTooltip v-if="isAdmin" text="Excluir">
+              <BaseTooltip
+                v-if="isAdmin"
+                text="Excluir"
+              >
                 <button
-                  @click="confirmDelete(pgto)"
                   class="p-2.5 rounded-xl text-secondary hover:text-rose-500 hover:bg-rose-500/10 hover:scale-110 transition-all"
+                  @click="confirmDelete(pgto)"
                 >
                   <Trash2 size="16" />
                 </button>
@@ -217,7 +220,10 @@
         <div
           class="w-16 h-16 bg-primary/2 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-border"
         >
-          <CreditCard size="32" class="text-secondary/20" />
+          <CreditCard
+            size="32"
+            class="text-secondary/20"
+          />
         </div>
         <h3 class="text-lg font-black uppercase tracking-tight text-primary">
           Nenhum pagamento registrado
@@ -234,18 +240,28 @@
         class="p-8 flex justify-center border-t border-border"
       >
         <button
-          @click="itemsToShow += 20"
           class="flex items-center gap-2 px-6 py-3 bg-primary/2 hover:bg-primary/3 text-primary text-xs font-black uppercase tracking-widest rounded-2xl transition-all hover:scale-105"
+          @click="itemsToShow += 20"
         >
-          <RefreshCw size="14" class="opacity-40" />
+          <RefreshCw
+            size="14"
+            class="opacity-40"
+          />
           Carregar mais pagamentos
         </button>
       </div>
     </div>
 
     <!-- Register Payment Modal -->
-    <BaseModal v-model="showPaymentModal" title="Confirmar Pagamento" size="md">
-      <div v-if="selectedPgto" class="space-y-6 pt-4">
+    <BaseModal
+      v-model="showPaymentModal"
+      title="Confirmar Pagamento"
+      size="md"
+    >
+      <div
+        v-if="selectedPgto"
+        class="space-y-6 pt-4"
+      >
         <div class="bg-primary/2 p-6 rounded-3xl border border-border">
           <p
             class="text-[10px] font-black uppercase tracking-widest text-secondary opacity-40 mb-2"
@@ -273,8 +289,7 @@
           <div class="space-y-2">
             <label
               class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-1 block"
-              >Método de Pagamento</label
-            >
+            >Método de Pagamento</label>
             <BaseSelect
               v-model="paymentForm.metodo"
               :options="paymentMethods"
@@ -283,23 +298,25 @@
           <div class="space-y-2">
             <label
               class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-1 block"
-              >Data do Recebimento</label
-            >
-            <BaseInput v-model="paymentForm.dataPagamento" type="date" />
+            >Data do Recebimento</label>
+            <BaseInput
+              v-model="paymentForm.dataPagamento"
+              type="date"
+            />
           </div>
         </div>
 
         <div class="flex gap-3 pt-4">
           <button
-            @click="showPaymentModal = false"
             class="flex-1 py-4 border border-border rounded-2xl text-[10px] font-black uppercase tracking-widest text-secondary hover:bg-primary/2 transition-all outline-none"
+            @click="showPaymentModal = false"
           >
             Cancelar
           </button>
           <button
-            @click="confirmPayment"
             :disabled="submitting"
             class="flex-2 py-4 bg-brand text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-brand/20 hover:scale-105 active:scale-95 transition-all disabled:opacity-50 outline-none"
+            @click="confirmPayment"
           >
             {{ submitting ? "Processando..." : "Confirmar Recebimento" }}
           </button>
@@ -308,8 +325,15 @@
     </BaseModal>
 
     <!-- Detailed View Modal -->
-    <BaseModal v-model="showViewModal" title="Detalhes do Lançamento" size="lg">
-      <div v-if="selectedPgto" class="space-y-6 pt-4">
+    <BaseModal
+      v-model="showViewModal"
+      title="Detalhes do Lançamento"
+      size="lg"
+    >
+      <div
+        v-if="selectedPgto"
+        class="space-y-6 pt-4"
+      >
         <!-- Status Banner -->
         <div
           :class="[
@@ -322,16 +346,21 @@
           ]"
         >
           <div class="flex items-center gap-3">
-            <CheckCircle2 v-if="selectedPgto.status === 'PAGO'" size="20" />
-            <AlertCircle v-else size="20" />
+            <CheckCircle2
+              v-if="selectedPgto.status === 'PAGO'"
+              size="20"
+            />
+            <AlertCircle
+              v-else
+              size="20"
+            />
             <span class="text-[10px] font-black uppercase tracking-widest">{{
               getDisplayStatus(selectedPgto)
             }}</span>
           </div>
           <span
             class="text-[10px] font-black uppercase tracking-widest opacity-60"
-            >ID #{{ String(selectedPgto.id).padStart(4, "0") }}</span
-          >
+          >ID #{{ String(selectedPgto.id).padStart(4, "0") }}</span>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -450,13 +479,13 @@
         <!-- Links de Pagamento e Pix QR Code -->
         <div
           v-if="
-            selectedPgto.status === 'PENDENTE' &&
-            (selectedPgto.sicoobQrCode || selectedPgto.asaasUrl)
+            selectedPgto.status === 'PENDENTE'
+              && (selectedPgto.sicoobQrCode || selectedPgto.asaasUrl)
           "
           class="space-y-4"
         >
           <div class="flex items-center gap-2">
-            <div class="w-1.5 h-4 bg-brand rounded-full"></div>
+            <div class="w-1.5 h-4 bg-brand rounded-full" />
             <h3
               class="text-[10px] font-black uppercase tracking-[0.2em] text-primary"
             >
@@ -495,10 +524,12 @@
               <div
                 class="bg-surface p-4 rounded-xl border border-border/50 break-all font-mono text-[10px] text-secondary relative group"
               >
-                <p class="line-clamp-2">{{ selectedPgto.sicoobQrCode }}</p>
+                <p class="line-clamp-2">
+                  {{ selectedPgto.sicoobQrCode }}
+                </p>
                 <button
-                  @click="copyPixCode(selectedPgto.sicoobQrCode)"
                   class="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-brand text-white rounded-lg opacity-0 group-hover:opacity-100 transition-all shadow-lg shadow-brand/20"
+                  @click="copyPixCode(selectedPgto.sicoobQrCode)"
                 >
                   <Copy size="14" />
                 </button>
@@ -567,8 +598,8 @@
               </div>
             </div>
             <div
-              class="text-right"
               v-if="selectedPgto.venda?.orcamento?.produtoNome"
+              class="text-right"
             >
               <p
                 class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-30"
@@ -587,8 +618,8 @@
 
         <div class="flex gap-3 pt-2">
           <button
-            @click="showViewModal = false"
             class="w-full py-4 bg-primary/2 rounded-2xl text-[10px] font-black uppercase tracking-widest text-secondary hover:bg-primary/5 transition-all outline-none"
+            @click="showViewModal = false"
           >
             Fechar Detalhes
           </button>
@@ -608,7 +639,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted } from 'vue'
 import {
   Search,
   Eye,
@@ -622,236 +653,240 @@ import {
   RefreshCw,
   Copy,
   ExternalLink,
-} from "lucide-vue-next";
-import { useFetch, useToast } from "#imports";
-import { useRoute } from "vue-router";
+} from 'lucide-vue-next'
+import { useFetch, useToast } from '#imports'
+import { useRoute } from 'vue-router'
 
-definePageMeta({ layout: "default" });
+definePageMeta({ layout: 'default' })
 
-const { user } = useAuth();
-const now = useState("payment_now", () => new Date()).value;
-const { add: addToast } = useToast();
-const route = useRoute();
-const searchTerm = ref("");
-const itemsToShow = ref(20);
-const submitting = ref(false);
+const { user } = useAuth()
+const now = useState('payment_now', () => new Date()).value
+const { add: addToast } = useToast()
+const route = useRoute()
+const searchTerm = ref('')
+const itemsToShow = ref(20)
+const submitting = ref(false)
 
-const isAdmin = computed(() => user.value?.admin === 1);
+const isAdmin = computed(() => user.value?.admin === 1)
 
 // Data Fetching
 const {
   data: pagamentos,
   pending,
   refresh,
-} = await useFetch("/api/pagamentos");
+} = await useFetch('/api/pagamentos')
 
 onMounted(() => {
   if (route.query.id) {
-    const id = parseInt(route.query.id);
-    const pgto = pagamentos.value?.find((p) => p.id === id);
+    const id = parseInt(route.query.id)
+    const pgto = pagamentos.value?.find(p => p.id === id)
     if (pgto) {
-      openViewModal(pgto);
+      openViewModal(pgto)
     }
   }
-});
+})
 
 const filteredPagamentos = computed(() => {
-  if (!pagamentos.value) return [];
+  if (!pagamentos.value) return []
   return pagamentos.value.filter((p) => {
-    const term = searchTerm.value.toLowerCase();
-    const cliente = p.venda?.orcamento?.nomeCliente?.toLowerCase() || "";
-    const id = String(p.id);
-    const idVenda = String(p.idVenda);
+    const term = searchTerm.value.toLowerCase()
+    const cliente = p.venda?.orcamento?.nomeCliente?.toLowerCase() || ''
+    const id = String(p.id)
+    const idVenda = String(p.idVenda)
     return (
       cliente.includes(term) || id.includes(term) || idVenda.includes(term)
-    );
-  });
-});
+    )
+  })
+})
 
 const displayedPagamentos = computed(() =>
   filteredPagamentos.value.slice(0, itemsToShow.value),
-);
+)
 
 // Modais
-const showPaymentModal = ref(false);
-const showViewModal = ref(false);
-const showDeleteDialog = ref(false);
-const selectedPgto = ref(null);
-const pgtoToDelete = ref(null);
+const showPaymentModal = ref(false)
+const showViewModal = ref(false)
+const showDeleteDialog = ref(false)
+const selectedPgto = ref(null)
+const pgtoToDelete = ref(null)
 
 const paymentForm = ref({
-  metodo: "PIX",
-  dataPagamento: now.toISOString().split("T")[0],
-});
+  metodo: 'PIX',
+  dataPagamento: now.toISOString().split('T')[0],
+})
 
 const paymentMethods = [
-  { value: "PIX", label: "PIX" },
-  { value: "DINHEIRO", label: "DINHEIRO" },
-  { value: "CARTAO_CREDITO", label: "CARTÃO DE CRÉDITO" },
-  { value: "CARTAO_DEBITO", label: "CARTÃO DE DÉBITO" },
-  { value: "BOLETO", label: "BOLETO" },
-  { value: "TRANSFERENCIA", label: "TRANSFERÊNCIA" },
-];
+  { value: 'PIX', label: 'PIX' },
+  { value: 'DINHEIRO', label: 'DINHEIRO' },
+  { value: 'CARTAO_CREDITO', label: 'CARTÃO DE CRÉDITO' },
+  { value: 'CARTAO_DEBITO', label: 'CARTÃO DE DÉBITO' },
+  { value: 'BOLETO', label: 'BOLETO' },
+  { value: 'TRANSFERENCIA', label: 'TRANSFERÊNCIA' },
+]
 
 // Stats Calculation
 const stats = computed(() => {
-  const list = pagamentos.value || [];
+  const list = pagamentos.value || []
   const totalRecebido = list
-    .filter((p) => p.status === "PAGO")
-    .reduce((acc, p) => acc + p.valor, 0);
-  const pendentesNormal = list.filter((p) => p.status === "PENDENTE");
-  const totalReceber = pendentesNormal.reduce((acc, p) => acc + p.valor, 0);
+    .filter(p => p.status === 'PAGO')
+    .reduce((acc, p) => acc + p.valor, 0)
+  const pendentesNormal = list.filter(p => p.status === 'PENDENTE')
+  const totalReceber = pendentesNormal.reduce((acc, p) => acc + p.valor, 0)
 
   const atrasadosList = pendentesNormal.filter(
-    (p) => new Date(p.dataVencimento) < now,
-  );
-  const totalAtrasado = atrasadosList.reduce((acc, p) => acc + p.valor, 0);
+    p => new Date(p.dataVencimento) < now,
+  )
+  const totalAtrasado = atrasadosList.reduce((acc, p) => acc + p.valor, 0)
 
-  const totalGeral = totalRecebido + totalReceber;
-  const percPago =
-    totalGeral > 0 ? Math.round((totalRecebido / totalGeral) * 100) : 0;
-  const percAtrasado =
-    totalReceber > 0 ? Math.round((totalAtrasado / totalReceber) * 100) : 0;
+  const totalGeral = totalRecebido + totalReceber
+  const percPago
+    = totalGeral > 0 ? Math.round((totalRecebido / totalGeral) * 100) : 0
+  const percAtrasado
+    = totalReceber > 0 ? Math.round((totalAtrasado / totalReceber) * 100) : 0
 
   return [
     {
-      label: "Total Recebido",
+      label: 'Total Recebido',
       value: formatCurrency(totalRecebido),
       icon: DollarSign,
-      color: "text-emerald-500",
+      color: 'text-emerald-500',
       trend: `${percPago}% liquidez`,
-      badgeBg: "bg-emerald-500/10",
-      badgeText: "text-emerald-500",
+      badgeBg: 'bg-emerald-500/10',
+      badgeText: 'text-emerald-500',
     },
     {
-      label: "A Receber",
+      label: 'A Receber',
       value: formatCurrency(totalReceber),
       icon: Clock,
-      color: "text-brand",
+      color: 'text-brand',
       trend: `${pendentesNormal.length} parcelas`,
-      badgeBg: "bg-brand/10",
-      badgeText: "text-brand",
+      badgeBg: 'bg-brand/10',
+      badgeText: 'text-brand',
     },
     {
-      label: "Em Atraso",
+      label: 'Em Atraso',
       value: formatCurrency(totalAtrasado),
       icon: AlertCircle,
-      color: "text-rose-500",
+      color: 'text-rose-500',
       trend: `${percAtrasado}% de risco`,
-      badgeBg: "bg-rose-500/10",
-      badgeText: "text-rose-500",
+      badgeBg: 'bg-rose-500/10',
+      badgeText: 'text-rose-500',
     },
-  ];
-});
+  ]
+})
 
 // Mapeamento de Cores Status
 const statusColor = {
-  PENDENTE: "bg-amber-500 shadow-amber-500/50",
-  PAGO: "bg-emerald-500 shadow-emerald-500/50",
-  CANCELADO: "bg-rose-500 shadow-rose-500/50",
-  ATRASADO: "bg-rose-600 shadow-rose-600/50",
-};
+  PENDENTE: 'bg-amber-500 shadow-amber-500/50',
+  PAGO: 'bg-emerald-500 shadow-emerald-500/50',
+  CANCELADO: 'bg-rose-500 shadow-rose-500/50',
+  ATRASADO: 'bg-rose-600 shadow-rose-600/50',
+}
 
 const statusTextColor = {
-  PENDENTE: "text-amber-500",
-  PAGO: "text-emerald-500",
-  CANCELADO: "text-rose-500",
-  ATRASADO: "text-rose-600",
-};
+  PENDENTE: 'text-amber-500',
+  PAGO: 'text-emerald-500',
+  CANCELADO: 'text-rose-500',
+  ATRASADO: 'text-rose-600',
+}
 
 // Helpers
 const formatCurrency = (val) => {
-  return new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  }).format(val / 100);
-};
+  return new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+  }).format(val / 100)
+}
 
 const formatDate = (date) => {
-  if (!date) return "---";
-  return new Date(date).toLocaleDateString("pt-BR");
-};
+  if (!date) return '---'
+  return new Date(date).toLocaleDateString('pt-BR')
+}
 
 const isOverdue = (pgto) => {
-  if (pgto.status !== "PENDENTE") return false;
-  return new Date(pgto.dataVencimento) < now;
-};
+  if (pgto.status !== 'PENDENTE') return false
+  return new Date(pgto.dataVencimento) < now
+}
 
 const getDisplayStatus = (pgto) => {
-  if (pgto.status === "PENDENTE" && isOverdue(pgto)) return "ATRASADO";
-  return pgto.status;
-};
+  if (pgto.status === 'PENDENTE' && isOverdue(pgto)) return 'ATRASADO'
+  return pgto.status
+}
 
 const copyPixCode = (code) => {
-  if (!code) return;
-  navigator.clipboard.writeText(code);
+  if (!code) return
+  navigator.clipboard.writeText(code)
   addToast({
-    title: "Copiado!",
-    description: "Código Pix copiado para a área de transferência.",
-    type: "success",
-  });
-};
+    title: 'Copiado!',
+    description: 'Código Pix copiado para a área de transferência.',
+    type: 'success',
+  })
+}
 
 // Handlers
 const openPaymentModal = (pgto) => {
-  selectedPgto.value = pgto;
-  showPaymentModal.value = true;
-};
+  selectedPgto.value = pgto
+  showPaymentModal.value = true
+}
 
 const openViewModal = (pgto) => {
-  selectedPgto.value = pgto;
-  showViewModal.value = true;
-};
+  selectedPgto.value = pgto
+  showViewModal.value = true
+}
 
 const confirmPayment = async () => {
-  submitting.value = true;
+  submitting.value = true
   try {
     await $fetch(`/api/pagamentos/${selectedPgto.value.id}`, {
-      method: "PUT",
+      method: 'PUT',
       body: {
         ...paymentForm.value,
-        status: "PAGO",
+        status: 'PAGO',
       },
-    });
+    })
 
     addToast({
-      title: "Sucesso!",
-      description: "Pagamento registrado com sucesso.",
-    });
-    showPaymentModal.value = false;
-    refresh();
-  } catch (e) {
-    addToast(
-      { title: "Erro", description: "Falha ao registrar pagamento." },
-      "error",
-    );
-  } finally {
-    submitting.value = false;
+      title: 'Sucesso!',
+      description: 'Pagamento registrado com sucesso.',
+    })
+    showPaymentModal.value = false
+    refresh()
   }
-};
+  catch (e) {
+    addToast(
+      { title: 'Erro', description: 'Falha ao registrar pagamento.' },
+      'error',
+    )
+  }
+  finally {
+    submitting.value = false
+  }
+}
 
 const confirmDelete = (pgto) => {
-  pgtoToDelete.value = pgto;
-  showDeleteDialog.value = true;
-};
+  pgtoToDelete.value = pgto
+  showDeleteDialog.value = true
+}
 
 const handleDelete = async () => {
   try {
     await $fetch(`/api/pagamentos/${pgtoToDelete.value.id}`, {
-      method: "DELETE",
-    });
+      method: 'DELETE',
+    })
     addToast({
-      title: "Removido!",
-      description: "Lançamento removido com sucesso.",
-    });
-    refresh();
-  } catch (e) {
-    addToast(
-      { title: "Erro", description: "Falha ao remover lançamento." },
-      "error",
-    );
-  } finally {
-    showDeleteDialog.value = false;
+      title: 'Removido!',
+      description: 'Lançamento removido com sucesso.',
+    })
+    refresh()
   }
-};
+  catch (e) {
+    addToast(
+      { title: 'Erro', description: 'Falha ao remover lançamento.' },
+      'error',
+    )
+  }
+  finally {
+    showDeleteDialog.value = false
+  }
+}
 </script>

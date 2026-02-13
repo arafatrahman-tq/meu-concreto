@@ -15,14 +15,24 @@
         </p>
       </div>
 
-      <div v-if="isAdmin" class="flex items-center gap-3">
+      <div
+        v-if="isAdmin"
+        class="flex items-center gap-3"
+      >
         <button
-          @click="saveChanges"
           :disabled="loading || !hasChanges"
           class="bg-brand text-background px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-3 shadow-xl shadow-brand/20 disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed outline-none"
+          @click="saveChanges"
         >
-          <Save size="20" v-if="!loading" />
-          <RefreshCw size="20" v-else class="animate-spin" />
+          <Save
+            v-if="!loading"
+            size="20"
+          />
+          <RefreshCw
+            v-else
+            size="20"
+            class="animate-spin"
+          />
           {{ loading ? "Processando" : "Salvar Alterações" }}
         </button>
       </div>
@@ -52,7 +62,7 @@
         <!-- Identificação -->
         <div class="space-y-4">
           <div class="flex items-center gap-2">
-            <div class="w-1.5 h-4 bg-brand rounded-full"></div>
+            <div class="w-1.5 h-4 bg-brand rounded-full" />
             <h3
               class="text-[10px] font-black uppercase tracking-[0.2em] text-primary"
             >
@@ -67,8 +77,7 @@
               <div class="space-y-2">
                 <label
                   class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2"
-                  >Razão Social / Nome Fantasia</label
-                >
+                >Razão Social / Nome Fantasia</label>
                 <BaseInput
                   v-model="form.empresa"
                   :disabled="!isAdmin"
@@ -79,8 +88,7 @@
               <div class="space-y-2">
                 <label
                   class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2"
-                  >CNPJ</label
-                >
+                >CNPJ</label>
                 <BaseInput
                   v-model="form.cnpj"
                   :disabled="!isAdmin"
@@ -95,8 +103,7 @@
               <div class="space-y-2">
                 <label
                   class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2"
-                  >Inscrição Estadual</label
-                >
+                >Inscrição Estadual</label>
                 <BaseInput
                   v-model="form.ie"
                   :disabled="!isAdmin"
@@ -107,8 +114,7 @@
               <div class="space-y-2">
                 <label
                   class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2"
-                  >Filial / Unidade</label
-                >
+                >Filial / Unidade</label>
                 <BaseInput
                   v-model="form.filial"
                   :disabled="!isAdmin"
@@ -123,7 +129,7 @@
         <!-- Contato e Localização -->
         <div class="space-y-4">
           <div class="flex items-center gap-2">
-            <div class="w-1.5 h-4 bg-primary rounded-full"></div>
+            <div class="w-1.5 h-4 bg-primary rounded-full" />
             <h3
               class="text-[10px] font-black uppercase tracking-[0.2em] text-primary"
             >
@@ -138,8 +144,7 @@
               <div class="space-y-2">
                 <label
                   class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2"
-                  >E-mail Corporativo</label
-                >
+                >E-mail Corporativo</label>
                 <BaseInput
                   v-model="form.email"
                   :disabled="!isAdmin"
@@ -151,8 +156,7 @@
               <div class="space-y-2">
                 <label
                   class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2"
-                  >Telefone</label
-                >
+                >Telefone</label>
                 <BaseInput
                   v-model="form.telefone"
                   :disabled="!isAdmin"
@@ -167,8 +171,7 @@
               <div class="md:col-span-8 space-y-2">
                 <label
                   class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2"
-                  >Endereço Completo</label
-                >
+                >Endereço Completo</label>
                 <BaseInput
                   v-model="form.endereco"
                   :disabled="!isAdmin"
@@ -179,8 +182,7 @@
               <div class="md:col-span-4 space-y-2">
                 <label
                   class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2"
-                  >Bairro</label
-                >
+                >Bairro</label>
                 <BaseInput
                   v-model="form.bairro"
                   :disabled="!isAdmin"
@@ -199,7 +201,7 @@
           class="bg-surface p-8 rounded-[2rem] border border-border shadow-sm space-y-6"
         >
           <div class="flex items-center gap-2">
-            <div class="w-1.5 h-4 bg-brand rounded-full"></div>
+            <div class="w-1.5 h-4 bg-brand rounded-full" />
             <h3
               class="text-[10px] font-black uppercase tracking-[0.2em] text-primary"
             >
@@ -217,12 +219,13 @@
                 :src="form.logo"
                 alt="Logotipo da Empresa"
                 class="w-full h-full object-contain p-4"
-              />
-              <div v-else class="flex flex-col items-center gap-2 opacity-20">
+              >
+              <div
+                v-else
+                class="flex flex-col items-center gap-2 opacity-20"
+              >
                 <ImageIcon size="40" />
-                <span class="text-[8px] font-black uppercase tracking-widest"
-                  >Sem Logo</span
-                >
+                <span class="text-[8px] font-black uppercase tracking-widest">Sem Logo</span>
               </div>
 
               <!-- Overlay -->
@@ -231,9 +234,7 @@
                 class="absolute inset-0 bg-brand/80 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white gap-2"
               >
                 <Upload size="24" />
-                <span class="text-[10px] font-black uppercase tracking-widest"
-                  >Alterar Logo</span
-                >
+                <span class="text-[10px] font-black uppercase tracking-widest">Alterar Logo</span>
               </div>
 
               <input
@@ -242,13 +243,16 @@
                 class="hidden"
                 accept="image/*"
                 @change="handleLogoUpload"
-              />
+              >
             </div>
 
-            <div v-if="form.logo && isAdmin" class="flex gap-2">
+            <div
+              v-if="form.logo && isAdmin"
+              class="flex gap-2"
+            >
               <button
-                @click="form.logo = ''"
                 class="text-[9px] font-black uppercase tracking-widest text-rose-500 hover:text-rose-600 flex items-center gap-2"
+                @click="form.logo = ''"
               >
                 <X size="14" /> Remover Logo
               </button>
@@ -257,7 +261,7 @@
             <p
               class="text-center text-[9px] font-bold text-secondary opacity-40 uppercase tracking-widest leading-relaxed"
             >
-              Use uma imagem quadrada (PNG/JPG)<br />fundo transparente
+              Use uma imagem quadrada (PNG/JPG)<br>fundo transparente
               recomendado.
             </p>
           </div>
@@ -295,15 +299,24 @@
               class="pt-6 border-t border-background/10 space-y-4 text-[10px] font-black uppercase tracking-widest"
             >
               <div class="flex items-center gap-3">
-                <CheckCircle2 size="16" class="text-background/40" />
+                <CheckCircle2
+                  size="16"
+                  class="text-background/40"
+                />
                 <span>Exibição em Cabeçalhos</span>
               </div>
               <div class="flex items-center gap-3">
-                <CheckCircle2 size="16" class="text-background/40" />
+                <CheckCircle2
+                  size="16"
+                  class="text-background/40"
+                />
                 <span>Validação de Contratos</span>
               </div>
               <div class="flex items-center gap-3">
-                <CheckCircle2 size="16" class="text-background/40" />
+                <CheckCircle2
+                  size="16"
+                  class="text-background/40"
+                />
                 <span>Identificação de Filiais</span>
               </div>
             </div>
@@ -314,11 +327,12 @@
         <div class="bg-surface p-6 rounded-3xl border border-border space-y-4">
           <div class="flex items-center gap-2 opacity-40">
             <History size="14" />
-            <span class="text-[9px] font-black uppercase tracking-widest"
-              >Última Atualização</span
-            >
+            <span class="text-[9px] font-black uppercase tracking-widest">Última Atualização</span>
           </div>
-          <div v-if="user?.empresa" class="space-y-1">
+          <div
+            v-if="user?.empresa"
+            class="space-y-1"
+          >
             <p class="text-xs font-black text-primary uppercase">
               {{ formatDate(user.empresa.updatedAt) }}
             </p>
@@ -333,7 +347,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted } from "vue";
+import { ref, computed, watch, onMounted } from 'vue'
 import {
   Building2,
   Save,
@@ -350,120 +364,123 @@ import {
   X,
   Image as ImageIcon,
   RefreshCw,
-} from "lucide-vue-next";
-import { useAuth, useToast } from "#imports";
+} from 'lucide-vue-next'
+import { useAuth, useToast } from '#imports'
 
 definePageMeta({
-  layout: "default",
-  middleware: ["admin"],
-});
+  layout: 'default',
+  middleware: ['admin'],
+})
 
-const { user, fetchUser } = useAuth();
-const { add: addToast } = useToast();
+const { user, fetchUser } = useAuth()
+const { add: addToast } = useToast()
 
-const loading = ref(false);
-const originalData = ref({});
+const loading = ref(false)
+const originalData = ref({})
 const form = ref({
-  empresa: "",
-  cnpj: "",
-  ie: "",
-  logo: "",
-  endereco: "",
-  bairro: "",
-  telefone: "",
-  email: "",
-  filial: "",
-});
+  empresa: '',
+  cnpj: '',
+  ie: '',
+  logo: '',
+  endereco: '',
+  bairro: '',
+  telefone: '',
+  email: '',
+  filial: '',
+})
 
-const isAdmin = computed(() => user.value?.admin === 1);
+const isAdmin = computed(() => user.value?.admin === 1)
 
 const initializeForm = () => {
   if (user.value?.empresa) {
     const data = {
-      empresa: user.value.empresa.empresa || "",
-      cnpj: user.value.empresa.cnpj || "",
-      ie: user.value.empresa.ie || "",
-      logo: user.value.empresa.logo || "",
-      endereco: user.value.empresa.endereco || "",
-      bairro: user.value.empresa.bairro || "",
-      telefone: user.value.empresa.telefone || "",
-      email: user.value.empresa.email || "",
-      filial: user.value.empresa.filial || "",
-    };
-    form.value = { ...data };
-    originalData.value = { ...data };
+      empresa: user.value.empresa.empresa || '',
+      cnpj: user.value.empresa.cnpj || '',
+      ie: user.value.empresa.ie || '',
+      logo: user.value.empresa.logo || '',
+      endereco: user.value.empresa.endereco || '',
+      bairro: user.value.empresa.bairro || '',
+      telefone: user.value.empresa.telefone || '',
+      email: user.value.empresa.email || '',
+      filial: user.value.empresa.filial || '',
+    }
+    form.value = { ...data }
+    originalData.value = { ...data }
   }
-};
+}
 
 const handleLogoUpload = (event) => {
-  const file = event.target.files[0];
-  if (!file) return;
+  const file = event.target.files[0]
+  if (!file) return
 
   // Limite de 1MB para armazenamento em base64 no SQLite
   if (file.size > 1024 * 1024) {
     addToast({
-      title: "Arquivo muito grande",
-      description: "O logotipo deve ter no máximo 1MB.",
-      type: "warn",
-    });
-    return;
+      title: 'Arquivo muito grande',
+      description: 'O logotipo deve ter no máximo 1MB.',
+      type: 'warn',
+    })
+    return
   }
 
-  const reader = new FileReader();
+  const reader = new FileReader()
   reader.onload = (e) => {
-    form.value.logo = e.target.result;
-  };
-  reader.readAsDataURL(file);
-};
+    form.value.logo = e.target.result
+  }
+  reader.readAsDataURL(file)
+}
 
 onMounted(() => {
   if (user.value) {
-    initializeForm();
-  } else {
-    fetchUser().then(initializeForm);
+    initializeForm()
   }
-});
+  else {
+    fetchUser().then(initializeForm)
+  }
+})
 
 const hasChanges = computed(() => {
-  return JSON.stringify(form.value) !== JSON.stringify(originalData.value);
-});
+  return JSON.stringify(form.value) !== JSON.stringify(originalData.value)
+})
 
 const saveChanges = async () => {
-  if (!isAdmin.value || loading.value) return;
+  if (!isAdmin.value || loading.value) return
 
-  loading.value = true;
+  loading.value = true
   try {
-    const idEmpresa = user.value.idEmpresa;
+    const idEmpresa = user.value.idEmpresa
     await $fetch(`/api/empresas/${idEmpresa}`, {
-      method: "PUT",
+      method: 'PUT',
       body: form.value,
-    });
+    })
 
     addToast({
-      title: "Configurações Salvas",
-      description: "Os dados da empresa foram atualizados com sucesso.",
-      type: "success",
-    });
+      title: 'Configurações Salvas',
+      description: 'Os dados da empresa foram atualizados com sucesso.',
+      type: 'success',
+    })
 
     // Refresh user data to get updated company info
-    await fetchUser();
-    initializeForm();
-  } catch (error) {
-    addToast({
-      title: "Erro ao Salvar",
-      description:
-        error.data?.statusMessage || "Não foi possível atualizar os dados.",
-      type: "error",
-    });
-  } finally {
-    loading.value = false;
+    await fetchUser()
+    initializeForm()
   }
-};
+  catch (error) {
+    addToast({
+      title: 'Erro ao Salvar',
+      description:
+        error.data?.statusMessage || 'Não foi possível atualizar os dados.',
+      type: 'error',
+    })
+  }
+  finally {
+    loading.value = false
+  }
+}
 
 const formatDate = (date) => {
-  if (!date) return "---";
-  return new Date(date).toLocaleString("pt-BR");
-};
+  if (!date) return '---'
+  return new Date(date).toLocaleString('pt-BR')
+}
 </script>
 
 <style scoped>

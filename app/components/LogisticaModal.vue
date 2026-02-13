@@ -57,7 +57,10 @@
         <!-- New Ticket Form (5 cols) -->
         <div class="lg:col-span-5 space-y-6">
           <div class="flex items-center gap-2 mb-2">
-            <Plus size="16" class="text-brand" />
+            <Plus
+              size="16"
+              class="text-brand"
+            />
             <h4
               class="text-[11px] font-black uppercase tracking-[0.2em] text-primary"
             >
@@ -66,15 +69,14 @@
           </div>
 
           <form
-            @submit.prevent="handleCreateOS"
             class="space-y-5 bg-surface p-6 rounded-3xl border border-border"
+            @submit.prevent="handleCreateOS"
           >
             <div class="grid grid-cols-2 gap-4">
               <div class="space-y-1.5">
                 <label
                   class="text-[9px] font-bold uppercase tracking-widest text-secondary opacity-40 ml-2"
-                  >Volume (m³) <span class="text-brand">*</span></label
-                >
+                >Volume (m³) <span class="text-brand">*</span></label>
                 <BaseInput
                   v-model.number="form.qtd"
                   type="number"
@@ -86,8 +88,7 @@
               <div class="space-y-1.5">
                 <label
                   class="text-[9px] font-bold uppercase tracking-widest text-secondary opacity-40 ml-2"
-                  >Slump (mm)</label
-                >
+                >Slump (mm)</label>
                 <BaseInput
                   v-model.number="form.slump"
                   type="number"
@@ -99,8 +100,7 @@
             <div class="space-y-1.5">
               <label
                 class="text-[9px] font-bold uppercase tracking-widest text-secondary opacity-40 ml-2"
-                >Motorista <span class="text-brand">*</span></label
-              >
+              >Motorista <span class="text-brand">*</span></label>
               <BaseSelect
                 v-model="form.idMotorista"
                 :options="motoristasOptions"
@@ -112,8 +112,7 @@
             <div class="space-y-1.5">
               <label
                 class="text-[9px] font-bold uppercase tracking-widest text-secondary opacity-40 ml-2"
-                >Caminhão (Betoneira) <span class="text-brand">*</span></label
-              >
+              >Caminhão (Betoneira) <span class="text-brand">*</span></label>
               <BaseSelect
                 v-model="form.idCaminhao"
                 :options="caminhoesOptions"
@@ -125,8 +124,7 @@
             <div class="space-y-1.5">
               <label
                 class="text-[9px] font-bold uppercase tracking-widest text-secondary opacity-40 ml-2"
-                >Equipamento de Bomba</label
-              >
+              >Equipamento de Bomba</label>
               <BaseSelect
                 v-model="form.idBomba"
                 :options="bombasOptions"
@@ -151,7 +149,10 @@
         <div class="lg:col-span-7 space-y-6">
           <div class="flex items-center justify-between mb-2">
             <div class="flex items-center gap-2">
-              <ClipboardList size="16" class="text-brand" />
+              <ClipboardList
+                size="16"
+                class="text-brand"
+              />
               <h4
                 class="text-[11px] font-black uppercase tracking-[0.2em] text-primary"
               >
@@ -177,8 +178,7 @@
                 <div class="flex items-center gap-3">
                   <span
                     class="text-xs font-black text-primary uppercase tabular-nums"
-                    >#{{ os.numeroTicket }}</span
-                  >
+                  >#{{ os.numeroTicket }}</span>
                   <div
                     :class="[
                       'px-2.5 py-1 rounded-lg text-[8px] font-black uppercase tracking-widest',
@@ -234,7 +234,7 @@
                 class="mt-4 pt-4 border-t border-border/50 flex justify-between items-center opacity-0 group-hover:opacity-100 transition-opacity"
               >
                 <div class="flex items-center gap-2">
-                  <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+                  <div class="w-2 h-2 rounded-full bg-emerald-500" />
                   <span
                     class="text-[9px] font-black text-emerald-500 uppercase tracking-widest cursor-pointer hover:underline"
                     @click="openTracker(os.id)"
@@ -249,8 +249,8 @@
                     <Printer size="14" />
                   </button>
                   <button
-                    @click="handleDeleteOS(os.id)"
                     class="p-2 bg-primary/2 text-secondary rounded-lg hover:text-red-500 transition-colors"
+                    @click="handleDeleteOS(os.id)"
                   >
                     <Trash2 size="14" />
                   </button>
@@ -262,7 +262,10 @@
               v-if="ordens.length === 0"
               class="py-20 text-center bg-primary/2 rounded-3xl border border-dashed border-border opacity-40"
             >
-              <Truck size="48" class="mx-auto mb-4 opacity-10" />
+              <Truck
+                size="48"
+                class="mx-auto mb-4 opacity-10"
+              />
               <p class="text-[10px] font-black uppercase tracking-widest">
                 Nenhuma OS gerada para este pedido
               </p>
@@ -275,7 +278,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted } from "vue";
+import { ref, reactive, computed, onMounted } from 'vue'
 import {
   Truck,
   Plus,
@@ -285,22 +288,22 @@ import {
   Trash2,
   Search,
   MapPin,
-} from "lucide-vue-next";
-import { useToast } from "~/composables/useToast";
+} from 'lucide-vue-next'
+import { useToast } from '~/composables/useToast'
 
 const props = defineProps({
   orcamento: {
     type: Object,
     required: true,
   },
-});
+})
 
-const emit = defineEmits(["close", "updated"]);
+const emit = defineEmits(['close', 'updated'])
 
-const isOpen = ref(true);
-const loading = ref(false);
-const ordens = ref([]);
-const toast = useToast();
+const isOpen = ref(true)
+const loading = ref(false)
+const ordens = ref([])
+const toast = useToast()
 
 const form = reactive({
   idOrcamento: props.orcamento.id,
@@ -309,116 +312,120 @@ const form = reactive({
   idMotorista: null,
   idCaminhao: null,
   idBomba: props.orcamento.idBomba || null,
-});
+})
 
 // Data options
-const { data: motoristas } = useFetch("/api/motoristas");
-const { data: caminhoes } = useFetch("/api/caminhoes");
-const { data: bombas } = useFetch("/api/bombas");
+const { data: motoristas } = useFetch('/api/motoristas')
+const { data: caminhoes } = useFetch('/api/caminhoes')
+const { data: bombas } = useFetch('/api/bombas')
 
 const motoristasOptions = computed(
-  () => motoristas.value?.map((m) => ({ label: m.nome, value: m.id })) || [],
-);
+  () => motoristas.value?.map(m => ({ label: m.nome, value: m.id })) || [],
+)
 const caminhoesOptions = computed(
   () =>
-    caminhoes.value?.map((c) => ({
+    caminhoes.value?.map(c => ({
       label: `${c.placa} (${c.capacidade}m³)`,
       value: c.id,
     })) || [],
-);
+)
 const bombasOptions = computed(
-  () => bombas.value?.map((b) => ({ label: b.nome, value: b.id })) || [],
-);
+  () => bombas.value?.map(b => ({ label: b.nome, value: b.id })) || [],
+)
 
 const volumeEntregue = computed(() => {
-  return ordens.value.reduce((acc, os) => acc + (os.qtd || 0), 0);
-});
+  return ordens.value.reduce((acc, os) => acc + (os.qtd || 0), 0)
+})
 
 const statusColors = {
-  AGUARDANDO_SAIDA: "bg-amber-500/10 text-amber-600",
-  EM_TRANSITO: "bg-blue-500/10 text-blue-600",
-  DESCARREGANDO: "bg-cyan-500/10 text-cyan-600",
-  CONCLUIDA: "bg-emerald-500/10 text-emerald-600",
-  CANCELADA: "bg-rose-500/10 text-rose-600",
-};
+  AGUARDANDO_SAIDA: 'bg-amber-500/10 text-amber-600',
+  EM_TRANSITO: 'bg-blue-500/10 text-blue-600',
+  DESCARREGANDO: 'bg-cyan-500/10 text-cyan-600',
+  CONCLUIDA: 'bg-emerald-500/10 text-emerald-600',
+  CANCELADA: 'bg-rose-500/10 text-rose-600',
+}
 
 const loadOrdens = async () => {
   try {
-    const data = await $fetch("/api/entregas/os", {
+    const data = await $fetch('/api/entregas/os', {
       query: { idOrcamento: props.orcamento.id },
-    });
-    ordens.value = data;
-  } catch (e) {
-    console.error(e);
+    })
+    ordens.value = data
   }
-};
+  catch (e) {
+    console.error(e)
+  }
+}
 
-onMounted(loadOrdens);
+onMounted(loadOrdens)
 
 const handleCreateOS = async () => {
   if (volumeEntregue.value + form.qtd > props.orcamento.qtd + 0.5) {
     // Tolerância de 0.5m³
     if (
       !confirm(
-        "O volume total dos tickets ultrapassa o orçamento. Deseja continuar?",
+        'O volume total dos tickets ultrapassa o orçamento. Deseja continuar?',
       )
     )
-      return;
+      return
   }
 
-  loading.value = true;
+  loading.value = true
   try {
-    await $fetch("/api/entregas/os", {
-      method: "POST",
+    await $fetch('/api/entregas/os', {
+      method: 'POST',
       body: {
         ...form,
         idEmpresa: props.orcamento.idEmpresa,
       },
-    });
+    })
     toast.add({
-      title: "Ticket Gerado",
-      description: "Ordem de serviço enviada para o motorista.",
-      type: "success",
-    });
-    await loadOrdens();
-    emit("updated");
+      title: 'Ticket Gerado',
+      description: 'Ordem de serviço enviada para o motorista.',
+      type: 'success',
+    })
+    await loadOrdens()
+    emit('updated')
 
     // Reset form for next ticket, keeping logistics defaults
-    form.qtd = Math.max(0, props.orcamento.qtd - volumeEntregue.value);
-  } catch (e) {
-    toast.add({
-      title: "Falha na Expedição",
-      description: "Verifique se todos os campos estão preenchidos.",
-      type: "error",
-    });
-  } finally {
-    loading.value = false;
+    form.qtd = Math.max(0, props.orcamento.qtd - volumeEntregue.value)
   }
-};
+  catch (e) {
+    toast.add({
+      title: 'Falha na Expedição',
+      description: 'Verifique se todos os campos estão preenchidos.',
+      type: 'error',
+    })
+  }
+  finally {
+    loading.value = false
+  }
+}
 
 const handleDeleteOS = async (id) => {
-  if (!confirm("Deseja cancelar e excluir este ticket?")) return;
+  if (!confirm('Deseja cancelar e excluir este ticket?')) return
   try {
     // Implement DELETE endpoint or update status to CANCELADA
     // for now just status update
     await $fetch(`/api/entregas/os/${id}`, {
-      method: "PUT",
-      body: { status: "CANCELADA" },
-    });
-    await loadOrdens();
-  } catch (e) {}
-};
+      method: 'PUT',
+      body: { status: 'CANCELADA' },
+    })
+    await loadOrdens()
+  }
+  catch (e) {}
+}
 
 const formatDate = (date) => {
-  return new Date(date).toLocaleTimeString("pt-BR", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-};
+  return new Date(date).toLocaleTimeString('pt-BR', {
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+}
 
 const openTracker = (id) => {
-  navigateTo(`/entregas/${id}`);
-};
+  navigateTo(`/entregas/${id}`)
+}
 </script>
 
 <style scoped>

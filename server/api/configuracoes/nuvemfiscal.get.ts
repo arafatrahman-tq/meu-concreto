@@ -1,36 +1,39 @@
-import { db } from '../../database/db';
-import { configuracoesNuvemFiscal } from '../../database/schema';
-import { requireAdmin } from '../../utils/auth';
-import { eq } from 'drizzle-orm';
+import { db } from '../../database/db'
+import { configuracoesNuvemFiscal } from '../../database/schema'
+import { requireAdmin } from '../../utils/auth'
+import { eq } from 'drizzle-orm'
 
 export default defineEventHandler(async (event) => {
-    const user = requireAdmin(event);
+  const user = requireAdmin(event)
 
-    try {
-        const config = await db.query.configuracoesNuvemFiscal.findFirst({
-            where: user.idEmpresa ? eq(configuracoesNuvemFiscal.idEmpresa, user.idEmpresa) : undefined
-        });
-        
-        const response = config ? {
-            ...config,
-            ativo: config.ativo === 1,
-        } : {
-            clientId: '',
-            clientSecret: '',
-            environment: 'sandbox',
-            ativo: false,
-        };
+  try {
+    const config = await db.query.configuracoesNuvemFiscal.findFirst({
+      where: user.idEmpresa ? eq(configuracoesNuvemFiscal.idEmpresa, user.idEmpresa) : undefined,
+    })
 
-        // Mascarar dados sensíveis se não for admin master
-        if (user.admin !== 1) {
-            if (response.clientSecret) response.clientSecret = '********';
+    const response = config
+      ? {
+          ...config,
+          ativo: config.ativo === 1,
+        }
+      : {
+          clientId: '',
+          clientSecret: '',
+          environment: 'sandbox',
+          ativo: false,
         }
 
-        return response;
-    } catch (error: any) {
-        throw createError({
-            statusCode: error.statusCode || 500,
-            message: error.message,
-        });
+    // Mascarar dados sensíveis se não for admin master
+    if (user.admin !== 1) {
+      if (response.clientSecret) response.clientSecret = '********'
     }
-});
+
+    return response
+  }
+  catch (error: any) {
+    throw createError({
+      statusCode: error.statusCode || 500,
+      message: error.message,
+    })
+  }
+})

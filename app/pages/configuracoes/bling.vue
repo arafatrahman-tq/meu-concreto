@@ -26,7 +26,7 @@
               'w-2 h-2 rounded-full animate-pulse',
               form.ativo ? 'bg-emerald-500' : 'bg-slate-300',
             ]"
-          ></div>
+          />
           <span
             class="text-[8px] font-black uppercase tracking-widest text-secondary opacity-60"
           >
@@ -34,14 +34,24 @@
           </span>
         </div>
 
-        <div v-if="isAdmin" class="flex items-center gap-3">
+        <div
+          v-if="isAdmin"
+          class="flex items-center gap-3"
+        >
           <button
-            @click="saveChanges"
             :disabled="loading || !hasChanges"
             class="bg-[#00AEEF] text-white px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-3 shadow-xl shadow-[#00AEEF]/20 disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed outline-none"
+            @click="saveChanges"
           >
-            <Save size="20" v-if="!loading" />
-            <RefreshCw v-else size="20" class="animate-spin" />
+            <Save
+              v-if="!loading"
+              size="20"
+            />
+            <RefreshCw
+              v-else
+              size="20"
+              class="animate-spin"
+            />
             {{ loading ? "Processando" : "Salvar Alterações" }}
           </button>
         </div>
@@ -73,7 +83,7 @@
         <!-- API Connection -->
         <div class="space-y-4">
           <div class="flex items-center gap-2">
-            <div class="w-1.5 h-4 bg-[#00AEEF] rounded-full"></div>
+            <div class="w-1.5 h-4 bg-[#00AEEF] rounded-full" />
             <h3
               class="text-[10px] font-black uppercase tracking-[0.2em] text-primary"
             >
@@ -89,8 +99,7 @@
                 <div class="flex items-center gap-2 ml-2">
                   <label
                     class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40"
-                    >API Key (V2/V3 Legacy)</label
-                  >
+                  >API Key (V2/V3 Legacy)</label>
                   <BaseTooltip
                     text="Utilizada para integrações legadas ou consultas rápidas via API."
                   >
@@ -113,8 +122,7 @@
                 <div class="flex items-center gap-2 ml-2">
                   <label
                     class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40"
-                    >Client ID (Bling V3 OAuth)</label
-                  >
+                  >Client ID (Bling V3 OAuth)</label>
                   <BaseTooltip
                     text="Encontre no console de desenvolvedor do Bling > Aplicativos."
                   >
@@ -136,8 +144,7 @@
                 <div class="flex items-center gap-2 ml-2">
                   <label
                     class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40"
-                    >Client Secret</label
-                  >
+                  >Client Secret</label>
                 </div>
                 <BaseInput
                   v-model="form.clientSecret"
@@ -154,20 +161,20 @@
             >
               <div class="flex items-center gap-3">
                 <div
-                  class="p-2 bg-emerald-500/10 text-emerald-500 rounded-lg"
                   v-if="form.accessToken"
+                  class="p-2 bg-emerald-500/10 text-emerald-500 rounded-lg"
                 >
                   <CheckCircle2 size="16" />
                 </div>
                 <p
-                  class="text-[9px] font-black uppercase text-secondary tracking-widest"
                   v-if="form.accessToken"
+                  class="text-[9px] font-black uppercase text-secondary tracking-widest"
                 >
                   Token OAuth2 Identificado
                 </p>
                 <p
-                  class="text-[9px] font-black uppercase text-rose-500 tracking-widest"
                   v-else
+                  class="text-[9px] font-black uppercase text-rose-500 tracking-widest"
                 >
                   OAuth2 não autenticado
                 </p>
@@ -184,7 +191,7 @@
         <!-- Padrões de Operação -->
         <div class="space-y-4">
           <div class="flex items-center gap-2">
-            <div class="w-1.5 h-4 bg-emerald-500 rounded-full"></div>
+            <div class="w-1.5 h-4 bg-emerald-500 rounded-full" />
             <h3
               class="text-[10px] font-black uppercase tracking-[0.2em] text-primary"
             >
@@ -199,8 +206,7 @@
               <div class="flex items-center gap-2 ml-2">
                 <label
                   class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40"
-                  >ID do Depósito Padrão</label
-                >
+                >ID do Depósito Padrão</label>
                 <BaseTooltip
                   text="Código do depósito no Bling onde as movimentações de estoque serão centradas."
                 >
@@ -222,8 +228,7 @@
               <div class="flex items-center gap-2 ml-2">
                 <label
                   class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40"
-                  >ID da Categoria Padrão</label
-                >
+                >ID da Categoria Padrão</label>
               </div>
               <BaseInput
                 v-model="form.idCategoria"
@@ -237,8 +242,7 @@
               <div class="flex items-center gap-2 ml-2">
                 <label
                   class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40"
-                  >Natureza de Operação Padrão</label
-                >
+                >Natureza de Operação Padrão</label>
                 <BaseTooltip
                   text="Texto exato da natureza de operação cadastrada no seu Bling."
                 >
@@ -320,25 +324,22 @@
 
               <ul class="space-y-3">
                 <li class="flex items-center gap-3">
-                  <div class="w-1 h-1 bg-background rounded-full"></div>
+                  <div class="w-1 h-1 bg-background rounded-full" />
                   <span
                     class="text-[9px] font-black uppercase tracking-widest opacity-80"
-                    >Sincronização de Clientes</span
-                  >
+                  >Sincronização de Clientes</span>
                 </li>
                 <li class="flex items-center gap-3">
-                  <div class="w-1 h-1 bg-background rounded-full"></div>
+                  <div class="w-1 h-1 bg-background rounded-full" />
                   <span
                     class="text-[9px] font-black uppercase tracking-widest opacity-80"
-                    >Geração de Boletos via Bling</span
-                  >
+                  >Geração de Boletos via Bling</span>
                 </li>
                 <li class="flex items-center gap-3">
-                  <div class="w-1 h-1 bg-background rounded-full"></div>
+                  <div class="w-1 h-1 bg-background rounded-full" />
                   <span
                     class="text-[9px] font-black uppercase tracking-widest opacity-80"
-                    >Controle de Estoque ERP</span
-                  >
+                  >Controle de Estoque ERP</span>
                 </li>
               </ul>
             </div>
@@ -347,17 +348,13 @@
               <div class="flex items-center justify-between">
                 <span
                   class="text-[9px] font-black uppercase tracking-widest opacity-60"
-                  >Ambiente</span
-                >
-                <span class="text-[10px] font-black uppercase"
-                  >Padrão Bling</span
-                >
+                >Ambiente</span>
+                <span class="text-[10px] font-black uppercase">Padrão Bling</span>
               </div>
               <div class="flex items-center justify-between">
                 <span
                   class="text-[9px] font-black uppercase tracking-widest opacity-60"
-                  >Status da API</span
-                >
+                >Status da API</span>
                 <span class="text-[10px] font-black uppercase tabular-nums">
                   {{ form.ativo ? "Conectado" : "Desativado" }}
                 </span>
@@ -371,7 +368,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted } from 'vue'
 import {
   Package,
   Save,
@@ -386,85 +383,88 @@ import {
   Briefcase,
   ShieldAlert,
   HelpCircle,
-} from "lucide-vue-next";
-import { useAuth, useToast } from "#imports";
+} from 'lucide-vue-next'
+import { useAuth, useToast } from '#imports'
 
 definePageMeta({
-  layout: "default",
-  middleware: ["admin"],
-});
+  layout: 'default',
+  middleware: ['admin'],
+})
 
-const { user } = useAuth();
-const { add: addToast } = useToast();
+const { user } = useAuth()
+const { add: addToast } = useToast()
 
-const loading = ref(false);
-const originalData = ref({});
+const loading = ref(false)
+const originalData = ref({})
 const form = ref({
-  apiKey: "",
-  clientId: "",
-  clientSecret: "",
-  accessToken: "",
-  refreshToken: "",
-  idDeposito: "",
-  idCategoria: "",
-  naturezaOperacao: "",
+  apiKey: '',
+  clientId: '',
+  clientSecret: '',
+  accessToken: '',
+  refreshToken: '',
+  idDeposito: '',
+  idCategoria: '',
+  naturezaOperacao: '',
   ativo: false,
-});
+})
 
-const isAdmin = computed(() => user.value?.admin === 1);
+const isAdmin = computed(() => user.value?.admin === 1)
 
 const loadConfig = async () => {
   try {
-    const data = await $fetch("/api/configuracoes/bling");
+    const data = await $fetch('/api/configuracoes/bling')
     form.value = {
-      apiKey: data.apiKey || "",
-      clientId: data.clientId || "",
-      clientSecret: data.clientSecret || "",
-      accessToken: data.accessToken || "",
-      refreshToken: data.refreshToken || "",
-      idDeposito: data.idDeposito || "",
-      idCategoria: data.idCategoria || "",
-      naturezaOperacao: data.naturezaOperacao || "",
+      apiKey: data.apiKey || '',
+      clientId: data.clientId || '',
+      clientSecret: data.clientSecret || '',
+      accessToken: data.accessToken || '',
+      refreshToken: data.refreshToken || '',
+      idDeposito: data.idDeposito || '',
+      idCategoria: data.idCategoria || '',
+      naturezaOperacao: data.naturezaOperacao || '',
       ativo: !!data.ativo,
-    };
-    originalData.value = JSON.parse(JSON.stringify(form.value));
-  } catch (err) {
-    addToast("Falha ao carregar configurações", "error");
+    }
+    originalData.value = JSON.parse(JSON.stringify(form.value))
   }
-};
+  catch (err) {
+    addToast('Falha ao carregar configurações', 'error')
+  }
+}
 
 const hasChanges = computed(() => {
-  return JSON.stringify(form.value) !== JSON.stringify(originalData.value);
-});
+  return JSON.stringify(form.value) !== JSON.stringify(originalData.value)
+})
 
 const saveChanges = async () => {
-  if (!isAdmin.value) return;
+  if (!isAdmin.value) return
 
-  loading.value = true;
+  loading.value = true
   try {
-    await $fetch("/api/configuracoes/bling", {
-      method: "PUT",
+    await $fetch('/api/configuracoes/bling', {
+      method: 'PUT',
       body: form.value,
-    });
+    })
 
     addToast({
-      title: "Configurações Atualizadas",
-      description: "As chaves de acesso ao Bling foram salvas com sucesso.",
-      type: "success",
-    });
-    originalData.value = JSON.parse(JSON.stringify(form.value));
-  } catch (err) {
-    addToast({
-      title: "Erro ao Salvar",
-      description:
-        err.data?.statusMessage ||
-        "Não foi possível atualizar as configurações.",
-      type: "error",
-    });
-  } finally {
-    loading.value = false;
+      title: 'Configurações Atualizadas',
+      description: 'As chaves de acesso ao Bling foram salvas com sucesso.',
+      type: 'success',
+    })
+    originalData.value = JSON.parse(JSON.stringify(form.value))
   }
-};
+  catch (err) {
+    addToast({
+      title: 'Erro ao Salvar',
+      description:
+        err.data?.statusMessage
+        || 'Não foi possível atualizar as configurações.',
+      type: 'error',
+    })
+  }
+  finally {
+    loading.value = false
+  }
+}
 
-onMounted(loadConfig);
+onMounted(loadConfig)
 </script>

@@ -25,11 +25,11 @@
             v-model="searchTerm"
             placeholder="Buscar por cliente ou ID..."
             class="pl-12 pr-4 py-3.5 bg-primary/2 border border-border rounded-2xl text-sm font-black uppercase tracking-widest text-primary placeholder:text-secondary/20 w-full md:w-80 focus:ring-2 focus:ring-brand/20 focus:border-brand/30 transition-all outline-none"
-          />
+          >
         </div>
         <button
-          @click="handleNewOrcamento"
           class="bg-brand text-white px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all flex items-center gap-3 shadow-xl shadow-brand/20 outline-none"
+          @click="handleNewOrcamento"
         >
           <Plus size="20" />
           Novo Orçamento
@@ -52,19 +52,16 @@
           <td class="px-8 py-5">
             <span
               class="text-xs font-black text-secondary opacity-40 tabular-nums"
-              >#{{ String(orcamento.id).padStart(4, "0") }}</span
-            >
+            >#{{ String(orcamento.id).padStart(4, "0") }}</span>
           </td>
           <td class="px-8 py-5">
             <div class="flex flex-col">
               <span
                 class="text-sm font-black uppercase tracking-tight text-primary"
-                >{{ orcamento.nomeCliente }}</span
-              >
+              >{{ orcamento.nomeCliente }}</span>
               <span
                 class="text-[10px] font-black uppercase opacity-30 mt-0.5 tracking-widest"
-                >{{ orcamento.cpfCnpj }}</span
-              >
+              >{{ orcamento.cpfCnpj }}</span>
             </div>
           </td>
           <td class="px-8 py-5">
@@ -76,23 +73,22 @@
               >
                 <span
                   class="text-xs font-black uppercase tracking-tight text-primary"
-                  >{{ item.produtoNome }}</span
-                >
+                >{{ item.produtoNome }}</span>
                 <span
                   class="text-[9px] font-black uppercase opacity-30 tracking-widest"
-                  >{{ item.qtd }} m³ @
-                  {{ formatCurrency(item.valorUnit) }}</span
-                >
+                >{{ item.qtd }} m³ @
+                  {{ formatCurrency(item.valorUnit) }}</span>
               </div>
-              <div v-if="!orcamento.itens?.length" class="flex flex-col">
+              <div
+                v-if="!orcamento.itens?.length"
+                class="flex flex-col"
+              >
                 <span
                   class="text-xs font-black uppercase tracking-tight text-primary"
-                  >{{ orcamento.produtoNome || "N/A" }}</span
-                >
+                >{{ orcamento.produtoNome || "N/A" }}</span>
                 <span
                   class="text-[9px] font-black uppercase opacity-30 tracking-widest"
-                  >{{ orcamento.qtd }} m³</span
-                >
+                >{{ orcamento.qtd }} m³</span>
               </div>
             </div>
           </td>
@@ -110,7 +106,7 @@
                   'w-2 h-2 rounded-full shadow-[0_0_10px]',
                   statusColor[orcamento.status],
                 ]"
-              ></div>
+              />
               <span
                 class="text-[10px] font-black uppercase tracking-widest"
                 :class="statusTextColor[orcamento.status]"
@@ -123,24 +119,24 @@
             <div class="flex items-center justify-end gap-2">
               <BaseTooltip text="Enviar Resumo WhatsApp">
                 <button
-                  @click="sendWhatsAppOrcamento(orcamento)"
                   class="p-2.5 rounded-xl bg-[#25D366]/10 text-[#25D366] hover:scale-110 active:scale-95 transition-all"
+                  @click="sendWhatsAppOrcamento(orcamento)"
                 >
                   <MessageSquare size="16" />
                 </button>
               </BaseTooltip>
               <BaseTooltip text="Enviar PDF WhatsApp">
                 <button
-                  @click="sendWhatsAppDocument(orcamento)"
                   class="p-2.5 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:scale-110 active:scale-95 transition-all"
+                  @click="sendWhatsAppDocument(orcamento)"
                 >
                   <FileText size="16" />
                 </button>
               </BaseTooltip>
               <BaseTooltip text="Baixar PDF / Imprimir">
                 <button
-                  @click="downloadOrcamentoPdf(orcamento)"
                   class="p-2.5 rounded-xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 hover:scale-110 active:scale-95 transition-all"
+                  @click="downloadOrcamentoPdf(orcamento)"
                 >
                   <Printer size="16" />
                 </button>
@@ -150,24 +146,24 @@
                 text="Aprovar"
               >
                 <button
-                  @click="approveOrcamento(orcamento)"
                   class="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:scale-110 active:scale-95 transition-all"
+                  @click="approveOrcamento(orcamento)"
                 >
                   <CheckCircle size="16" />
                 </button>
               </BaseTooltip>
               <BaseTooltip text="Editar">
                 <button
-                  @click="openEditModal(orcamento)"
                   class="p-2.5 rounded-xl bg-primary/3 text-secondary hover:text-brand hover:scale-110 active:scale-95 transition-all"
+                  @click="openEditModal(orcamento)"
                 >
                   <Edit3 size="16" />
                 </button>
               </BaseTooltip>
               <BaseTooltip text="Excluir">
                 <button
-                  @click="confirmDelete(orcamento)"
                   class="p-2.5 rounded-xl bg-primary/3 text-secondary hover:text-rose-500 hover:scale-110 active:scale-95 transition-all"
+                  @click="confirmDelete(orcamento)"
                 >
                   <Trash2 size="16" />
                 </button>
@@ -185,7 +181,10 @@
         <div
           class="w-16 h-16 bg-primary/2 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-border"
         >
-          <FileText size="32" class="text-secondary/20" />
+          <FileText
+            size="32"
+            class="text-secondary/20"
+          />
         </div>
         <h3 class="text-lg font-black uppercase tracking-tight text-primary">
           Nenhum orçamento encontrado
@@ -204,8 +203,8 @@
       class="flex justify-center py-8"
     >
       <button
-        @click="itemsToShow += 10"
         class="bg-surface border border-border px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] text-secondary hover:text-brand hover:border-brand/30 transition-all flex items-center gap-3 group"
+        @click="itemsToShow += 10"
       >
         <RefreshCw
           size="14"
@@ -221,14 +220,20 @@
       :title="isEditing ? 'Editar Orçamento' : 'Novo Orçamento'"
       size="xl"
     >
-      <form @submit.prevent="saveOrcamento" class="pt-2">
+      <form
+        class="pt-2"
+        @submit.prevent="saveOrcamento"
+      >
         <div class="space-y-6 pb-6">
           <!-- SECTION 1: Identificação e Comercial -->
           <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
             <!-- Left: Cliente (7 cols) -->
             <div class="xl:col-span-8 space-y-4">
               <div class="flex items-center gap-2 mb-1 px-1">
-                <User size="14" class="text-brand" />
+                <User
+                  size="14"
+                  class="text-brand"
+                />
                 <h4
                   class="text-[10px] font-black uppercase tracking-[0.2em] text-primary"
                 >
@@ -241,9 +246,16 @@
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
                   <div class="md:col-span-8 space-y-1.5">
                     <div class="flex items-center gap-2 ml-2">
-                      <label class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 block">Vincular Cadastro</label>
-                      <BaseTooltip text="Ao selecionar um cliente, os dados de contato e endereço serão preenchidos automaticamente.">
-                        <HelpCircle size="12" class="text-brand/50 cursor-help" />
+                      <label
+                        class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 block"
+                      >Vincular Cadastro</label>
+                      <BaseTooltip
+                        text="Ao selecionar um cliente, os dados de contato e endereço serão preenchidos automaticamente."
+                      >
+                        <HelpCircle
+                          size="12"
+                          class="text-brand/50 cursor-help"
+                        />
                       </BaseTooltip>
                     </div>
                     <BaseAutocomplete
@@ -252,17 +264,16 @@
                       :loading="isSearching"
                       :label="form.nomeCliente"
                       placeholder="Pesquisar cliente..."
-                      @search="onSearchCliente"
-                      @update:modelValue="onClienteSelect"
                       :icon="Search"
                       :error="errors.idCliente"
+                      @search="onSearchCliente"
+                      @update:model-value="onClienteSelect"
                     />
                   </div>
                   <div class="md:col-span-4 space-y-1.5">
                     <label
                       class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2 block"
-                      >Documento</label
-                    >
+                    >Documento</label>
                     <BaseInput
                       v-model="form.cpfCnpj"
                       placeholder="CPF/CNPJ"
@@ -275,9 +286,8 @@
                   <div class="md:col-span-8 space-y-1.5">
                     <label
                       class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2 block"
-                      >Nome (Exibição no Orçamento)
-                      <span class="text-brand">*</span></label
-                    >
+                    >Nome (Exibição no Orçamento)
+                      <span class="text-brand">*</span></label>
                     <BaseInput
                       v-model="form.nomeCliente"
                       placeholder="Ex: João da Silva"
@@ -289,8 +299,7 @@
                   <div class="md:col-span-4 space-y-1.5">
                     <label
                       class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2 block"
-                      >Contato</label
-                    >
+                    >Contato</label>
                     <BaseInput
                       v-model="form.telefone"
                       placeholder="(00) 00000-0000"
@@ -306,7 +315,10 @@
             <!-- Right: Comercial (4 cols) -->
             <div class="xl:col-span-4 space-y-4">
               <div class="flex items-center gap-2 mb-1 px-1">
-                <CreditCard size="14" class="text-brand" />
+                <CreditCard
+                  size="14"
+                  class="text-brand"
+                />
                 <h4
                   class="text-[10px] font-black uppercase tracking-[0.2em] text-primary"
                 >
@@ -319,8 +331,7 @@
                 <div class="space-y-1.5">
                   <label
                     class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2 block"
-                    >Vendedor <span class="text-brand">*</span></label
-                  >
+                  >Vendedor <span class="text-brand">*</span></label>
                   <BaseSelect
                     v-model="form.idVendedor"
                     :options="vendedorOptions"
@@ -333,8 +344,7 @@
                 <div class="space-y-1.5">
                   <label
                     class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2 block"
-                    >Forma de PGTO <span class="text-brand">*</span></label
-                  >
+                  >Forma de PGTO <span class="text-brand">*</span></label>
                   <BaseSelect
                     v-model="form.idFormaPgto"
                     :options="formaPgtoOptions"
@@ -347,15 +357,16 @@
                 <div class="space-y-1.5">
                   <label
                     class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2 block"
-                    >Validade da Cotação</label
-                  >
+                  >Validade da Cotação</label>
                   <BaseDatePicker
                     v-model="form.validadeOrcamento"
                     type="date"
                     label="Validade da Cotação"
                     :icon="Calendar"
                     :error="errors.validadeOrcamento"
-                    @blur="validateField('validadeOrcamento', form.validadeOrcamento)"
+                    @blur="
+                      validateField('validadeOrcamento', form.validadeOrcamento)
+                    "
                   />
                 </div>
               </div>
@@ -366,7 +377,10 @@
           <div class="space-y-4">
             <div class="flex items-center justify-between px-2">
               <div class="flex items-center gap-2">
-                <Layers size="14" class="text-emerald-500" />
+                <Layers
+                  size="14"
+                  class="text-emerald-500"
+                />
                 <h4
                   class="text-[10px] font-black uppercase tracking-[0.2em] text-primary"
                 >
@@ -375,8 +389,8 @@
               </div>
               <button
                 type="button"
-                @click="addItem"
                 class="h-8 px-4 bg-emerald-500 text-white rounded-xl text-[9px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all flex items-center gap-2 shadow-lg shadow-emerald-500/20"
+                @click="addItem"
               >
                 <Plus size="14" /> Adicionar Traço
               </button>
@@ -393,8 +407,8 @@
                 <button
                   v-if="form.itens.length > 1"
                   type="button"
-                  @click="removeItem(index)"
                   class="absolute -right-2 -top-2 w-7 h-7 bg-rose-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover/item:opacity-100 transition-all shadow-xl z-20 hover:scale-110"
+                  @click="removeItem(index)"
                 >
                   <X size="12" />
                 </button>
@@ -404,45 +418,42 @@
                   <div class="md:col-span-5 space-y-1">
                     <label
                       class="text-[8px] font-black uppercase tracking-widest text-secondary opacity-30 ml-2"
-                      >Produto / Traço <span class="text-brand">*</span></label
-                    >
+                    >Produto / Traço <span class="text-brand">*</span></label>
                     <BaseSelect
                       v-model="item.idProduto"
                       :options="produtoOptions"
                       placeholder="Selecione..."
-                      @update:modelValue="
-                        (val) => onItemProdutoSelect(val, index)
-                      "
                       :icon="Package"
                       required
+                      @update:model-value="
+                        (val) => onItemProdutoSelect(val, index)
+                      "
                     />
                   </div>
                   <div class="md:col-span-2 space-y-1 text-center">
                     <label
                       class="text-[8px] font-black uppercase tracking-widest text-secondary opacity-30"
-                      >Volume (m³) <span class="text-brand">*</span></label
-                    >
+                    >Volume (m³) <span class="text-brand">*</span></label>
                     <BaseInput
                       v-model.number="item.qtd"
                       type="number"
                       step="0.5"
                       placeholder="0.0"
-                      @input="calculateItemTotal(index)"
                       required
                       class="text-center"
+                      @input="calculateItemTotal(index)"
                     />
                   </div>
                   <div class="md:col-span-2 space-y-1 text-right">
                     <label
                       class="text-[8px] font-black uppercase tracking-widest text-secondary opacity-30 pr-2"
-                      >R$ Unit <span class="text-brand">*</span></label
-                    >
+                    >R$ Unit <span class="text-brand">*</span></label>
                     <BaseCurrency
                       v-model="item.valorUnit"
                       :centavos="true"
                       placeholder="R$ 0,00"
-                      @update:model-value="calculateItemTotal(index)"
                       class="text-right"
+                      @update:model-value="calculateItemTotal(index)"
                     />
                   </div>
                   <div
@@ -450,12 +461,10 @@
                   >
                     <span
                       class="text-[8px] font-black uppercase tracking-[0.2em] text-secondary opacity-30"
-                      >Subtotal Item</span
-                    >
+                    >Subtotal Item</span>
                     <span
                       class="text-sm font-black text-emerald-500 tabular-nums"
-                      >{{ formatCurrency(item.total * 100) }}</span
-                    >
+                    >{{ formatCurrency(item.total * 100) }}</span>
                   </div>
                 </div>
               </div>
@@ -467,7 +476,10 @@
             <!-- Left: Escala e Obs (8 cols) -->
             <div class="xl:col-span-8 space-y-4">
               <div class="flex items-center gap-2 mb-1 px-1">
-                <Truck size="14" class="text-amber-500" />
+                <Truck
+                  size="14"
+                  class="text-amber-500"
+                />
                 <h4
                   class="text-[10px] font-black uppercase tracking-[0.2em] text-primary"
                 >
@@ -480,21 +492,19 @@
                     <div class="space-y-1.5">
                       <label
                         class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2 block"
-                        >Motorista Responsável (Opcional)</label
-                      >
+                      >Motorista Responsável (Opcional)</label>
                       <BaseSelect
                         v-model="form.idMotorista"
                         :options="motoristaOptions"
                         placeholder="Selecione..."
-                        @update:modelValue="onMotoristaSelect"
                         :icon="User"
+                        @update:model-value="onMotoristaSelect"
                       />
                     </div>
                     <div class="space-y-1.5">
                       <label
                         class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2 block"
-                        >Caminhão / Placa (Opcional)</label
-                      >
+                      >Caminhão / Placa (Opcional)</label>
                       <BaseSelect
                         v-model="form.idCaminhao"
                         :options="caminhaoOptions"
@@ -511,21 +521,19 @@
                         />
                         <span
                           class="text-[8px] font-black text-amber-700 leading-tight uppercase tracking-wider"
-                          >{{ capacityWarning }}</span
-                        >
+                        >{{ capacityWarning }}</span>
                       </div>
                     </div>
                   </div>
                   <div class="space-y-1.5">
                     <label
                       class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2 block"
-                      >Observações da Entrega (Opcional)</label
-                    >
+                    >Observações da Entrega (Opcional)</label>
                     <textarea
                       v-model="form.obs"
                       placeholder="Notas sobre a obra, horários ou restrições..."
                       class="w-full h-[calc(100%-1.5rem)] bg-primary/2 border border-border rounded-2xl p-4 text-xs font-black text-primary placeholder:text-secondary/20 focus:ring-2 focus:ring-brand/20 outline-none transition-all resize-none shadow-sm"
-                    ></textarea>
+                    />
                   </div>
                 </div>
               </div>
@@ -534,7 +542,10 @@
             <!-- Right: Prazos e Adicionais (4 cols) -->
             <div class="xl:col-span-4 space-y-4">
               <div class="flex items-center gap-2 mb-1 px-1">
-                <MapPin size="14" class="text-blue-500" />
+                <MapPin
+                  size="14"
+                  class="text-blue-500"
+                />
                 <h4
                   class="text-[10px] font-black uppercase tracking-[0.2em] text-primary"
                 >
@@ -547,8 +558,7 @@
                 <div class="space-y-1.5">
                   <label
                     class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2 block"
-                    >Data/Hora de Entrega (Opcional)</label
-                  >
+                  >Data/Hora de Entrega (Opcional)</label>
                   <BaseDatePicker
                     v-model="form.dataEntrega"
                     type="datetime-local"
@@ -560,8 +570,7 @@
                 <div class="space-y-1.5">
                   <label
                     class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2 block"
-                    >Distância Estimada (KM) (Opcional)</label
-                  >
+                  >Distância Estimada (KM) (Opcional)</label>
                   <BaseInput
                     v-model.number="form.distanciaObra"
                     type="number"
@@ -576,15 +585,13 @@
                   <div class="flex flex-col">
                     <span
                       class="text-[9px] font-black uppercase tracking-widest text-primary"
-                      >Serviço de Bomba</span
-                    >
+                    >Serviço de Bomba</span>
                     <span
                       class="text-[8px] font-bold uppercase opacity-30 mt-0.5"
-                      >Taxa de Operação</span
-                    >
+                    >Taxa de Operação</span>
                   </div>
-                  <BaseToggle 
-                    v-model="form.bombaNecessaria" 
+                  <BaseToggle
+                    v-model="form.bombaNecessaria"
                     color-class="bg-amber-500"
                     @update:model-value="calculateTotal"
                   />
@@ -611,11 +618,9 @@
               <div
                 class="flex items-center gap-4 text-secondary opacity-40 px-2"
               >
-                <div class="h-px flex-1 bg-border"></div>
-                <span class="text-[8px] font-black uppercase tracking-[0.4em]"
-                  >Resumo Financeiro</span
-                >
-                <div class="h-px flex-1 bg-border"></div>
+                <div class="h-px flex-1 bg-border" />
+                <span class="text-[8px] font-black uppercase tracking-[0.4em]">Resumo Financeiro</span>
+                <div class="h-px flex-1 bg-border" />
               </div>
             </div>
             <div class="xl:col-span-5">
@@ -625,20 +630,21 @@
                 <div
                   class="absolute -right-4 -top-4 opacity-[0.05] group-hover:opacity-10 transition-opacity"
                 >
-                  <DollarSign size="80" class="text-white" />
+                  <DollarSign
+                    size="80"
+                    class="text-white"
+                  />
                 </div>
                 <div class="space-y-4 relative z-10">
                   <div class="flex items-center justify-between">
                     <span
                       class="text-[8px] font-black uppercase tracking-[0.3em] text-white/40"
-                      >Total do Orçamento</span
-                    >
+                    >Total do Orçamento</span>
                     <div class="flex items-center gap-6">
                       <div class="flex flex-col items-end">
                         <span
                           class="text-[8px] font-bold text-white/40 uppercase"
-                          >Subtotal</span
-                        >
+                        >Subtotal</span>
                         <span class="text-xs font-black text-white/70">{{
                           formatCurrency(totalItens * 100)
                         }}</span>
@@ -646,14 +652,13 @@
                       <div class="flex flex-col items-end">
                         <span
                           class="text-[8px] font-bold text-white/40 uppercase tracking-widest"
-                          >Desconto R$</span
-                        >
+                        >Desconto R$</span>
                         <input
                           v-model.number="form.valorDesconto"
                           type="number"
                           class="w-20 bg-white/10 rounded-lg border border-white/10 text-right text-[10px] font-black text-white px-2 py-1 focus:ring-2 focus:ring-white/20 outline-none"
                           @change="calculateTotal"
-                        />
+                        >
                       </div>
                     </div>
                   </div>
@@ -663,12 +668,10 @@
                     <div class="flex flex-col">
                       <span
                         class="text-[8px] font-black uppercase tracking-[0.3em] text-white/40"
-                        >Valor Total Líquido</span
-                      >
+                      >Valor Total Líquido</span>
                       <span
                         class="text-[7px] font-bold text-white/20 uppercase mt-0.5 tracking-[0.2em]"
-                        >Impostos Inclusos</span
-                      >
+                      >Impostos Inclusos</span>
                     </div>
                     <h3
                       class="text-4xl font-black text-white tracking-tighter tabular-nums"
@@ -690,7 +693,7 @@
             <template v-if="loading">
               <div
                 class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"
-              ></div>
+              />
               Processando Cotação...
             </template>
             <template v-else>
@@ -736,7 +739,11 @@
     />
 
     <!-- Lacre Approval Modal -->
-    <BaseModal v-model="showLacreModal" title="Aprovar com Lacre" size="sm">
+    <BaseModal
+      v-model="showLacreModal"
+      title="Aprovar com Lacre"
+      size="sm"
+    >
       <div class="space-y-6 pt-2">
         <div
           class="p-6 bg-brand/5 rounded-3xl border border-brand/10 text-center"
@@ -759,28 +766,27 @@
         <div class="space-y-2">
           <label
             class="text-[10px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2"
-            >Identificação do Lacre <span class="text-brand">*</span></label
-          >
+          >Identificação do Lacre <span class="text-brand">*</span></label>
           <BaseInput
+            ref="lacreInput"
             v-model="lacreCode"
             placeholder="Ex: LC-0045"
             :icon="Lock"
             required
-            ref="lacreInput"
           />
         </div>
 
         <div class="flex gap-3">
           <button
-            @click="showLacreModal = false"
             class="flex-1 px-6 py-4 border border-border rounded-2xl text-[10px] font-black uppercase tracking-widest text-secondary hover:bg-primary/5 transition-all outline-none"
+            @click="showLacreModal = false"
           >
             Cancelar
           </button>
           <button
-            @click="confirmApproval"
             :disabled="!lacreCode || loadingApproval"
             class="flex-2 bg-brand text-white px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-brand/20 disabled:opacity-30 outline-none"
+            @click="confirmApproval"
           >
             {{ loadingApproval ? "Aprovando..." : "Finalizar e Aprovar" }}
           </button>
@@ -791,7 +797,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, watch, onMounted } from "vue";
+import { ref, reactive, computed, watch, onMounted } from 'vue'
 import {
   Search,
   Plus,
@@ -819,24 +825,30 @@ import {
   Lock,
   Printer,
   RefreshCw,
-} from "lucide-vue-next";
-import { useToast } from "~/composables/useToast";
-import { useLogger } from "~/composables/useLogger";
-import { useWhatsApp } from "~/composables/useWhatsApp";
-import { useAuth } from "~/composables/useAuth";
-import { useValidation, useCurrencyFormat } from "~/composables/useValidation";
-import { orcamentoSharedSchema } from "../../../shared/schemas";
-import { generateOrcamentoPdf } from "~/utils/orcamentoPdf";
+} from 'lucide-vue-next'
+import { useToast } from '~/composables/useToast'
+import { useLogger } from '~/composables/useLogger'
+import { useWhatsApp } from '~/composables/useWhatsApp'
+import { useAuth } from '~/composables/useAuth'
+import { useValidation, useCurrencyFormat } from '~/composables/useValidation'
+import { generateOrcamentoPdf } from '~/utils/orcamentoPdf'
 
-definePageMeta({ layout: "default" });
+definePageMeta({ layout: 'default' })
 
-const { add: addToast } = useToast();
-const { info, error: logError } = useLogger();
-const { sendMessage: sendWS, loading: wsLoading } = useWhatsApp();
-const { user } = useAuth();
-const { validate, errors, validateField, clearError, hasErrors, clearAllErrors } = useValidation(orcamentoSharedSchema);
-const { formatarCentavos } = useCurrencyFormat();
-const route = useRoute();
+const { add: addToast } = useToast()
+const { info, error: logError } = useLogger()
+const { sendMessage: sendWS, loading: wsLoading } = useWhatsApp()
+const { user } = useAuth()
+const {
+  validate,
+  errors,
+  validateField,
+  clearError,
+  hasErrors,
+  clearAllErrors,
+} = useValidation(orcamentoSharedSchema)
+const { formatarCentavos } = useCurrencyFormat()
+const route = useRoute()
 
 // Data Fetching
 const [
@@ -848,404 +860,410 @@ const [
   { data: motoristas },
   { data: caminhoes },
 ] = await Promise.all([
-  useFetch("/api/orcamentos"),
-  useFetch("/api/clientes"),
-  useFetch("/api/produtos"),
-  useFetch("/api/vendedores"),
-  useFetch("/api/formas-pagamento"),
-  useFetch("/api/motoristas"),
-  useFetch("/api/caminhoes"),
-]);
+  useFetch('/api/orcamentos'),
+  useFetch('/api/clientes'),
+  useFetch('/api/produtos'),
+  useFetch('/api/vendedores'),
+  useFetch('/api/formas-pagamento'),
+  useFetch('/api/motoristas'),
+  useFetch('/api/caminhoes'),
+])
 
 // Watch for deep changes in orcamentos or query to open modal
 watch(
   [() => route.query.id, orcamentos],
   ([id, list]) => {
     if (id && list?.length) {
-      const orcId = parseInt(id);
-      const orc = list.find((o) => o.id === orcId);
+      const orcId = parseInt(id)
+      const orc = list.find(o => o.id === orcId)
       if (orc && !showModal.value) {
-        openEditModal(orc);
+        openEditModal(orc)
       }
     }
   },
   { immediate: true },
-);
+)
 
 onMounted(() => {
   if (route.query.q) {
-    searchTerm.value = String(route.query.q);
+    searchTerm.value = String(route.query.q)
   }
-});
+})
 
-const searchTerm = ref("");
-const itemsToShow = ref(20);
-const loading = ref(false);
-const error = ref("");
-const showModal = ref(false);
-const isEditing = ref(false);
-const showDeleteDialog = ref(false);
-const orcamentoToDelete = ref(null);
-const showLacreModal = ref(false);
-const loadingApproval = ref(false);
-const lacreCode = ref("");
-const selectedOrcamentoForApproval = ref(null);
+const searchTerm = ref('')
+const itemsToShow = ref(20)
+const loading = ref(false)
+const error = ref('')
+const showModal = ref(false)
+const isEditing = ref(false)
+const showDeleteDialog = ref(false)
+const orcamentoToDelete = ref(null)
+const showLacreModal = ref(false)
+const loadingApproval = ref(false)
+const lacreCode = ref('')
+const selectedOrcamentoForApproval = ref(null)
 
 // Draft System
-const showDraftDialog = ref(false);
-const showRestoreDialog = ref(false);
-const draftData = ref(null);
-const originalFormState = ref("");
+const showDraftDialog = ref(false)
+const showRestoreDialog = ref(false)
+const draftData = ref(null)
+const originalFormState = ref('')
 
 const isFormDirty = computed(() => {
-  if (!showModal.value) return false;
-  const currentState = JSON.stringify(form);
-  return currentState !== originalFormState.value;
-});
+  if (!showModal.value) return false
+  const currentState = JSON.stringify(form)
+  return currentState !== originalFormState.value
+})
 
 const showModalProxy = computed({
   get: () => showModal.value,
   set: (val) => {
     if (val === false && isFormDirty.value) {
-      showDraftDialog.value = true;
-    } else {
-      showModal.value = val;
+      showDraftDialog.value = true
+    }
+    else {
+      showModal.value = val
     }
   },
-});
+})
 
 const saveAsDraft = () => {
   localStorage.setItem(
-    "meu_concreto_orcamento_draft",
+    'meu_concreto_orcamento_draft',
     JSON.stringify({
       form: JSON.parse(JSON.stringify(form)),
       isEditing: isEditing.value,
       timestamp: new Date().getTime(),
     }),
-  );
-  originalFormState.value = JSON.stringify(form);
-  showDraftDialog.value = false;
-  showModal.value = false;
-  addToast({ title: "Rascunho salvo!", type: "success" });
-};
+  )
+  originalFormState.value = JSON.stringify(form)
+  showDraftDialog.value = false
+  showModal.value = false
+  addToast({ title: 'Rascunho salvo!', type: 'success' })
+}
 
 const discardChanges = () => {
-  showDraftDialog.value = false;
-  showModal.value = false;
-  localStorage.removeItem("meu_concreto_orcamento_draft");
-};
+  showDraftDialog.value = false
+  showModal.value = false
+  localStorage.removeItem('meu_concreto_orcamento_draft')
+}
 
 const restoreDraft = () => {
   if (draftData.value) {
-    isEditing.value = draftData.value.isEditing;
-    Object.assign(form, draftData.value.form);
-    originalFormState.value = JSON.stringify(form);
-    showModal.value = true;
-    showRestoreDialog.value = false;
-    localStorage.removeItem("meu_concreto_orcamento_draft");
-    addToast({ title: "Rascunho restaurado!", type: "success" });
+    isEditing.value = draftData.value.isEditing
+    Object.assign(form, draftData.value.form)
+    originalFormState.value = JSON.stringify(form)
+    showModal.value = true
+    showRestoreDialog.value = false
+    localStorage.removeItem('meu_concreto_orcamento_draft')
+    addToast({ title: 'Rascunho restaurado!', type: 'success' })
   }
-};
+}
 
 const startFresh = () => {
-  localStorage.removeItem("meu_concreto_orcamento_draft");
-  showRestoreDialog.value = false;
-  resetForm();
-  showModal.value = true;
-};
+  localStorage.removeItem('meu_concreto_orcamento_draft')
+  showRestoreDialog.value = false
+  resetForm()
+  showModal.value = true
+}
 
 const statusColor = {
-  PENDENTE: "bg-amber-500 shadow-amber-500/50",
-  APROVADO: "bg-emerald-500 shadow-emerald-500/50",
-  CANCELADO: "bg-rose-500 shadow-rose-500/50",
-  VENCIDO: "bg-secondary/40 shadow-secondary/10",
-};
+  PENDENTE: 'bg-amber-500 shadow-amber-500/50',
+  APROVADO: 'bg-emerald-500 shadow-emerald-500/50',
+  CANCELADO: 'bg-rose-500 shadow-rose-500/50',
+  VENCIDO: 'bg-secondary/40 shadow-secondary/10',
+}
 
 const statusTextColor = {
-  PENDENTE: "text-amber-600 dark:text-amber-400",
-  APROVADO: "text-emerald-600 dark:text-emerald-400",
-  CANCELADO: "text-rose-600 dark:text-rose-400",
-  VENCIDO: "text-gray-600 dark:text-gray-400",
-};
+  PENDENTE: 'text-amber-600 dark:text-amber-400',
+  APROVADO: 'text-emerald-600 dark:text-emerald-400',
+  CANCELADO: 'text-rose-600 dark:text-rose-400',
+  VENCIDO: 'text-gray-600 dark:text-gray-400',
+}
 
 const form = reactive({
   id: null,
   idCliente: null,
-  nomeCliente: "",
-  cpfCnpj: "",
+  nomeCliente: '',
+  cpfCnpj: '',
   itens: [],
   idVendedor: null,
   idFormaPgto: null,
   idMotorista: null,
   idCaminhao: null,
-  telefone: "",
-  email: "",
-  endereco: "",
-  enderecoEntrega: "",
-  bairro: "",
-  cidade: "",
-  estado: "MG",
-  cep: "",
-  validadeOrcamento: "",
+  telefone: '',
+  email: '',
+  endereco: '',
+  enderecoEntrega: '',
+  bairro: '',
+  cidade: '',
+  estado: 'MG',
+  cep: '',
+  validadeOrcamento: '',
   distanciaObra: 0,
   bombaNecessaria: false,
   valorBomba: 0,
   valorDesconto: 0,
-  status: "PENDENTE",
-  obs: "",
+  status: 'PENDENTE',
+  obs: '',
   total: 0,
-});
+})
 
 // Options for selects
 const clienteOptions = computed(() =>
-  (clientes.value || []).map((c) => ({ label: c.nome, value: c.id })),
-);
+  (clientes.value || []).map(c => ({ label: c.nome, value: c.id })),
+)
 const produtoOptions = computed(() =>
-  (produtos.value || []).map((p) => ({ label: p.produto, value: p.id })),
-);
+  (produtos.value || []).map(p => ({ label: p.produto, value: p.id })),
+)
 const vendedorOptions = computed(() =>
-  (vendedores.value || []).map((v) => ({ label: v.nome, value: v.id })),
-);
+  (vendedores.value || []).map(v => ({ label: v.nome, value: v.id })),
+)
 const formaPgtoOptions = computed(() =>
-  (formasPgto.value || []).map((f) => ({
+  (formasPgto.value || []).map(f => ({
     label: f.formaPagamento,
     value: f.id,
   })),
-);
+)
 const motoristaOptions = computed(() => [
-  { label: "NENHUM / A DEFINIR", value: null },
-  ...(motoristas.value || []).map((m) => ({ label: m.nome, value: m.id })),
-]);
+  { label: 'NENHUM / A DEFINIR', value: null },
+  ...(motoristas.value || []).map(m => ({ label: m.nome, value: m.id })),
+])
 const caminhaoOptions = computed(() => [
-  { label: "NENHUM / A DEFINIR", value: null },
-  ...(caminhoes.value || []).map((c) => ({
+  { label: 'NENHUM / A DEFINIR', value: null },
+  ...(caminhoes.value || []).map(c => ({
     label: `${c.placa} - ${c.modelo}`,
     value: c.id,
   })),
-]);
+])
 
 const capacityWarning = computed(() => {
-  if (!form.idCaminhao || !form.itens.length) return null;
-  const caminhao = caminhoes.value.find((c) => c.id === form.idCaminhao);
-  if (!caminhao) return null;
+  if (!form.idCaminhao || !form.itens.length) return null
+  const caminhao = caminhoes.value.find(c => c.id === form.idCaminhao)
+  if (!caminhao) return null
 
-  const totalQtd = form.itens.reduce((acc, i) => acc + (i.qtd || 0), 0);
+  const totalQtd = form.itens.reduce((acc, i) => acc + (i.qtd || 0), 0)
   if (totalQtd > caminhao.capacidade) {
-    return `Atenção: Volume total (${totalQtd}m³) excede a capacidade do caminhão (${caminhao.capacidade}m³). Serão necessárias múltiplas viagens.`;
+    return `Atenção: Volume total (${totalQtd}m³) excede a capacidade do caminhão (${caminhao.capacidade}m³). Serão necessárias múltiplas viagens.`
   }
-  return null;
-});
+  return null
+})
 
 const filteredOrcamentos = computed(() => {
-  if (!orcamentos.value) return [];
-  const term = searchTerm.value.toLowerCase();
+  if (!orcamentos.value) return []
+  const term = searchTerm.value.toLowerCase()
   return orcamentos.value.filter(
-    (o) =>
+    o =>
       o.nomeCliente.toLowerCase().includes(term) || String(o.id).includes(term),
-  );
-});
+  )
+})
 
 const displayedOrcamentos = computed(() => {
-  return filteredOrcamentos.value.slice(0, itemsToShow.value);
-});
+  return filteredOrcamentos.value.slice(0, itemsToShow.value)
+})
 
 const addItem = () => {
   form.itens.push({
     idProduto: null,
-    produtoNome: "",
+    produtoNome: '',
     qtd: 0,
     valorUnit: 0,
     total: 0,
-  });
-};
+  })
+}
 
 const removeItem = (index) => {
-  form.itens.splice(index, 1);
-  calculateTotal();
-};
+  form.itens.splice(index, 1)
+  calculateTotal()
+}
 
 const totalItens = computed(() => {
-  return form.itens.reduce((acc, item) => acc + (item.total || 0), 0);
-});
+  return form.itens.reduce((acc, item) => acc + (item.total || 0), 0)
+})
 
 const calculateItemTotal = (index) => {
-  const item = form.itens[index];
-  item.total = (item.qtd || 0) * (item.valorUnit || 0);
-  calculateTotal();
-};
+  const item = form.itens[index]
+  item.total = (item.qtd || 0) * (item.valorUnit || 0)
+  calculateTotal()
+}
 
 const calculateTotal = () => {
-  let base = totalItens.value;
-  if (form.bombaNecessaria) base += form.valorBomba || 0;
-  base -= form.valorDesconto || 0;
-  form.total = Math.max(0, base);
-};
+  let base = totalItens.value
+  if (form.bombaNecessaria) base += form.valorBomba || 0
+  base -= form.valorDesconto || 0
+  form.total = Math.max(0, base)
+}
 
 // Autocomplete logic for clients
-const searchResults = ref([]);
-const isSearching = ref(false);
-let searchTimeout = null;
+const searchResults = ref([])
+const isSearching = ref(false)
+let searchTimeout = null
 
 const onSearchCliente = (term) => {
-  if (searchTimeout) clearTimeout(searchTimeout);
+  if (searchTimeout) clearTimeout(searchTimeout)
   if (!term || term.length < 2) {
-    searchResults.value = [];
-    return;
+    searchResults.value = []
+    return
   }
 
-  isSearching.value = true;
+  isSearching.value = true
   searchTimeout = setTimeout(async () => {
     try {
-      const data = await $fetch(`/api/search?q=${term}`);
+      const data = await $fetch(`/api/search?q=${term}`)
       // Filter only clients from the flat list
       searchResults.value = (data.results || []).filter(
-        (r) => r.category === "Clientes",
-      );
-    } catch (e) {
-      console.error("Erro na busca de clientes:", e);
-    } finally {
-      isSearching.value = false;
+        r => r.category === 'Clientes',
+      )
     }
-  }, 300);
-};
+    catch (e) {
+      console.error('Erro na busca de clientes:', e)
+    }
+    finally {
+      isSearching.value = false
+    }
+  }, 300)
+}
 
 const autocompleteClienteOptions = computed(() => {
   // Combine results with the currently selected client if it exists
-  const options = searchResults.value.map((c) => ({
+  const options = searchResults.value.map(c => ({
     label: c.title,
     value: c.id,
     sublabel: c.subtitle,
-  }));
+  }))
 
   // If we have a selected client not in the search results, add it
   if (form.idCliente) {
-    const exists = options.find((o) => o.value === form.idCliente);
+    const exists = options.find(o => o.value === form.idCliente)
     if (!exists) {
       const selected = (clientes.value || []).find(
-        (c) => c.id === form.idCliente,
-      );
+        c => c.id === form.idCliente,
+      )
       if (selected) {
-        options.unshift({ label: selected.nome, value: selected.id });
+        options.unshift({ label: selected.nome, value: selected.id })
       }
     }
   }
-  return options;
-});
+  return options
+})
 
 const onClienteSelect = async (id) => {
-  if (!id) return;
+  if (!id) return
   try {
-    const cliente = await $fetch(`/api/clientes/${id}`);
+    const cliente = await $fetch(`/api/clientes/${id}`)
     if (cliente) {
-      form.nomeCliente = cliente.nome;
-      form.cpfCnpj = cliente.cpfCnpj;
-      form.telefone = cliente.telefone;
-      form.email = cliente.email;
-      form.endereco = cliente.endereco || "";
-      form.enderecoEntrega = cliente.enderecoEntrega || cliente.endereco || "";
-      form.cidade = cliente.cidade || "";
-      form.estado = cliente.estado || "";
-      form.cep = cliente.cep || "";
-      form.bairro = cliente.bairro || "";
+      form.nomeCliente = cliente.nome
+      form.cpfCnpj = cliente.cpfCnpj
+      form.telefone = cliente.telefone
+      form.email = cliente.email
+      form.endereco = cliente.endereco || ''
+      form.enderecoEntrega = cliente.enderecoEntrega || cliente.endereco || ''
+      form.cidade = cliente.cidade || ''
+      form.estado = cliente.estado || ''
+      form.cep = cliente.cep || ''
+      form.bairro = cliente.bairro || ''
     }
-  } catch (e) {
-    console.error("Erro ao carregar dados do cliente:", e);
   }
-};
+  catch (e) {
+    console.error('Erro ao carregar dados do cliente:', e)
+  }
+}
 
 const onMotoristaSelect = (id) => {
-  const motorista = motoristas.value.find((m) => m.id === id);
+  const motorista = motoristas.value.find(m => m.id === id)
   if (motorista && motorista.idCaminhao) {
-    form.idCaminhao = motorista.idCaminhao;
+    form.idCaminhao = motorista.idCaminhao
   }
-};
+}
 
 const onItemProdutoSelect = (id: number, index: number) => {
-  const produto = produtos.value?.find((p: any) => p.id === id);
+  const produto = produtos.value?.find((p: any) => p.id === id)
   if (produto) {
-    form.itens[index].produtoNome = produto.produto;
-    form.itens[index].valorUnit = produto.valorVenda; // Já vem em centavos
-    calculateItemTotal(index);
+    form.itens[index].produtoNome = produto.produto
+    form.itens[index].valorUnit = produto.valorVenda // Já vem em centavos
+    calculateItemTotal(index)
   }
-};
+}
 
 const openAddModal = () => {
-  resetForm();
-  showModal.value = true;
-};
+  resetForm()
+  showModal.value = true
+}
 
 const handleNewOrcamento = () => {
-  if (typeof window === "undefined") return;
-  
-  const saved = localStorage.getItem("meu_concreto_orcamento_draft");
+  if (typeof window === 'undefined') return
+
+  const saved = localStorage.getItem('meu_concreto_orcamento_draft')
   if (!saved) {
-    openAddModal();
-    return;
+    openAddModal()
+    return
   }
 
   // Pequeno delay para garantir que o estado reativo esteja limpo
   setTimeout(() => {
     try {
-      const parsed = JSON.parse(saved);
+      const parsed = JSON.parse(saved)
       if (parsed && parsed.form) {
-        draftData.value = parsed;
-        showRestoreDialog.value = true;
-      } else {
-        openAddModal();
+        draftData.value = parsed
+        showRestoreDialog.value = true
       }
-    } catch (e) {
-      console.error("Erro ao carregar rascunho:", e);
-      localStorage.removeItem("meu_concreto_orcamento_draft");
-      openAddModal();
+      else {
+        openAddModal()
+      }
     }
-  }, 10);
-};
+    catch (e) {
+      console.error('Erro ao carregar rascunho:', e)
+      localStorage.removeItem('meu_concreto_orcamento_draft')
+      openAddModal()
+    }
+  }, 10)
+}
 
 const resetForm = () => {
-  isEditing.value = false;
-  clearAllErrors();
+  isEditing.value = false
+  clearAllErrors()
   Object.assign(form, {
     id: null,
     idCliente: null,
-    nomeCliente: "",
-    cpfCnpj: "",
+    nomeCliente: '',
+    cpfCnpj: '',
     itens: [],
     idVendedor: null,
     idFormaPgto: null,
     idMotorista: null,
     idCaminhao: null,
-    telefone: "",
-    email: "",
-    endereco: "",
-    enderecoEntrega: "",
-    bairro: "",
-    cidade: "",
-    estado: "MG",
-    cep: "",
-    validadeOrcamento: "",
-    dataEntrega: "",
+    telefone: '',
+    email: '',
+    endereco: '',
+    enderecoEntrega: '',
+    bairro: '',
+    cidade: '',
+    estado: 'MG',
+    cep: '',
+    validadeOrcamento: '',
+    dataEntrega: '',
     distanciaObra: 0,
     bombaNecessaria: false,
     valorBomba: 0,
     valorDesconto: 0,
-    status: "PENDENTE",
-    obs: "",
+    status: 'PENDENTE',
+    obs: '',
     total: 0,
-  });
-  addItem(); // Start with one item
-  originalFormState.value = JSON.stringify(form);
-};
+  })
+  addItem() // Start with one item
+  originalFormState.value = JSON.stringify(form)
+}
 
 const openEditModal = (orc: any) => {
-  isEditing.value = true;
-  clearAllErrors();
+  isEditing.value = true
+  clearAllErrors()
 
   // Convert itens values back to decimal for form
-  const mappedItens = (orc.itens || []).map((item) => ({
+  const mappedItens = (orc.itens || []).map(item => ({
     ...item,
     valorUnit: item.valorUnit / 100,
     total: item.total / 100,
-  }));
+  }))
 
   Object.assign(form, {
     ...orc,
@@ -1254,320 +1272,329 @@ const openEditModal = (orc: any) => {
     valorDesconto: (orc.valorDesconto || 0) / 100,
     total: orc.total / 100,
     validadeOrcamento: orc.validadeOrcamento
-      ? new Date(orc.validadeOrcamento).toISOString().split("T")[0]
-      : "",
+      ? new Date(orc.validadeOrcamento).toISOString().split('T')[0]
+      : '',
     dataEntrega: orc.dataEntrega
       ? new Date(orc.dataEntrega)
-          .toLocaleString("sv-SE")
+          .toLocaleString('sv-SE')
           .slice(0, 16)
-          .replace(" ", "T")
-      : "",
+          .replace(' ', 'T')
+      : '',
     bombaNecessaria: !!orc.bombaNecessaria,
-  });
+  })
 
-  if (!form.itens.length) addItem(); // Fallback if no itens (legacy data)
+  if (!form.itens.length) addItem() // Fallback if no itens (legacy data)
 
-  originalFormState.value = JSON.stringify(form);
-  showModal.value = true;
-};
+  originalFormState.value = JSON.stringify(form)
+  showModal.value = true
+}
 
 const saveOrcamento = async () => {
-  loading.value = true;
-  
+  loading.value = true
+
   // Validar formulário
-  const result = validate(form);
+  const result = validate(form)
   if (!result.success) {
-    loading.value = false;
+    loading.value = false
     addToast({
-      title: "Erro de Validação",
-      description: "Corrija os campos destacados",
-      type: "error",
-    });
-    return;
+      title: 'Erro de Validação',
+      description: 'Corrija os campos destacados',
+      type: 'error',
+    })
+    return
   }
-  
+
   try {
     const payload = {
       ...result.data,
       // itens já estão em centavos pelo BaseCurrency
       // Legacy support (picks first item)
       idProduto: form.itens[0]?.idProduto || 1,
-      produtoNome: form.itens[0]?.produtoNome || "N/A",
+      produtoNome: form.itens[0]?.produtoNome || 'N/A',
       qtd: form.itens[0]?.qtd || 0,
       idEmpresa: user.value?.idEmpresa,
       idUsuario: user.value?.id,
-    };
+    }
 
     const url = isEditing.value
       ? `/api/orcamentos/${form.id}`
-      : "/api/orcamentos";
+      : '/api/orcamentos'
     await $fetch(url, {
-      method: isEditing.value ? "PUT" : "POST",
+      method: isEditing.value ? 'PUT' : 'POST',
       body: payload,
-    });
+    })
 
     addToast({
-      title: isEditing.value ? "Cotação Atualizada" : "Cotação Gerada",
-      description: "Os dados foram salvos no sistema.",
-      type: "success",
-    });
+      title: isEditing.value ? 'Cotação Atualizada' : 'Cotação Gerada',
+      description: 'Os dados foram salvos no sistema.',
+      type: 'success',
+    })
     info(
-      "ORCAMENTOS",
-      `${isEditing.value ? "Edição" : "Gerado"} orçamento para ${form.nomeCliente}`,
+      'ORCAMENTOS',
+      `${isEditing.value ? 'Edição' : 'Gerado'} orçamento para ${form.nomeCliente}`,
       { orcamento: payload },
-    );
-    originalFormState.value = JSON.stringify(form);
-    localStorage.removeItem("meu_concreto_orcamento_draft");
-    showModal.value = false;
-    refresh();
-  } catch (err: any) {
+    )
+    originalFormState.value = JSON.stringify(form)
+    localStorage.removeItem('meu_concreto_orcamento_draft')
+    showModal.value = false
+    refresh()
+  }
+  catch (err: any) {
     // Tratar erros de validação do backend
     if (err.data?.data) {
-      const backendErrors = err.data.data;
+      const backendErrors = err.data.data
       if (Array.isArray(backendErrors)) {
         backendErrors.forEach((e: any) => {
           if (e.path) {
-            errors.value[e.path[0]] = e.message;
+            errors.value[e.path[0]] = e.message
           }
-        });
+        })
       }
     }
-    
-    const msg = err.data?.message || err.message || "Erro ao salvar orçamento.";
+
+    const msg = err.data?.message || err.message || 'Erro ao salvar orçamento.'
 
     addToast({
-      title: "Erro de Validação",
+      title: 'Erro de Validação',
       description: msg,
-      type: "error",
-    });
+      type: 'error',
+    })
     logError(
-      "ORCAMENTOS",
-      `Erro ao ${isEditing.value ? "editar" : "gerar"} orçamento`,
+      'ORCAMENTOS',
+      `Erro ao ${isEditing.value ? 'editar' : 'gerar'} orçamento`,
       { error: msg, form },
-    );
-  } finally {
-    loading.value = false;
+    )
   }
-};
+  finally {
+    loading.value = false
+  }
+}
 
 const approveOrcamento = (orc) => {
-  selectedOrcamentoForApproval.value = orc;
-  lacreCode.value = "";
-  showLacreModal.value = true;
-};
+  selectedOrcamentoForApproval.value = orc
+  lacreCode.value = ''
+  showLacreModal.value = true
+}
 
 const confirmApproval = async () => {
-  if (!selectedOrcamentoForApproval.value) return;
+  if (!selectedOrcamentoForApproval.value) return
 
-  loadingApproval.value = true;
+  loadingApproval.value = true
   try {
     await $fetch(
       `/api/orcamentos/${selectedOrcamentoForApproval.value.id}/aprovar`,
       {
-        method: "POST",
+        method: 'POST',
         body: { lacre: lacreCode.value },
       },
-    );
+    )
     addToast({
-      title: "Aprovado",
-      description: "Orçamento convertido em venda!",
-      type: "success",
-    });
+      title: 'Aprovado',
+      description: 'Orçamento convertido em venda!',
+      type: 'success',
+    })
     info(
-      "ORCAMENTOS",
+      'ORCAMENTOS',
       `Orçamento #${selectedOrcamentoForApproval.value.id} aprovado com lacre ${lacreCode.value}`,
       { orcamento: selectedOrcamentoForApproval.value },
-    );
-    showLacreModal.value = false;
-    refresh();
-  } catch (err) {
+    )
+    showLacreModal.value = false
+    refresh()
+  }
+  catch (err) {
     addToast({
-      title: "Erro",
+      title: 'Erro',
       description:
-        err.data?.message || "Não foi possível aprovar este orçamento agora.",
-      type: "error",
-    });
+        err.data?.message || 'Não foi possível aprovar este orçamento agora.',
+      type: 'error',
+    })
     logError(
-      "ORCAMENTOS",
+      'ORCAMENTOS',
       `Erro ao aprovar orçamento #${selectedOrcamentoForApproval.value.id}`,
       { error: err.message },
-    );
-  } finally {
-    loadingApproval.value = false;
+    )
   }
-};
+  finally {
+    loadingApproval.value = false
+  }
+}
 
 const downloadOrcamentoPdf = (orc) => {
   try {
-    const pdfBase64 = generateOrcamentoPdf(orc, user.value?.empresa);
-    const byteCharacters = atob(pdfBase64);
-    const byteNumbers = new Array(byteCharacters.length);
+    const pdfBase64 = generateOrcamentoPdf(orc, user.value?.empresa)
+    const byteCharacters = atob(pdfBase64)
+    const byteNumbers = new Array(byteCharacters.length)
     for (let i = 0; i < byteCharacters.length; i++) {
-      byteNumbers[i] = byteCharacters.charCodeAt(i);
+      byteNumbers[i] = byteCharacters.charCodeAt(i)
     }
-    const byteArray = new Uint8Array(byteNumbers);
-    const blob = new Blob([byteArray], { type: "application/pdf" });
+    const byteArray = new Uint8Array(byteNumbers)
+    const blob = new Blob([byteArray], { type: 'application/pdf' })
 
-    const link = document.createElement("a");
-    link.href = window.URL.createObjectURL(blob);
-    link.download = `Orcamento_${String(orc.id).padStart(4, "0")}.pdf`;
-    link.click();
-  } catch (e) {
-    console.error("Erro ao gerar PDF:", e);
-    addToast({
-      title: "Erro",
-      description: "Não foi possível gerar o arquivo PDF para este orçamento.",
-      type: "error",
-    });
+    const link = document.createElement('a')
+    link.href = window.URL.createObjectURL(blob)
+    link.download = `Orcamento_${String(orc.id).padStart(4, '0')}.pdf`
+    link.click()
   }
-};
+  catch (e) {
+    console.error('Erro ao gerar PDF:', e)
+    addToast({
+      title: 'Erro',
+      description: 'Não foi possível gerar o arquivo PDF para este orçamento.',
+      type: 'error',
+    })
+  }
+}
 
 const confirmDelete = (orc) => {
-  orcamentoToDelete.value = orc;
-  showDeleteDialog.value = true;
-};
+  orcamentoToDelete.value = orc
+  showDeleteDialog.value = true
+}
 
 const handleDelete = async () => {
   try {
     await $fetch(`/api/orcamentos/${orcamentoToDelete.value.id}`, {
-      method: "DELETE",
-    });
+      method: 'DELETE',
+    })
     addToast({
-      title: "Removido",
-      description: "Orçamento deletado com sucesso.",
-      type: "success",
-    });
-    info("ORCAMENTOS", `Orçamento #${orcamentoToDelete.value.id} removido`, {
+      title: 'Removido',
+      description: 'Orçamento deletado com sucesso.',
+      type: 'success',
+    })
+    info('ORCAMENTOS', `Orçamento #${orcamentoToDelete.value.id} removido`, {
       orcamento: orcamentoToDelete.value,
-    });
-    refresh();
-  } catch (err) {
+    })
+    refresh()
+  }
+  catch (err) {
     addToast({
-      title: "Erro",
-      description: err.data?.message || "Falha ao tentar remover o orçamento.",
-      type: "error",
-    });
+      title: 'Erro',
+      description: err.data?.message || 'Falha ao tentar remover o orçamento.',
+      type: 'error',
+    })
     logError(
-      "ORCAMENTOS",
+      'ORCAMENTOS',
       `Erro ao remover orçamento #${orcamentoToDelete.value?.id}`,
       { error: err.message },
-    );
-  } finally {
-    showDeleteDialog.value = false;
+    )
   }
-};
+  finally {
+    showDeleteDialog.value = false
+  }
+}
 
 const sendWhatsAppOrcamento = async (orc) => {
   if (!orc.telefone) {
     addToast({
-      title: "Atenção",
-      description: "Cliente sem telefone cadastrado.",
-      type: "warn",
-    });
-    return;
+      title: 'Atenção',
+      description: 'Cliente sem telefone cadastrado.',
+      type: 'warn',
+    })
+    return
   }
 
   // Encontrar labels auxiliares nas listas carregadas
-  const formaLabel =
-    formasPgto.value?.find((f) => f.id === orc.idFormaPgto)?.formaPagamento ||
-    "A COMBINAR";
-  const vendedorLabel =
-    vendedores.value?.find((v) => v.id === orc.idVendedor)?.nome ||
-    "ATENDIMENTO";
+  const formaLabel
+    = formasPgto.value?.find(f => f.id === orc.idFormaPgto)?.formaPagamento
+      || 'A COMBINAR'
+  const vendedorLabel
+    = vendedores.value?.find(v => v.id === orc.idVendedor)?.nome
+      || 'ATENDIMENTO'
 
   const itemsText = orc.itens?.length
     ? orc.itens
         .map(
-          (i) =>
+          i =>
             `• ${String(i.produtoNome).toUpperCase()}: ${Number(i.qtd).toFixed(2)}m³`,
         )
-        .join("\n")
-    : `• ${String(orc.produtoNome).toUpperCase()}: ${Number(orc.qtd).toFixed(2)}m³`;
+        .join('\n')
+    : `• ${String(orc.produtoNome).toUpperCase()}: ${Number(orc.qtd).toFixed(2)}m³`
 
   // Layout Estruturado (Estilo Fiscal)
-  const line = "━━━━━━━━━━━━━━━━━━━━━━━━";
-  const doubleLine = "════════════════════════";
+  const line = '━━━━━━━━━━━━━━━━━━━━━━━━'
+  const doubleLine = '════════════════════════'
 
   const empresaNome = user.value?.empresa?.empresa
-    ? `${user.value.empresa.empresa}${user.value.empresa.filial ? ` - ${user.value.empresa.filial}` : ""}`.toUpperCase()
-    : "SISTEMA MEU CONCRETO";
-  const codOrc = String(orc.id).padStart(4, "0");
-  const dataEmissao = new Intl.DateTimeFormat("pt-BR").format(
+    ? `${user.value.empresa.empresa}${user.value.empresa.filial ? ` - ${user.value.empresa.filial}` : ''}`.toUpperCase()
+    : 'SISTEMA MEU CONCRETO'
+  const codOrc = String(orc.id).padStart(4, '0')
+  const dataEmissao = new Intl.DateTimeFormat('pt-BR').format(
     new Date(orc.createdAt),
-  );
+  )
 
   const dataEntregaPrompt = orc.dataEntrega
-    ? new Intl.DateTimeFormat("pt-BR", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
+    ? new Intl.DateTimeFormat('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
       }).format(new Date(orc.dataEntrega))
-    : "A DEFINIR";
+    : 'A DEFINIR'
 
   const enderecoCompleto = [orc.enderecoEntrega, orc.bairro, orc.cidade]
     .filter(Boolean)
-    .join(", ");
+    .join(', ')
 
-  const message =
-    `*${doubleLine}*\n` +
-    `*${empresaNome}*\n` +
-    `*${doubleLine}*\n\n` +
-    `*PREVISÃO DE ENTREGA E LOGÍSTICA*\n` +
-    `*REF. ORÇAMENTO:* #${codOrc}\n\n` +
-    `*CLIENTE:* ${String(orc.nomeCliente).toUpperCase()}\n` +
-    `*DATA/HORA:* ${dataEntregaPrompt}\n` +
-    `*LOCAL:* ${enderecoCompleto.toUpperCase() || "NÃO INFORMADO"}\n\n` +
-    `*${line}*\n` +
-    `*PRODUTO E COMPOSIÇÃO*\n` +
-    `*${line}*\n` +
-    `${itemsText}\n` +
-    `*${line}*\n\n` +
-    `*SERVIÇO DE BOMBA:* ${orc.bombaNecessaria ? "REQUERIDO" : "NÃO UTILIZA"}\n` +
-    (orc.lacre ? `*LACRE DE SEGURANÇA:* ${orc.lacre}\n` : "") +
-    `*VALOR TOTAL:* ${formatCurrency(orc.total)}\n` +
-    `*PAGAMENTO:* ${formaLabel}\n\n` +
-    (orc.obs ? `*OBS. ENTREGA:* ${orc.obs}\n\n` : "") +
-    `*${line}*\n` +
-    `_Por favor, garanta que o acesso para o caminhão esteja livre no horário agendado._`;
+  const message
+    = `*${doubleLine}*\n`
+      + `*${empresaNome}*\n`
+      + `*${doubleLine}*\n\n`
+      + `*PREVISÃO DE ENTREGA E LOGÍSTICA*\n`
+      + `*REF. ORÇAMENTO:* #${codOrc}\n\n`
+      + `*CLIENTE:* ${String(orc.nomeCliente).toUpperCase()}\n`
+      + `*DATA/HORA:* ${dataEntregaPrompt}\n`
+      + `*LOCAL:* ${enderecoCompleto.toUpperCase() || 'NÃO INFORMADO'}\n\n`
+      + `*${line}*\n`
+      + `*PRODUTO E COMPOSIÇÃO*\n`
+      + `*${line}*\n`
+      + `${itemsText}\n`
+      + `*${line}*\n\n`
+      + `*SERVIÇO DE BOMBA:* ${orc.bombaNecessaria ? 'REQUERIDO' : 'NÃO UTILIZA'}\n`
+      + (orc.lacre ? `*LACRE DE SEGURANÇA:* ${orc.lacre}\n` : '')
+      + `*VALOR TOTAL:* ${formatCurrency(orc.total)}\n`
+      + `*PAGAMENTO:* ${formaLabel}\n\n`
+      + (orc.obs ? `*OBS. ENTREGA:* ${orc.obs}\n\n` : '')
+      + `*${line}*\n`
+      + `_Por favor, garanta que o acesso para o caminhão esteja livre no horário agendado._`
 
   try {
-    await sendWS(orc.telefone, { text: message });
-  } catch (e) {
+    await sendWS(orc.telefone, { text: message })
+  }
+  catch (e) {
     // useWhatsApp handles error toasts
   }
-};
+}
 
 const sendWhatsAppDocument = async (orc) => {
   if (!orc.telefone) {
     addToast({
-      title: "Atenção",
-      description: "Cliente sem telefone cadastrado.",
-      type: "warn",
-    });
-    return;
+      title: 'Atenção',
+      description: 'Cliente sem telefone cadastrado.',
+      type: 'warn',
+    })
+    return
   }
 
   try {
     // Gera o PDF real baseado no design do sistema, enviando os dados da empresa logada
-    const pdfBase64 = generateOrcamentoPdf(orc, user.value?.empresa);
+    const pdfBase64 = generateOrcamentoPdf(orc, user.value?.empresa)
 
     await sendWS(orc.telefone, {
       document: pdfBase64,
-      fileName: `Orcamento_${String(orc.id).padStart(4, "0")}.pdf`,
-      mimetype: "application/pdf",
-      caption: `Olá ${orc.nomeCliente}, segue em anexo o PDF do seu orçamento #${String(orc.id).padStart(4, "0")}.`,
-    });
-  } catch (e) {
-    console.error("Erro ao gerar/enviar PDF:", e);
+      fileName: `Orcamento_${String(orc.id).padStart(4, '0')}.pdf`,
+      mimetype: 'application/pdf',
+      caption: `Olá ${orc.nomeCliente}, segue em anexo o PDF do seu orçamento #${String(orc.id).padStart(4, '0')}.`,
+    })
+  }
+  catch (e) {
+    console.error('Erro ao gerar/enviar PDF:', e)
     // useWhatsApp already handles toast for send error
   }
-};
+}
 
 const formatCurrency = (value?: number) => {
-  return formatarCentavos(value);
-};
+  return formatarCentavos(value)
+}
 </script>
 
 <style scoped>

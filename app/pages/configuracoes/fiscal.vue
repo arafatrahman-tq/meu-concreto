@@ -20,11 +20,13 @@
           to="/configuracoes/fiscal-ai"
           class="hidden md:flex items-center gap-2 bg-emerald-500/5 px-4 py-2 border border-emerald-500/20 rounded-xl hover:bg-emerald-500/10 transition-all"
         >
-          <Sparkles size="16" class="text-emerald-500" />
+          <Sparkles
+            size="16"
+            class="text-emerald-500"
+          />
           <span
             class="text-[8px] font-black uppercase tracking-widest text-emerald-500"
-            >Fiscal AI Pulse</span
-          >
+          >Fiscal AI Pulse</span>
         </NuxtLink>
 
         <!-- Status Badge -->
@@ -39,7 +41,7 @@
                 ? 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.4)]'
                 : 'bg-rose-500 animate-pulse',
             ]"
-          ></div>
+          />
           <span
             class="text-[8px] font-black uppercase tracking-widest text-secondary opacity-60"
           >
@@ -51,14 +53,24 @@
           </span>
         </div>
 
-        <div v-if="isAdmin" class="flex items-center gap-3">
+        <div
+          v-if="isAdmin"
+          class="flex items-center gap-3"
+        >
           <button
-            @click="saveSettings"
             :disabled="loading"
             class="bg-brand text-white px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-3 shadow-xl shadow-brand/20 disabled:opacity-50 outline-none"
+            @click="saveSettings"
           >
-            <Save size="20" v-if="!loading" />
-            <RefreshCw v-else size="20" class="animate-spin" />
+            <Save
+              v-if="!loading"
+              size="20"
+            />
+            <RefreshCw
+              v-else
+              size="20"
+              class="animate-spin"
+            />
             {{ loading ? "Processando" : "Salvar Alterações" }}
           </button>
         </div>
@@ -66,7 +78,10 @@
     </div>
 
     <!-- Diagnostic Cards -->
-    <div v-if="diag" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div
+      v-if="diag"
+      class="grid grid-cols-1 md:grid-cols-3 gap-6"
+    >
       <div
         class="bg-surface border border-border p-6 rounded-3xl flex items-center gap-5 group hover:border-brand/30 transition-all"
       >
@@ -140,7 +155,7 @@
         <!-- Transition rules -->
         <div class="space-y-4">
           <div class="flex items-center gap-2 mb-2 ml-2">
-            <div class="w-1.5 h-4 bg-brand rounded-full"></div>
+            <div class="w-1.5 h-4 bg-brand rounded-full" />
             <h3
               class="text-[10px] font-black uppercase tracking-[0.2em] text-primary"
             >
@@ -164,13 +179,11 @@
                   <span
                     v-if="settings.reforma2026"
                     class="px-2 py-0.5 bg-emerald-500/10 text-emerald-500 text-[8px] font-black rounded-lg tracking-widest border border-emerald-500/20 uppercase"
-                    >Ativo</span
-                  >
+                  >Ativo</span>
                   <span
                     v-else
                     class="px-2 py-0.5 bg-slate-100 text-slate-400 text-[8px] font-black rounded-lg tracking-widest border border-border uppercase"
-                    >Inativo</span
-                  >
+                  >Inativo</span>
                 </div>
                 <p
                   class="text-xs font-bold text-secondary opacity-60 leading-relaxed uppercase tracking-wider"
@@ -180,7 +193,10 @@
                   emitidos.
                 </p>
               </div>
-              <BaseToggle v-model="settings.reforma2026" :disabled="!isAdmin" />
+              <BaseToggle
+                v-model="settings.reforma2026"
+                :disabled="!isAdmin"
+              />
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -188,14 +204,18 @@
                 class="p-6 bg-primary/2 border border-border rounded-2xl space-y-2 group hover:border-brand/30 transition-all"
               >
                 <div class="flex items-center gap-2">
-                  <TrendingUp size="16" class="text-brand" />
+                  <TrendingUp
+                    size="16"
+                    class="text-brand"
+                  />
                   <span
                     class="text-[10px] font-black uppercase tracking-widest text-secondary opacity-40"
-                    >Projeção CBS (Federal)</span
-                  >
+                  >Projeção CBS (Federal)</span>
                 </div>
                 <div class="flex items-baseline gap-2">
-                  <p class="text-3xl font-black text-primary">0,9</p>
+                  <p class="text-3xl font-black text-primary">
+                    0,9
+                  </p>
                   <span class="text-xs font-black text-secondary">%</span>
                 </div>
               </div>
@@ -203,14 +223,18 @@
                 class="p-6 bg-primary/2 border border-border rounded-2xl space-y-2 group hover:border-emerald-500/30 transition-all"
               >
                 <div class="flex items-center gap-2">
-                  <TrendingDown size="16" class="text-emerald-500" />
+                  <TrendingDown
+                    size="16"
+                    class="text-emerald-500"
+                  />
                   <span
                     class="text-[10px] font-black uppercase tracking-widest text-secondary opacity-40"
-                    >Projeção IBS (Estados/Municípios)</span
-                  >
+                  >Projeção IBS (Estados/Municípios)</span>
                 </div>
                 <div class="flex items-baseline gap-2">
-                  <p class="text-3xl font-black text-primary">0,1</p>
+                  <p class="text-3xl font-black text-primary">
+                    0,1
+                  </p>
                   <span class="text-xs font-black text-secondary">%</span>
                 </div>
               </div>
@@ -219,7 +243,10 @@
             <div
               class="p-4 bg-amber-500/5 border border-amber-500/10 rounded-2xl flex items-start gap-4"
             >
-              <Info size="18" class="text-amber-500 mt-1 shrink-0" />
+              <Info
+                size="18"
+                class="text-amber-500 mt-1 shrink-0"
+              />
               <p
                 class="text-[10px] font-bold text-amber-500 uppercase tracking-widest leading-relaxed"
               >
@@ -233,7 +260,7 @@
         <!-- Automation / Actions -->
         <div class="space-y-4">
           <div class="flex items-center gap-2 mb-2 ml-2">
-            <div class="w-1.5 h-4 bg-emerald-500 rounded-full"></div>
+            <div class="w-1.5 h-4 bg-emerald-500 rounded-full" />
             <h3
               class="text-[10px] font-black uppercase tracking-[0.2em] text-primary"
             >
@@ -266,12 +293,10 @@
               <div class="flex flex-wrap gap-2 pt-2">
                 <span
                   class="px-2 py-1 bg-primary/3 text-secondary text-[8px] font-black rounded-md border border-border uppercase"
-                  >IBPT Automático</span
-                >
+                >IBPT Automático</span>
                 <span
                   class="px-2 py-1 bg-primary/3 text-secondary text-[8px] font-black rounded-md border border-border uppercase"
-                  >Validação SEFAZ</span
-                >
+                >Validação SEFAZ</span>
               </div>
             </div>
 
@@ -280,8 +305,7 @@
                 <div class="flex items-center gap-2 ml-2">
                   <label
                     class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40"
-                    >NCM Alvo (Concreto)</label
-                  >
+                  >NCM Alvo (Concreto)</label>
                   <BaseTooltip text="Código NCM padrão para concreto usinado.">
                     <HelpCircle
                       size="12"
@@ -296,12 +320,19 @@
                 />
               </div>
               <button
-                @click="doImport"
                 :disabled="importing || !isAdmin"
                 class="w-full bg-emerald-500 text-white py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 shadow-xl shadow-emerald-500/20 disabled:grayscale disabled:opacity-50"
+                @click="doImport"
               >
-                <Download v-if="!importing" size="18" />
-                <RefreshCw v-else size="18" class="animate-spin" />
+                <Download
+                  v-if="!importing"
+                  size="18"
+                />
+                <RefreshCw
+                  v-else
+                  size="18"
+                  class="animate-spin"
+                />
                 {{ importing ? "Processando" : "Aplicar Sincronização" }}
               </button>
             </div>
@@ -324,7 +355,10 @@
 
           <div class="relative z-10 space-y-6">
             <div class="p-4 bg-white/10 rounded-2xl w-fit">
-              <Cloud size="24" class="text-brand" />
+              <Cloud
+                size="24"
+                class="text-brand"
+              />
             </div>
 
             <div class="space-y-2">
@@ -371,9 +405,7 @@
             <div
               class="p-4 bg-primary/2 border border-border rounded-2xl flex items-center justify-between group-hover:border-brand/30 transition-all"
             >
-              <span class="text-[11px] font-black text-primary uppercase"
-                >São Paulo</span
-              >
+              <span class="text-[11px] font-black text-primary uppercase">São Paulo</span>
               <div
                 class="px-2 py-0.5 bg-brand text-background text-[8px] font-black rounded-md tracking-widest uppercase"
               >
@@ -383,9 +415,7 @@
             <div
               class="p-4 bg-primary/2 border border-border rounded-2xl flex items-center justify-between group-hover:border-brand/30 transition-all"
             >
-              <span class="text-[11px] font-black text-primary uppercase"
-                >Paraná</span
-              >
+              <span class="text-[11px] font-black text-primary uppercase">Paraná</span>
               <div
                 class="px-2 py-0.5 bg-brand text-background text-[8px] font-black rounded-md tracking-widest uppercase"
               >
@@ -407,7 +437,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted } from 'vue'
 import {
   Cloud,
   ShieldCheck,
@@ -425,98 +455,103 @@ import {
   Database,
   ArrowRight,
   Sparkles,
-} from "lucide-vue-next";
-import { useAuth } from "@/composables/useAuth";
-import { useToast } from "@/composables/useToast";
+} from 'lucide-vue-next'
+import { useAuth } from '@/composables/useAuth'
+import { useToast } from '@/composables/useToast'
 
-const { user } = useAuth();
-const { add: addToast } = useToast();
+const { user } = useAuth()
+const { add: addToast } = useToast()
 
-const isAdmin = computed(() => user.value?.admin === 1);
-const loading = ref(false);
-const importing = ref(false);
-const importNcm = ref("38245000");
-const diag = ref(null);
+const isAdmin = computed(() => user.value?.admin === 1)
+const loading = ref(false)
+const importing = ref(false)
+const importNcm = ref('38245000')
+const diag = ref(null)
 const settings = ref({
   reforma2026: true,
-  ambiente: "homologacao",
-});
+  ambiente: 'homologacao',
+})
 
 const fetchSettings = async () => {
   try {
     const [settingsData, diagData] = await Promise.all([
-      $fetch("/api/configuracoes/fiscal-geral"),
-      $fetch("/api/gestao/fiscal/diagnostico"),
-    ]);
-    settings.value = settingsData;
-    diag.value = diagData;
-  } catch (error) {
-    addToast(
-      { title: "Erro", description: "Erro ao carregar dados fiscais" },
-      "error",
-    );
+      $fetch('/api/configuracoes/fiscal-geral'),
+      $fetch('/api/gestao/fiscal/diagnostico'),
+    ])
+    settings.value = settingsData
+    diag.value = diagData
   }
-};
+  catch (error) {
+    addToast(
+      { title: 'Erro', description: 'Erro ao carregar dados fiscais' },
+      'error',
+    )
+  }
+}
 
 const saveSettings = async () => {
-  if (!isAdmin.value) return;
-  loading.value = true;
+  if (!isAdmin.value) return
+  loading.value = true
   try {
-    await $fetch("/api/configuracoes/fiscal-geral", {
-      method: "POST",
+    await $fetch('/api/configuracoes/fiscal-geral', {
+      method: 'POST',
       body: settings.value,
-    });
+    })
     addToast(
-      { title: "Sucesso", description: "Configurações fiscais atualizadas" },
-      "success",
-    );
-    await fetchSettings();
-  } catch (error) {
-    addToast({ title: "Erro", description: "Erro ao salvar" }, "error");
-  } finally {
-    loading.value = false;
+      { title: 'Sucesso', description: 'Configurações fiscais atualizadas' },
+      'success',
+    )
+    await fetchSettings()
   }
-};
+  catch (error) {
+    addToast({ title: 'Erro', description: 'Erro ao salvar' }, 'error')
+  }
+  finally {
+    loading.value = false
+  }
+}
 
 const doImport = async () => {
-  if (!isAdmin.value) return;
+  if (!isAdmin.value) return
   if (importNcm.value.length < 8) {
-    addToast({ title: "Erro", description: "NCM inválido" }, "error");
-    return;
+    addToast({ title: 'Erro', description: 'NCM inválido' }, 'error')
+    return
   }
 
   if (
     !confirm(
-      "Deseja realmente aplicar este NCM a todos os produtos? Esta ação não pode ser desfeita.",
+      'Deseja realmente aplicar este NCM a todos os produtos? Esta ação não pode ser desfeita.',
     )
   )
-    return;
+    return
 
-  importing.value = true;
+  importing.value = true
   try {
-    await $fetch("/api/gestao/fiscal/importar-ncms", {
-      method: "POST",
-      body: { ncm: importNcm.value.replace(/\D/g, ""), applyAll: true },
-    });
+    await $fetch('/api/gestao/fiscal/importar-ncms', {
+      method: 'POST',
+      body: { ncm: importNcm.value.replace(/\D/g, ''), applyAll: true },
+    })
     addToast(
       {
-        title: "Sucesso",
-        description: "Todos os produtos atualizados com sucesso",
+        title: 'Sucesso',
+        description: 'Todos os produtos atualizados com sucesso',
       },
-      "success",
-    );
-    await fetchSettings();
-  } catch (error) {
-    addToast({ title: "Erro", description: "Erro ao importar dados" }, "error");
-  } finally {
-    importing.value = false;
+      'success',
+    )
+    await fetchSettings()
   }
-};
+  catch (error) {
+    addToast({ title: 'Erro', description: 'Erro ao importar dados' }, 'error')
+  }
+  finally {
+    importing.value = false
+  }
+}
 
-onMounted(fetchSettings);
+onMounted(fetchSettings)
 
 definePageMeta({
-  name: "Centro Fiscal",
-  middleware: ["admin"],
-});
+  name: 'Centro Fiscal',
+  middleware: ['admin'],
+})
 </script>

@@ -26,7 +26,10 @@
                   : 'bg-brand/10 text-brand shadow-[0_0_20px_rgba(255,122,61,0.1)]'
               "
             >
-              <component :is="icon" size="28" />
+              <component
+                :is="icon"
+                size="28"
+              />
             </div>
             <h3
               class="text-lg font-black tracking-tight text-primary uppercase"
@@ -42,19 +45,19 @@
 
           <div class="flex flex-col gap-3">
             <button
-              @click="$emit('confirm')"
               class="w-full py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all shadow-xl active:scale-95 outline-none"
               :class="
                 variant === 'danger'
                   ? 'bg-danger text-white shadow-danger/20 hover:brightness-110'
                   : 'bg-brand text-white shadow-brand/20 hover:brightness-110'
               "
+              @click="$emit('confirm')"
             >
               {{ confirmLabel }}
             </button>
             <button
-              @click="close"
               class="w-full py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest text-secondary hover:bg-primary/3 border border-border transition-all outline-none"
+              @click="close"
             >
               Cancelar
             </button>
@@ -66,44 +69,44 @@
 </template>
 
 <script setup>
-import { AlertTriangle, Trash2, Info, CheckCircle2 } from "lucide-vue-next";
-import { computed } from "vue";
+import { AlertTriangle, Trash2, Info, CheckCircle2 } from 'lucide-vue-next'
+import { computed } from 'vue'
 
 const props = defineProps({
   modelValue: { type: Boolean, default: undefined },
   show: { type: Boolean, default: undefined },
   title: { type: String, required: true },
-  description: { type: String, default: "" },
-  message: { type: String, default: "" }, // Support both for compatibility
-  variant: { type: String, default: "info" }, // 'info', 'danger', 'success'
-  type: { type: String, default: "" }, // Support 'type' for compatibility with 'variant'
-  confirmLabel: { type: String, default: "Confirmar" },
-});
+  description: { type: String, default: '' },
+  message: { type: String, default: '' }, // Support both for compatibility
+  variant: { type: String, default: 'info' }, // 'info', 'danger', 'success'
+  type: { type: String, default: '' }, // Support 'type' for compatibility with 'variant'
+  confirmLabel: { type: String, default: 'Confirmar' },
+})
 
 const emit = defineEmits([
-  "update:modelValue",
-  "update:show",
-  "close",
-  "confirm",
-]);
+  'update:modelValue',
+  'update:show',
+  'close',
+  'confirm',
+])
 
 const isOpen = computed(() => {
-  return props.modelValue !== undefined ? props.modelValue : props.show;
-});
+  return props.modelValue !== undefined ? props.modelValue : props.show
+})
 
 const variant = computed(() => {
-  return props.type || props.variant;
-});
+  return props.type || props.variant
+})
 
 const icon = computed(() => {
-  if (variant.value === "danger") return Trash2;
-  if (variant.value === "success") return CheckCircle2;
-  return Info;
-});
+  if (variant.value === 'danger') return Trash2
+  if (variant.value === 'success') return CheckCircle2
+  return Info
+})
 
 const close = () => {
-  emit("update:modelValue", false);
-  emit("update:show", false);
-  emit("close");
-};
+  emit('update:modelValue', false)
+  emit('update:show', false)
+  emit('close')
+}
 </script>

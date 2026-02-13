@@ -11,21 +11,23 @@
 
 **Problema**: Validações duplicadas entre frontend e backend, risco de inconsistência.
 
-**Solução**: Criado `shared/schemas/index.ts` com schemas compartilhados.
+**Solução**: Criado `shared/utils/schemas.ts` com schemas compartilhados, seguindo os padrões do Nuxt 4 para auto-import.
 
 **Schemas Criados**:
+
 - Base: `valorMonetarioSchema`, `cpfCnpjSchema`, `telefoneSchema`, `emailSchema`, `cepSchema`, `pinSchema`, `placaSchema`
 - Entidades: `clienteSharedSchema`, `produtoSharedSchema`, `orcamentoSharedSchema`, `vendaSharedSchema`, `pagamentoSharedSchema`, `motoristaSharedSchema`, `caminhaoSharedSchema`, `bombaSharedSchema`, `insumoSharedSchema`, `fornecedorSharedSchema`, `contaPagarSharedSchema`
 
-**Uso**:
+**Uso (Auto-import)**:
+
 ```typescript
-// Frontend
-import { clienteSharedSchema } from '~/shared/schemas';
-import { useValidation } from '~/composables/useValidation';
+// Frontend (Componentes Vue)
+import { useValidation } from "~/composables/useValidation";
+// Não é necessário importar o schema, ele está disponível globalmente
 const { validate, errors } = useValidation(clienteSharedSchema);
 
-// Backend
-import { clienteSharedSchema } from '~/shared/schemas';
+// Backend (Nitro API Routes)
+// O schema também está disponível globalmente via auto-import
 const result = clienteSharedSchema.safeParse(body);
 ```
 
@@ -38,14 +40,15 @@ const result = clienteSharedSchema.safeParse(body);
 **Solução**: Criados componentes reutilizáveis.
 
 #### BaseDatePicker (`app/components/form/BaseDatePicker.vue`)
+
 - Suporte a `type="date"`, `type="datetime-local"`, `type="time"`
 - Conversão automática de Date/timestamp para ISO string
 - Ícone de calendário integrado
 - Validação de min/max
 
 ```vue
-<BaseDatePicker 
-  v-model="form.dataEntrega" 
+<BaseDatePicker
+  v-model="form.dataEntrega"
   type="datetime-local"
   label="Data de Entrega"
   :icon="Calendar"
@@ -53,14 +56,15 @@ const result = clienteSharedSchema.safeParse(body);
 ```
 
 #### BaseCurrency (`app/components/form/BaseCurrency.vue`)
+
 - Formatação automática no padrão brasileiro (R$ 1.234,56)
 - Suporte a trabalhar com centavos (prop `centavos`)
 - Máscara de input em tempo real
 - Validação de min/max
 
 ```vue
-<BaseCurrency 
-  v-model="form.valor" 
+<BaseCurrency
+  v-model="form.valor"
   :centavos="true"
   label="Valor Total"
   :icon="DollarSign"
@@ -76,13 +80,15 @@ const result = clienteSharedSchema.safeParse(body);
 **Solução**: Criado `app/composables/useValidation.ts` com helpers completos.
 
 **Funcionalidades**:
+
 - `useValidation(schema)` - Validação completa de formulários
 - `useCpfCnpjValidation()` - Validação e formatação de documentos
 - `useCurrencyFormat()` - Formatação de valores monetários
 - `useInputMask()` - Máscaras (telefone, CEP, placa, CPF/CNPJ)
 
 ```typescript
-const { validate, errors, clearError, hasErrors } = useValidation(clienteSharedSchema);
+const { validate, errors, clearError, hasErrors } =
+  useValidation(clienteSharedSchema);
 const { validar, formatar } = useCpfCnpjValidation();
 const { formatarCentavos } = useCurrencyFormat();
 const { telefone, cep, cpfCnpj } = useInputMask();
@@ -94,7 +100,7 @@ const { telefone, cep, cpfCnpj } = useInputMask();
 
 **Arquivos Criados/Atualizados**:
 
-1. **`shared/schemas/README.md`** - Guia completo de uso dos schemas
+1. **`shared/README.md`** - Guia completo de uso do código compartilhado
 2. **`AGENTS.md`** - Atualizado com:
    - Seção 4.5 sobre Schemas Compartilhados
    - Seção 5.4 sobre Validação (Zod)
@@ -107,20 +113,23 @@ const { telefone, cep, cpfCnpj } = useInputMask();
 ## Convenções Estabelecidas
 
 ### Valores Monetários
-| Camada | Formato | Exemplo |
-|--------|---------|---------|
-| Backend | Centavos (integer) | `123456` |
-| API | Centavos (integer) | `123456` |
-| Frontend | Decimal formatado | `"R$ 1.234,56"` |
+
+| Camada   | Formato            | Exemplo         |
+| -------- | ------------------ | --------------- |
+| Backend  | Centavos (integer) | `123456`        |
+| API      | Centavos (integer) | `123456`        |
+| Frontend | Decimal formatado  | `"R$ 1.234,56"` |
 
 ### Datas
-| Camada | Formato |
-|--------|---------|
-| Backend | Date object ou timestamp |
-| API | ISO 8601 string |
+
+| Camada   | Formato                   |
+| -------- | ------------------------- |
+| Backend  | Date object ou timestamp  |
+| API      | ISO 8601 string           |
 | Frontend | Date object ou ISO string |
 
 ### Validação
+
 1. Usar sempre schemas de `shared/schemas/index.ts`
 2. Frontend: usar `useValidation()` para feedback em tempo real
 3. Backend: usar `schema.safeParse()` e retornar erros formatados
@@ -133,12 +142,14 @@ const { telefone, cep, cpfCnpj } = useInputMask();
 ### Refatoração de Código Existente
 
 1. **Migrar telas para novos componentes**:
+
    - Substituir inputs de data por `BaseDatePicker`
    - Substituir inputs de moeda por `BaseCurrency`
    - Atualizar `app/pages/orcamentos/index.vue`
    - Atualizar `app/pages/vendas/index.vue`
 
 2. **Padronizar validações**:
+
    - Substituir validações inline por schemas compartilhados
    - Atualizar APIs para usar schemas de `shared/schemas/`
 
@@ -182,4 +193,4 @@ Ao criar novas funcionalidades, seguir estas regras:
 
 ---
 
-*Documento gerado automaticamente durante auditoria de consistência.*
+_Documento gerado automaticamente durante auditoria de consistência._

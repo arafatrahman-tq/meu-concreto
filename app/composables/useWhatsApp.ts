@@ -5,12 +5,12 @@ export const useWhatsApp = () => {
   const loading = ref(false)
   const { add: addToast } = useToast()
 
-  const sendMessage = async (to: string, options: { 
-    text?: string, 
-    document?: string, 
-    fileName?: string, 
-    mimetype?: string, 
-    caption?: string 
+  const sendMessage = async (to: string, options: {
+    text?: string
+    document?: string
+    fileName?: string
+    mimetype?: string
+    caption?: string
   }) => {
     loading.value = true
     try {
@@ -18,30 +18,32 @@ export const useWhatsApp = () => {
         method: 'POST',
         body: {
           to,
-          ...options
-        }
+          ...options,
+        },
       })
 
       addToast({
-        title: "WhatsApp Enviado",
-        description: "A mensagem foi colocada na fila de envio.",
-        type: "success"
+        title: 'WhatsApp Enviado',
+        description: 'A mensagem foi colocada na fila de envio.',
+        type: 'success',
       })
       return response
-    } catch (error: any) {
+    }
+    catch (error: any) {
       addToast({
-        title: "Erro no WhatsApp",
-        description: error.data?.statusMessage || "Não foi possível enviar a mensagem.",
-        type: "error"
+        title: 'Erro no WhatsApp',
+        description: error.data?.statusMessage || 'Não foi possível enviar a mensagem.',
+        type: 'error',
       })
       throw error
-    } finally {
+    }
+    finally {
       loading.value = false
     }
   }
 
   return {
     sendMessage,
-    loading
+    loading,
   }
 }

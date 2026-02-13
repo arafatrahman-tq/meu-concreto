@@ -1,22 +1,28 @@
 <template>
-  <div class="relative group" ref="selectRef">
+  <div
+    ref="selectRef"
+    class="relative group"
+  >
     <!-- Trigger Button -->
     <div
       v-if="icon"
       class="absolute left-4 top-1/2 -translate-y-1/2 text-muted group-focus-within:text-brand transition-colors z-20 pointer-events-none"
     >
-      <component :is="icon" size="20" />
+      <component
+        :is="icon"
+        size="20"
+      />
     </div>
 
     <button
-      type="button"
-      @click="toggleDropdown"
       ref="buttonRef"
+      type="button"
       class="w-full bg-primary/2 border rounded-2xl py-3.5 text-sm font-black uppercase tracking-widest text-primary text-left transition-all font-sans outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand/30 flex items-center justify-between"
       :class="[
         icon ? 'pl-12 pr-4' : 'px-5',
-        error ? 'border-danger/50 bg-danger/5' : 'border-border'
+        error ? 'border-danger/50 bg-danger/5' : 'border-border',
       ]"
+      @click="toggleDropdown"
     >
       <span :class="{ 'opacity-40': !modelValue }">
         {{ selectedLabel || placeholder || "Selecione..." }}
@@ -27,14 +33,17 @@
         :class="{ 'rotate-180': isOpen }"
       />
     </button>
-    
+
     <!-- Error Message -->
     <Transition
       enter-active-class="transition duration-200 ease-out"
       enter-from-class="opacity-0 -translate-y-1"
       enter-to-class="opacity-100 translate-y-0"
     >
-      <span v-if="error" class="absolute left-4 -bottom-5 text-[9px] font-black uppercase tracking-widest text-danger">
+      <span
+        v-if="error"
+        class="absolute left-4 -bottom-5 text-[9px] font-black uppercase tracking-widest text-danger"
+      >
         {{ error }}
       </span>
     </Transition>
@@ -57,25 +66,25 @@
           <div
             v-for="option in options"
             :key="option.value"
-            @click="selectOption(option)"
             class="px-5 py-3.5 text-[10px] font-black uppercase tracking-widest cursor-pointer transition-all flex items-center justify-between hover:bg-brand/5 group/opt relative"
             :class="[
               modelValue === option.value
                 ? 'text-brand bg-brand/3'
                 : 'text-primary/70 hover:text-primary',
             ]"
+            @click="selectOption(option)"
           >
             <div class="flex items-center gap-3">
               <div
                 v-if="modelValue === option.value"
                 class="w-1 h-3 rounded-full bg-brand"
-              ></div>
+              />
               {{ option.label }}
             </div>
             <div
               v-if="modelValue === option.value"
               class="w-1.5 h-1.5 rounded-full bg-brand shadow-[0_0_10px_#ff7a3d] animate-pulse"
-            ></div>
+            />
           </div>
           <div
             v-if="!options.length"
@@ -93,14 +102,14 @@
         v-if="isOpen"
         class="fixed inset-0 z-9998"
         @click="isOpen = false"
-      ></div>
+      />
     </Teleport>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted, nextTick } from "vue";
-import { ChevronDown } from "lucide-vue-next";
+import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
+import { ChevronDown } from 'lucide-vue-next'
 
 const props = defineProps({
   modelValue: [String, Number],
@@ -108,60 +117,60 @@ const props = defineProps({
   icon: [Object, Function],
   placeholder: String,
   error: String,
-});
+})
 
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits(['update:modelValue'])
 
-const isOpen = ref(false);
-const buttonRef = ref(null);
-const dropdownStyle = ref({});
+const isOpen = ref(false)
+const buttonRef = ref(null)
+const dropdownStyle = ref({})
 
 const toggleDropdown = () => {
   if (!isOpen.value) {
-    updateDropdownPosition();
+    updateDropdownPosition()
   }
-  isOpen.value = !isOpen.value;
-};
+  isOpen.value = !isOpen.value
+}
 
 const updateDropdownPosition = () => {
   if (buttonRef.value) {
-    const rect = buttonRef.value.getBoundingClientRect();
+    const rect = buttonRef.value.getBoundingClientRect()
     dropdownStyle.value = {
       top: `${rect.bottom + 8}px`,
       left: `${rect.left}px`,
       width: `${rect.width}px`,
-    };
+    }
   }
-};
+}
 
 // Update position on scroll/resize if open
 const onScrollResize = () => {
   if (isOpen.value) {
-    updateDropdownPosition();
+    updateDropdownPosition()
   }
-};
+}
 
 onMounted(() => {
-  window.addEventListener("scroll", onScrollResize, true);
-  window.addEventListener("resize", onScrollResize);
-});
+  window.addEventListener('scroll', onScrollResize, true)
+  window.addEventListener('resize', onScrollResize)
+})
 
 onUnmounted(() => {
-  window.removeEventListener("scroll", onScrollResize, true);
-  window.removeEventListener("resize", onScrollResize);
-});
+  window.removeEventListener('scroll', onScrollResize, true)
+  window.removeEventListener('resize', onScrollResize)
+})
 
 const selectedLabel = computed(() => {
   const option = props.options.find(
-    (opt) => String(opt.value) === String(props.modelValue),
-  );
-  return option ? option.label : null;
-});
+    opt => String(opt.value) === String(props.modelValue),
+  )
+  return option ? option.label : null
+})
 
 const selectOption = (option) => {
-  emit("update:modelValue", option.value);
-  isOpen.value = false;
-};
+  emit('update:modelValue', option.value)
+  isOpen.value = false
+}
 </script>
 
 <style scoped>

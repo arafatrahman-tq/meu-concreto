@@ -25,7 +25,7 @@
               'w-2 h-2 rounded-full animate-pulse',
               form.ativo ? 'bg-emerald-500' : 'bg-slate-300',
             ]"
-          ></div>
+          />
           <span
             class="text-[8px] font-black uppercase tracking-widest text-secondary opacity-60"
           >
@@ -33,14 +33,24 @@
           </span>
         </div>
 
-        <div v-if="isAdmin" class="flex items-center gap-3">
+        <div
+          v-if="isAdmin"
+          class="flex items-center gap-3"
+        >
           <button
-            @click="saveChanges"
             :disabled="loading || !hasChanges"
             class="bg-brand text-white px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-3 shadow-xl shadow-brand/20 disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed outline-none"
+            @click="saveChanges"
           >
-            <Save size="20" v-if="!loading" />
-            <RefreshCw v-else size="20" class="animate-spin" />
+            <Save
+              v-if="!loading"
+              size="20"
+            />
+            <RefreshCw
+              v-else
+              size="20"
+              class="animate-spin"
+            />
             {{ loading ? "Processando" : "Salvar Alterações" }}
           </button>
         </div>
@@ -72,7 +82,7 @@
         <!-- API Connection -->
         <div class="space-y-4">
           <div class="flex items-center gap-2">
-            <div class="w-1.5 h-4 bg-brand rounded-full"></div>
+            <div class="w-1.5 h-4 bg-brand rounded-full" />
             <h3
               class="text-[10px] font-black uppercase tracking-[0.2em] text-primary"
             >
@@ -88,7 +98,10 @@
                 <div
                   class="bg-brand/5 border border-brand/10 p-4 rounded-2xl flex items-start gap-3"
                 >
-                  <ShieldCheck size="18" class="text-brand shrink-0 mt-1" />
+                  <ShieldCheck
+                    size="18"
+                    class="text-brand shrink-0 mt-1"
+                  />
                   <p
                     class="text-[10px] font-medium text-primary/70 leading-relaxed uppercase"
                   >
@@ -106,8 +119,7 @@
                 <div class="flex items-center gap-2 ml-2">
                   <label
                     class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40"
-                    >Client ID</label
-                  >
+                  >Client ID</label>
                   <BaseTooltip
                     text="Obtenha o Client ID no Console da Nuvem Fiscal."
                   >
@@ -129,8 +141,7 @@
                 <div class="flex items-center gap-2 ml-2">
                   <label
                     class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40"
-                    >Client Secret</label
-                  >
+                  >Client Secret</label>
                 </div>
                 <BaseInput
                   v-model="form.clientSecret"
@@ -145,8 +156,7 @@
                 <div class="flex items-center gap-2 ml-2">
                   <label
                     class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40"
-                    >Ambiente de Execução</label
-                  >
+                  >Ambiente de Execução</label>
                 </div>
                 <BaseSelect
                   v-model="form.environment"
@@ -164,20 +174,20 @@
             >
               <div class="flex items-center gap-3">
                 <div
-                  class="p-2 bg-emerald-500/10 text-emerald-500 rounded-lg"
                   v-if="form.ativo"
+                  class="p-2 bg-emerald-500/10 text-emerald-500 rounded-lg"
                 >
                   <CheckCircle2 size="16" />
                 </div>
                 <p
-                  class="text-[9px] font-black uppercase text-secondary tracking-widest"
                   v-if="form.ativo"
+                  class="text-[9px] font-black uppercase text-secondary tracking-widest"
                 >
                   Integração Ativa
                 </p>
                 <p
-                  class="text-[9px] font-black uppercase text-rose-500 tracking-widest"
                   v-else
+                  class="text-[9px] font-black uppercase text-rose-500 tracking-widest"
                 >
                   Integração Desativada
                 </p>
@@ -185,9 +195,11 @@
               <div class="flex items-center gap-4">
                 <span
                   class="text-[11px] font-black uppercase tracking-tight text-primary"
-                  >Status</span
-                >
-                <BaseToggle v-model="form.ativo" :disabled="!isAdmin" />
+                >Status</span>
+                <BaseToggle
+                  v-model="form.ativo"
+                  :disabled="!isAdmin"
+                />
               </div>
             </div>
           </div>
@@ -201,7 +213,10 @@
           <h3
             class="text-[10px] font-black uppercase tracking-[0.2em] text-primary flex items-center gap-2"
           >
-            <Activity size="14" class="text-brand" />
+            <Activity
+              size="14"
+              class="text-brand"
+            />
             Status da Ultima Sincronização
           </h3>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
@@ -215,7 +230,10 @@
                   : 'bg-rose-500/5 border-rose-500/20 text-rose-600',
               ]"
             >
-              <component :is="val ? CheckCircle2 : XCircle" size="20" />
+              <component
+                :is="val ? CheckCircle2 : XCircle"
+                size="20"
+              />
               <span class="text-[8px] font-black uppercase tracking-widest">
                 {{
                   key === "company"
@@ -232,7 +250,7 @@
         <!-- Certificate & NFSe Config -->
         <div class="space-y-4">
           <div class="flex items-center gap-2">
-            <div class="w-1.5 h-4 bg-indigo-500 rounded-full"></div>
+            <div class="w-1.5 h-4 bg-indigo-500 rounded-full" />
             <h3
               class="text-[10px] font-black uppercase tracking-[0.2em] text-primary"
             >
@@ -250,8 +268,7 @@
                   <div class="flex items-center gap-2">
                     <label
                       class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40"
-                      >Arquivo do Certificado (.pfx / .p12)</label
-                    >
+                    >Arquivo do Certificado (.pfx / .p12)</label>
                     <BaseTooltip
                       text="O certificado será convertido para Base64 e enviado de forma segura."
                     >
@@ -264,18 +281,17 @@
                   <span
                     v-if="form.certificado"
                     class="text-[8px] font-black uppercase text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded-md"
-                    >Certificado Presente</span
-                  >
+                  >Certificado Presente</span>
                 </div>
 
                 <div class="relative group">
                   <input
                     type="file"
                     accept=".pfx,.p12"
-                    @change="handleFileUpload"
                     :disabled="!isAdmin"
                     class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                  />
+                    @change="handleFileUpload"
+                  >
                   <div
                     class="w-full bg-primary/2 border border-dashed border-border group-hover:border-brand/40 rounded-2xl py-8 flex flex-col items-center justify-center gap-2 transition-all"
                   >
@@ -285,8 +301,7 @@
                     />
                     <span
                       class="text-[10px] font-black uppercase tracking-widest text-secondary opacity-60"
-                      >Clique ou arraste o certificado aqui</span
-                    >
+                    >Clique ou arraste o certificado aqui</span>
                   </div>
                 </div>
               </div>
@@ -294,8 +309,7 @@
               <div class="space-y-2">
                 <label
                   class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2"
-                  >Senha do Certificado</label
-                >
+                >Senha do Certificado</label>
                 <BaseInput
                   v-model="form.certificadoSenha"
                   :disabled="!isAdmin"
@@ -308,8 +322,7 @@
               <div class="space-y-2">
                 <label
                   class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2"
-                  >Série NFS-e</label
-                >
+                >Série NFS-e</label>
                 <BaseInput
                   v-model="form.nfseSerie"
                   :disabled="!isAdmin"
@@ -320,8 +333,7 @@
               <div class="space-y-2">
                 <label
                   class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2"
-                  >Lote NFS-e</label
-                >
+                >Lote NFS-e</label>
                 <BaseInput
                   v-model.number="form.nfseLote"
                   type="number"
@@ -333,8 +345,7 @@
               <div class="space-y-2">
                 <label
                   class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2"
-                  >Próximo Número NFS-e</label
-                >
+                >Próximo Número NFS-e</label>
                 <BaseInput
                   v-model.number="form.nfseProximoNumero"
                   type="number"
@@ -378,25 +389,22 @@
 
               <ul class="space-y-3">
                 <li class="flex items-center gap-3">
-                  <div class="w-1 h-1 bg-background rounded-full"></div>
+                  <div class="w-1 h-1 bg-background rounded-full" />
                   <span
                     class="text-[9px] font-black uppercase tracking-widest opacity-80"
-                    >Gestão de Certificados</span
-                  >
+                  >Gestão de Certificados</span>
                 </li>
                 <li class="flex items-center gap-3">
-                  <div class="w-1 h-1 bg-background rounded-full"></div>
+                  <div class="w-1 h-1 bg-background rounded-full" />
                   <span
                     class="text-[9px] font-black uppercase tracking-widest opacity-80"
-                    >Mensageria Assíncrona</span
-                  >
+                  >Mensageria Assíncrona</span>
                 </li>
                 <li class="flex items-center gap-3">
-                  <div class="w-1 h-1 bg-background rounded-full"></div>
+                  <div class="w-1 h-1 bg-background rounded-full" />
                   <span
                     class="text-[9px] font-black uppercase tracking-widest opacity-80"
-                    >Suporte a Multi-Ceps</span
-                  >
+                  >Suporte a Multi-Ceps</span>
                 </li>
               </ul>
             </div>
@@ -408,11 +416,7 @@
 </template>
 
 <script setup>
-definePageMeta({
-  layout: "default",
-  middleware: ["admin"],
-});
-import { ref, computed, watch, onMounted } from "vue";
+import { ref, computed, watch, onMounted } from 'vue'
 import {
   Save,
   RefreshCw,
@@ -427,128 +431,137 @@ import {
   Activity,
   XCircle,
   Upload,
-} from "lucide-vue-next";
-import { useAuth } from "@/composables/useAuth";
-import { useToast } from "@/composables/useToast";
+} from 'lucide-vue-next'
+import { useAuth } from '@/composables/useAuth'
+import { useToast } from '@/composables/useToast'
 
-const { user } = useAuth();
-const { add: addToast } = useToast();
-const isAdmin = computed(() => user.value?.admin === 1);
+definePageMeta({
+  layout: 'default',
+  middleware: ['admin'],
+})
 
-const loading = ref(false);
-const initialForm = ref({});
+const { user } = useAuth()
+const { add: addToast } = useToast()
+const isAdmin = computed(() => user.value?.admin === 1)
+
+const loading = ref(false)
+const initialForm = ref({})
 const form = ref({
-  clientId: "",
-  clientSecret: "",
-  environment: "sandbox",
-  certificado: "",
-  certificadoSenha: "",
-  nfseSerie: "",
+  clientId: '',
+  clientSecret: '',
+  environment: 'sandbox',
+  certificado: '',
+  certificadoSenha: '',
+  nfseSerie: '',
   nfseLote: 1,
   nfseProximoNumero: 1,
   ativo: false,
-});
+})
 
-const automationStatus = ref(null);
+const automationStatus = ref(null)
 
 const hasChanges = computed(() => {
-  return JSON.stringify(form.value) !== JSON.stringify(initialForm.value);
-});
+  return JSON.stringify(form.value) !== JSON.stringify(initialForm.value)
+})
 
 const handleFileUpload = (event) => {
-  const file = event.target.files[0];
-  if (!file) return;
+  const file = event.target.files[0]
+  if (!file) return
 
-  const reader = new FileReader();
+  const reader = new FileReader()
   reader.onload = (e) => {
     // Extract base64
-    const base64 = e.target.result.split(",")[1];
-    form.value.certificado = base64;
+    const base64 = e.target.result.split(',')[1]
+    form.value.certificado = base64
     addToast(
       {
-        title: "Certificado Carregado",
-        description: "O arquivo foi processado e está pronto para salvar.",
+        title: 'Certificado Carregado',
+        description: 'O arquivo foi processado e está pronto para salvar.',
       },
-      "success",
-    );
-  };
-  reader.readAsDataURL(file);
-};
+      'success',
+    )
+  }
+  reader.readAsDataURL(file)
+}
 
 const fetchConfig = async () => {
   try {
-    const data = await $fetch("/api/configuracoes/nuvemfiscal");
+    const data = await $fetch('/api/configuracoes/nuvemfiscal')
     form.value = {
-      clientId: data.clientId || "",
-      clientSecret: data.clientSecret || "",
-      environment: data.environment || "sandbox",
-      certificado: data.certificado || "",
-      certificadoSenha: data.certificadoSenha || "",
-      nfseSerie: data.nfseSerie || "",
+      clientId: data.clientId || '',
+      clientSecret: data.clientSecret || '',
+      environment: data.environment || 'sandbox',
+      certificado: data.certificado || '',
+      certificadoSenha: data.certificadoSenha || '',
+      nfseSerie: data.nfseSerie || '',
       nfseLote: Number(data.nfseLote) || 1,
       nfseProximoNumero: Number(data.nfseProximoNumero) || 1,
       ativo: data.ativo || false,
-    };
-    initialForm.value = { ...form.value };
-  } catch (error) {
+    }
+    initialForm.value = { ...form.value }
+  }
+  catch (error) {
     addToast(
       {
-        title: "Erro ao Carregar",
+        title: 'Erro ao Carregar',
         description:
-          "Não foi possível carregar as configurações da Nuvem Fiscal.",
+          'Não foi possível carregar as configurações da Nuvem Fiscal.',
       },
-      "error",
-    );
+      'error',
+    )
   }
-};
+}
 
 const saveChanges = async () => {
-  if (!isAdmin.value) return;
-  loading.value = true;
-  automationStatus.value = null;
+  if (!isAdmin.value) return
+  loading.value = true
+  automationStatus.value = null
 
   try {
-    const response = await $fetch("/api/configuracoes/nuvemfiscal", {
-      method: "PUT",
+    const response = await $fetch('/api/configuracoes/nuvemfiscal', {
+      method: 'PUT',
       body: form.value,
-    });
+    })
 
     if (response.status) {
-      automationStatus.value = response.status;
+      automationStatus.value = response.status
     }
 
-    initialForm.value = { ...form.value };
+    initialForm.value = { ...form.value }
 
     if (response.error) {
       addToast(
         {
-          title: "Atenção",
+          title: 'Atenção',
           description: response.message,
         },
-        "warning",
-      );
-    } else {
+        'warning',
+      )
+    }
+    else {
       addToast(
         {
-          title: "Sucesso!",
-          description: "Configurações sincronizadas com a Nuvem Fiscal.",
+          title: 'Sucesso!',
+          description: 'Configurações sincronizadas com a Nuvem Fiscal.',
         },
-        "success",
-      );
+        'success',
+      )
     }
-  } catch (error) {
+  }
+  catch (error) {
     addToast(
       {
-        title: "Erro ao Salvar",
+        title: 'Erro ao Salvar',
         description:
-          error.data?.message || "Ocorreu um erro ao salvar as configurações.",
+          error.data?.message || 'Ocorreu um erro ao salvar as configurações.',
       },
-      "error",
-    );
-  } finally {
-    loading.value = false;
+      'error',
+    )
   }
-};
+  finally {
+    loading.value = false
+  }
+}
 
-onMounted(fetchConfig);
+onMounted(fetchConfig)
 </script>

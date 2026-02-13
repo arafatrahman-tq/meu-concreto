@@ -1,11 +1,11 @@
-import { db } from "../../../database/db";
-import { ordensServico } from "../../../database/schema";
-import { and, eq } from "drizzle-orm";
-import { requireAuth } from "../../../utils/auth";
+import { db } from '../../../database/db'
+import { ordensServico } from '../../../database/schema'
+import { and, eq } from 'drizzle-orm'
+import { requireAuth } from '../../../utils/auth'
 
 export default defineEventHandler(async (event) => {
-  const user = requireAuth(event);
-  const id = Number(getRouterParam(event, "id"));
+  const user = requireAuth(event)
+  const id = Number(getRouterParam(event, 'id'))
 
   try {
     const result = await db.query.ordensServico.findFirst({
@@ -19,20 +19,21 @@ export default defineEventHandler(async (event) => {
         caminhao: true,
         eventos: true,
       },
-    });
+    })
 
     if (!result) {
       throw createError({
         statusCode: 404,
-        message: "Ordem de Serviço não encontrada",
-      });
+        message: 'Ordem de Serviço não encontrada',
+      })
     }
 
-    return result;
-  } catch (error: any) {
+    return result
+  }
+  catch (error: any) {
     throw createError({
       statusCode: error.statusCode || 500,
       message: error.message,
-    });
+    })
   }
-});
+})

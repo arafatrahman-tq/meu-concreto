@@ -25,11 +25,11 @@
             v-model="searchTerm"
             placeholder="Buscar despesa ou fornecedor..."
             class="pl-12 pr-4 py-3.5 bg-primary/2 border border-border rounded-2xl text-sm font-black uppercase tracking-widest text-primary placeholder:text-secondary/20 w-full md:w-80 focus:ring-2 focus:ring-brand/20 focus:border-brand/30 transition-all outline-none"
-          />
+          >
         </div>
         <button
-          @click="openModal()"
           class="flex items-center gap-2 px-6 py-3.5 bg-rose-500 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-lg shadow-rose-500/20 hover:scale-105 active:scale-95 transition-all outline-none"
+          @click="openModal()"
         >
           <Plus size="18" />
           <span>Nova Conta</span>
@@ -46,7 +46,11 @@
       >
         <div class="flex justify-between items-start mb-4">
           <div :class="['p-3 rounded-2xl', stat.bg]">
-            <component :is="stat.icon" size="20" :class="stat.iconColor" />
+            <component
+              :is="stat.icon"
+              size="20"
+              :class="stat.iconColor"
+            />
           </div>
         </div>
         <p
@@ -70,7 +74,7 @@
       >
         <div
           class="w-12 h-12 border-4 border-brand/20 border-t-brand rounded-full animate-spin"
-        ></div>
+        />
         <p
           class="text-[10px] font-black uppercase tracking-[0.2em] text-secondary opacity-40"
         >
@@ -118,12 +122,10 @@
               <div class="flex flex-col">
                 <span
                   class="text-sm font-black uppercase tracking-tight text-primary"
-                  >{{ item.descricao }}</span
-                >
+                >{{ item.descricao }}</span>
                 <span
                   class="text-[9px] font-black uppercase opacity-30 tracking-widest mt-0.5"
-                  >{{ item.categoria }}</span
-                >
+                >{{ item.categoria }}</span>
               </div>
             </td>
             <td
@@ -150,7 +152,7 @@
                     'w-2 h-2 rounded-full shadow-[0_0_10px]',
                     statusColor[item.status],
                   ]"
-                ></div>
+                />
                 <span
                   class="text-[10px] font-black uppercase tracking-widest"
                   :class="statusTextColor[item.status]"
@@ -165,20 +167,20 @@
                   v-if="
                     item.status === 'PENDENTE' || item.status === 'ATRASADO'
                   "
-                  @click="openPagamentoModal(item)"
                   class="p-2.5 rounded-xl bg-green-500/10 text-green-600 hover:scale-110 active:scale-95 transition-all"
+                  @click="openPagamentoModal(item)"
                 >
                   <CheckCircle2 size="16" />
                 </button>
                 <button
-                  @click="openModal(item)"
                   class="p-2.5 rounded-xl bg-primary/3 text-secondary hover:text-brand hover:scale-110 active:scale-95 transition-all"
+                  @click="openModal(item)"
                 >
                   <Edit3 size="16" />
                 </button>
                 <button
-                  @click="confirmDelete(item)"
                   class="p-2.5 rounded-xl bg-primary/3 text-secondary hover:text-rose-500 hover:scale-110 active:scale-95 transition-all"
+                  @click="confirmDelete(item)"
                 >
                   <Trash2 size="16" />
                 </button>
@@ -192,7 +194,10 @@
           class="flex flex-col items-center justify-center p-20 text-center"
         >
           <div class="p-6 rounded-full bg-primary/3 mb-4">
-            <Receipt size="32" class="text-secondary/20" />
+            <Receipt
+              size="32"
+              class="text-secondary/20"
+            />
           </div>
           <h3
             class="text-lg font-black text-primary uppercase tracking-tighter"
@@ -212,8 +217,8 @@
           class="flex justify-center py-8 border-t border-border/50"
         >
           <button
-            @click="itemsToShow += 20"
             class="bg-surface border border-border px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] text-secondary hover:text-brand hover:border-brand/30 transition-all flex items-center gap-3 group"
+            @click="itemsToShow += 20"
           >
             <RefreshCw
               size="14"
@@ -231,13 +236,15 @@
       :title="editingId ? 'Editar Conta' : 'Nova Conta a Pagar'"
       size="md"
     >
-      <form @submit.prevent="saveConta" class="space-y-6 pt-4">
+      <form
+        class="space-y-6 pt-4"
+        @submit.prevent="saveConta"
+      >
         <div class="grid grid-cols-1 gap-6">
           <div class="space-y-2">
             <label
               class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2 block"
-              >Descrição <span class="text-brand">*</span></label
-            >
+            >Descrição <span class="text-brand">*</span></label>
             <BaseInput
               v-model="form.descricao"
               placeholder="EX: COMPRA DE AGREGADOS"
@@ -250,8 +257,7 @@
             <div class="space-y-2">
               <label
                 class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2 block"
-                >Fornecedor</label
-              >
+              >Fornecedor</label>
               <BaseSelect
                 v-model="form.idFornecedor"
                 :options="fornecedoresOptions"
@@ -261,8 +267,7 @@
             <div class="space-y-2">
               <label
                 class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2 block"
-                >Categoria</label
-              >
+              >Categoria</label>
               <BaseInput
                 v-model="form.categoria"
                 placeholder="EX: CUSTO OPERACIONAL"
@@ -275,8 +280,7 @@
             <div class="space-y-2">
               <label
                 class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2 block"
-                >Valor <span class="text-brand">*</span></label
-              >
+              >Valor <span class="text-brand">*</span></label>
               <BaseInput
                 v-model="displayValor"
                 placeholder="R$ 0,00"
@@ -288,8 +292,7 @@
             <div class="space-y-2">
               <label
                 class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2 block"
-                >Vencimento <span class="text-brand">*</span></label
-              >
+              >Vencimento <span class="text-brand">*</span></label>
               <BaseInput
                 v-model="form.dataVencimento"
                 type="date"
@@ -303,8 +306,8 @@
         <div class="flex gap-4 pt-4">
           <button
             type="button"
-            @click="showModal = false"
             class="flex-1 px-8 py-4 border border-border text-secondary text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-primary/2 transition-all outline-none"
+            @click="showModal = false"
           >
             Cancelar
           </button>
@@ -350,22 +353,25 @@
         <div class="space-y-2">
           <label
             class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2 block"
-            >Data do Pagamento</label
-          >
-          <BaseInput v-model="dataPagamento" type="date" :icon="Calendar" />
+          >Data do Pagamento</label>
+          <BaseInput
+            v-model="dataPagamento"
+            type="date"
+            :icon="Calendar"
+          />
         </div>
 
         <div class="flex gap-4 pt-4">
           <button
-            @click="showPagamentoModal = false"
             class="flex-1 px-8 py-4 border border-border text-secondary text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-primary/2 transition-all outline-none"
+            @click="showPagamentoModal = false"
           >
             Cancelar
           </button>
           <button
-            @click="confirmPagamento"
             :disabled="loading"
             class="flex-1 px-8 py-4 bg-emerald-500 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-emerald-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all outline-none disabled:opacity-50"
+            @click="confirmPagamento"
           >
             Confirmar
           </button>
@@ -401,288 +407,294 @@ import {
   AlertTriangle,
   Clock,
   RefreshCw,
-} from "lucide-vue-next";
+} from 'lucide-vue-next'
 
-const { user } = useAuth();
-const toast = useToast();
-const { info, error: logError } = useLogger();
+const { user } = useAuth()
+const toast = useToast()
+const { info, error: logError } = useLogger()
 
-const searchTerm = ref("");
-const itemsToShow = ref(20);
-const showModal = ref(false);
-const showPagamentoModal = ref(false);
-const showDeleteDialog = ref(false);
-const loading = ref(false);
-const editingId = ref(null);
-const selectedConta = ref(null);
-const contasPagarNow = useState("contas_pagar_now", () => new Date()).value;
-const dataPagamento = ref(contasPagarNow.toISOString().split("T")[0]);
+const searchTerm = ref('')
+const itemsToShow = ref(20)
+const showModal = ref(false)
+const showPagamentoModal = ref(false)
+const showDeleteDialog = ref(false)
+const loading = ref(false)
+const editingId = ref(null)
+const selectedConta = ref(null)
+const contasPagarNow = useState('contas_pagar_now', () => new Date()).value
+const dataPagamento = ref(contasPagarNow.toISOString().split('T')[0])
 
 const form = ref({
-  descricao: "",
+  descricao: '',
   idFornecedor: null,
   valor: 0,
-  dataVencimento: "",
-  categoria: "GERAL",
+  dataVencimento: '',
+  categoria: 'GERAL',
   idEmpresa: user.value?.idEmpresa,
-});
+})
 
-const displayValor = ref("");
+const displayValor = ref('')
 
 const statusColor = {
-  PENDENTE: "bg-amber-500 shadow-amber-500/20",
-  PAGO: "bg-green-500 shadow-green-500/20",
-  ATRASADO: "bg-rose-500 shadow-rose-500/20",
-  CANCELADO: "bg-secondary/40 shadow-secondary/10",
-};
+  PENDENTE: 'bg-amber-500 shadow-amber-500/20',
+  PAGO: 'bg-green-500 shadow-green-500/20',
+  ATRASADO: 'bg-rose-500 shadow-rose-500/20',
+  CANCELADO: 'bg-secondary/40 shadow-secondary/10',
+}
 
 const statusTextColor = {
-  PENDENTE: "text-amber-500",
-  PAGO: "text-green-500",
-  ATRASADO: "text-rose-500",
-  CANCELADO: "text-secondary/40",
-};
+  PENDENTE: 'text-amber-500',
+  PAGO: 'text-green-500',
+  ATRASADO: 'text-rose-500',
+  CANCELADO: 'text-secondary/40',
+}
 
 // Data fetching
 const {
   data: contas,
   pending,
   refresh,
-} = await useFetch("/api/financeiro/contas-pagar");
-const { data: fornecedores } = await useFetch("/api/financeiro/fornecedores");
+} = await useFetch('/api/financeiro/contas-pagar')
+const { data: fornecedores } = await useFetch('/api/financeiro/fornecedores')
 
 const fornecedoresOptions = computed(() => {
-  if (!fornecedores.value) return [];
-  return fornecedores.value.map((f) => ({ label: f.nome, value: f.id }));
-});
+  if (!fornecedores.value) return []
+  return fornecedores.value.map(f => ({ label: f.nome, value: f.id }))
+})
 
 const filteredContas = computed(() => {
-  if (!contas.value) return [];
-  if (!searchTerm.value) return contas.value;
-  const term = searchTerm.value.toLowerCase();
+  if (!contas.value) return []
+  if (!searchTerm.value) return contas.value
+  const term = searchTerm.value.toLowerCase()
   return contas.value.filter(
-    (c) =>
-      c.descricao.toLowerCase().includes(term) ||
-      c.fornecedor?.nome?.toLowerCase().includes(term) ||
-      c.categoria?.toLowerCase().includes(term),
-  );
-});
+    c =>
+      c.descricao.toLowerCase().includes(term)
+      || c.fornecedor?.nome?.toLowerCase().includes(term)
+      || c.categoria?.toLowerCase().includes(term),
+  )
+})
 
 const displayedContas = computed(() => {
-  return filteredContas.value.slice(0, itemsToShow.value);
-});
+  return filteredContas.value.slice(0, itemsToShow.value)
+})
 
 const summaryStats = computed(() => {
-  if (!contas.value) return [];
+  if (!contas.value) return []
 
   const total = contas.value.reduce(
-    (acc, c) => acc + (c.status !== "CANCELADO" ? c.valor : 0),
+    (acc, c) => acc + (c.status !== 'CANCELADO' ? c.valor : 0),
     0,
-  );
+  )
   const pago = contas.value.reduce(
-    (acc, c) => acc + (c.status === "PAGO" ? c.valor : 0),
+    (acc, c) => acc + (c.status === 'PAGO' ? c.valor : 0),
     0,
-  );
+  )
   const atrasado = contas.value.reduce(
-    (acc, c) => acc + (c.status === "ATRASADO" ? c.valor : 0),
+    (acc, c) => acc + (c.status === 'ATRASADO' ? c.valor : 0),
     0,
-  );
+  )
   const pendente = contas.value.reduce(
-    (acc, c) => acc + (c.status === "PENDENTE" ? c.valor : 0),
+    (acc, c) => acc + (c.status === 'PENDENTE' ? c.valor : 0),
     0,
-  );
+  )
 
   return [
     {
-      label: "Total Compromissos",
+      label: 'Total Compromissos',
       value: formatCurrency(total),
       icon: Receipt,
-      bg: "bg-primary/3",
-      iconColor: "text-secondary",
+      bg: 'bg-primary/3',
+      iconColor: 'text-secondary',
     },
     {
-      label: "Total Pago",
+      label: 'Total Pago',
       value: formatCurrency(pago),
       icon: TrendingDown,
-      bg: "bg-green-500/10",
-      iconColor: "text-green-600",
+      bg: 'bg-green-500/10',
+      iconColor: 'text-green-600',
     },
     {
-      label: "Vencendo / Aberto",
+      label: 'Vencendo / Aberto',
       value: formatCurrency(pendente),
       icon: Clock,
-      bg: "bg-amber-500/10",
-      iconColor: "text-amber-600",
+      bg: 'bg-amber-500/10',
+      iconColor: 'text-amber-600',
     },
     {
-      label: "Total em Atraso",
+      label: 'Total em Atraso',
       value: formatCurrency(atrasado),
       icon: AlertTriangle,
-      bg: "bg-rose-500/10",
-      iconColor: "text-rose-600",
+      bg: 'bg-rose-500/10',
+      iconColor: 'text-rose-600',
     },
-  ];
-});
+  ]
+})
 
 const isAtrasado = (item) => {
-  if (item.status === "PAGO" || item.status === "CANCELADO") return false;
-  const vencimento = new Date(item.dataVencimento);
-  const hoje = new Date(contasPagarNow);
-  hoje.setHours(0, 0, 0, 0);
-  return vencimento < hoje;
-};
+  if (item.status === 'PAGO' || item.status === 'CANCELADO') return false
+  const vencimento = new Date(item.dataVencimento)
+  const hoje = new Date(contasPagarNow)
+  hoje.setHours(0, 0, 0, 0)
+  return vencimento < hoje
+}
 
 const formatCurrency = (val) => {
-  return new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  }).format(val / 100);
-};
+  return new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+  }).format(val / 100)
+}
 
 const formatDate = (date) => {
-  if (!date) return "---";
-  return new Date(date).toLocaleDateString("pt-BR");
-};
+  if (!date) return '---'
+  return new Date(date).toLocaleDateString('pt-BR')
+}
 
 const onValorInput = (event) => {
-  let val = event.target.value.replace(/\D/g, "");
-  form.value.valor = parseInt(val) || 0;
-  displayValor.value = formatCurrency(form.value.valor);
-};
+  const val = event.target.value.replace(/\D/g, '')
+  form.value.valor = parseInt(val) || 0
+  displayValor.value = formatCurrency(form.value.valor)
+}
 
 const openModal = (item = null) => {
   if (item) {
-    editingId.value = item.id;
+    editingId.value = item.id
     form.value = {
       ...item,
-      dataVencimento: new Date(item.dataVencimento).toISOString().split("T")[0],
-    };
-    displayValor.value = formatCurrency(item.valor);
-  } else {
-    editingId.value = null;
+      dataVencimento: new Date(item.dataVencimento).toISOString().split('T')[0],
+    }
+    displayValor.value = formatCurrency(item.valor)
+  }
+  else {
+    editingId.value = null
     form.value = {
-      descricao: "",
+      descricao: '',
       idFornecedor: null,
       valor: 0,
-      dataVencimento: contasPagarNow.toISOString().split("T")[0],
-      categoria: "GERAL",
+      dataVencimento: contasPagarNow.toISOString().split('T')[0],
+      categoria: 'GERAL',
       idEmpresa: user.value?.idEmpresa,
-    };
-    displayValor.value = "";
+    }
+    displayValor.value = ''
   }
-  showModal.value = true;
-};
+  showModal.value = true
+}
 
 const openPagamentoModal = (item) => {
-  selectedConta.value = item;
-  dataPagamento.value = contasPagarNow.toISOString().split("T")[0];
-  showPagamentoModal.value = true;
-};
+  selectedConta.value = item
+  dataPagamento.value = contasPagarNow.toISOString().split('T')[0]
+  showPagamentoModal.value = true
+}
 
 const confirmPagamento = async () => {
   try {
-    loading.value = true;
+    loading.value = true
     await $fetch(`/api/financeiro/contas-pagar/${selectedConta.value.id}`, {
-      method: "PUT",
+      method: 'PUT',
       body: {
-        status: "PAGO",
+        status: 'PAGO',
         dataPagamento: dataPagamento.value,
       },
-    });
+    })
 
     info(
-      "FINANCEIRO",
+      'FINANCEIRO',
       `Pagamento realizado: ${selectedConta.value.descricao}`,
       {
         id: selectedConta.value.id,
         valor: selectedConta.value.valor,
         dataPagamento: dataPagamento.value,
       },
-    );
+    )
 
-    toast.success("Pagamento registrado com sucesso");
-    showPagamentoModal.value = false;
-    refresh();
-  } catch (error) {
-    logError("FINANCEIRO", "Erro ao registrar pagamento", {
+    toast.success('Pagamento registrado com sucesso')
+    showPagamentoModal.value = false
+    refresh()
+  }
+  catch (error) {
+    logError('FINANCEIRO', 'Erro ao registrar pagamento', {
       error: error.message,
       id: selectedConta.value?.id,
-    });
+    })
     toast.error(
-      error.data?.message ||
-        "Não foi possível processar o pagamento desta conta.",
-    );
-  } finally {
-    loading.value = false;
+      error.data?.message
+      || 'Não foi possível processar o pagamento desta conta.',
+    )
   }
-};
+  finally {
+    loading.value = false
+  }
+}
 
 const saveConta = async () => {
   try {
-    loading.value = true;
-    const method = editingId.value ? "PUT" : "POST";
+    loading.value = true
+    const method = editingId.value ? 'PUT' : 'POST'
     const url = editingId.value
       ? `/api/financeiro/contas-pagar/${editingId.value}`
-      : "/api/financeiro/contas-pagar";
+      : '/api/financeiro/contas-pagar'
 
     await $fetch(url, {
       method,
       body: form.value,
-    });
+    })
 
     info(
-      "FINANCEIRO",
-      `Conta a pagar ${editingId.value ? "atualizada" : "cadastrada"}: ${form.value.descricao}`,
+      'FINANCEIRO',
+      `Conta a pagar ${editingId.value ? 'atualizada' : 'cadastrada'}: ${form.value.descricao}`,
       {
         descricao: form.value.descricao,
         valor: form.value.valor,
-        acao: editingId.value ? "edicao" : "criacao",
+        acao: editingId.value ? 'edicao' : 'criacao',
       },
-    );
+    )
 
-    toast.success(editingId.value ? "Conta atualizada" : "Conta cadastrada");
-    showModal.value = false;
-    refresh();
-  } catch (error) {
-    logError("FINANCEIRO", "Erro ao salvar conta a pagar", {
+    toast.success(editingId.value ? 'Conta atualizada' : 'Conta cadastrada')
+    showModal.value = false
+    refresh()
+  }
+  catch (error) {
+    logError('FINANCEIRO', 'Erro ao salvar conta a pagar', {
       error: error.message,
       form: form.value,
-    });
+    })
     toast.error(
-      error.data?.message || "Erro ao salvar os dados da conta no servidor.",
-    );
-  } finally {
-    loading.value = false;
+      error.data?.message || 'Erro ao salvar os dados da conta no servidor.',
+    )
   }
-};
+  finally {
+    loading.value = false
+  }
+}
 
 const confirmDelete = (item) => {
-  selectedConta.value = item;
-  showDeleteDialog.value = true;
-};
+  selectedConta.value = item
+  showDeleteDialog.value = true
+}
 
 const handleDelete = async () => {
   try {
-    const descricao = selectedConta.value.descricao;
+    const descricao = selectedConta.value.descricao
     await $fetch(`/api/financeiro/contas-pagar/${selectedConta.value.id}`, {
-      method: "DELETE",
-    });
+      method: 'DELETE',
+    })
 
-    info("FINANCEIRO", `Conta a pagar excluída: ${descricao}`, {
+    info('FINANCEIRO', `Conta a pagar excluída: ${descricao}`, {
       id: selectedConta.value.id,
       descricao,
-    });
+    })
 
-    toast.success("Excluído com sucesso");
-    refresh();
-  } catch (error) {
-    logError("FINANCEIRO", "Erro ao excluir conta a pagar", {
+    toast.success('Excluído com sucesso')
+    refresh()
+  }
+  catch (error) {
+    logError('FINANCEIRO', 'Erro ao excluir conta a pagar', {
       error: error.message,
       id: selectedConta.value?.id,
-    });
+    })
     toast.error(
-      error.data?.message || "Falha ao tentar remover a conta selecionada.",
-    );
+      error.data?.message || 'Falha ao tentar remover a conta selecionada.',
+    )
   }
-};
+}
 </script>

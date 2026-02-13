@@ -1,12 +1,12 @@
-import { asaasService } from "../../utils/asaas";
+import { asaasService } from '../../utils/asaas'
 import type {
   PaymentProvider,
   PaymentOptions,
   PaymentResponse,
-} from "./provider";
+} from './provider'
 
 export class AsaasPaymentProvider implements PaymentProvider {
-  name = "Asaas";
+  name = 'Asaas'
 
   async createPayment(
     idEmpresa: number,
@@ -19,34 +19,35 @@ export class AsaasPaymentProvider implements PaymentProvider {
         cpfCnpj: options.cpfCnpj,
         email: options.email,
         phone: options.telefone,
-      });
+      })
 
       // 2. Criar cobrança
       const billing = await asaasService.createBilling(idEmpresa, {
         customer: customerId,
         billingType:
-          options.tipo === "PIX"
-            ? "PIX"
-            : options.tipo === "BOLETO"
-              ? "BOLETO"
-              : "CREDIT_CARD",
+          options.tipo === 'PIX'
+            ? 'PIX'
+            : options.tipo === 'BOLETO'
+              ? 'BOLETO'
+              : 'CREDIT_CARD',
         value: options.valor / 100, // Centavos para Reais
-        dueDate: options.vencimento.toISOString().split("T")[0]!,
+        dueDate: options.vencimento.toISOString().split('T')[0]!,
         description: options.descricao,
         externalReference: options.idReferencia,
-      });
+      })
 
       return {
         sucesso: true,
         providerId: billing.id,
         link: billing.invoiceUrl,
         qrCode: billing.pixCopiaECola,
-      };
-    } catch (error: any) {
+      }
+    }
+    catch (error: any) {
       return {
         sucesso: false,
-        error: error.message || "Erro desconhecido no Asaas",
-      };
+        error: error.message || 'Erro desconhecido no Asaas',
+      }
     }
   }
 }

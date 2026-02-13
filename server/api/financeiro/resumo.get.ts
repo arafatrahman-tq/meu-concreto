@@ -1,14 +1,14 @@
-import { db } from "../../database/db";
-import { pagamentos, contasPagar } from "../../database/schema";
-import { and, isNull, eq, lt, sql, inArray } from "drizzle-orm";
-import { requireAuth } from "../../utils/auth";
+import { db } from '../../database/db'
+import { pagamentos, contasPagar } from '../../database/schema'
+import { and, isNull, eq, lt, sql, inArray } from 'drizzle-orm'
+import { requireAuth } from '../../utils/auth'
 
 export default defineEventHandler(async (event) => {
-  const user = requireAuth(event);
+  const user = requireAuth(event)
 
   try {
-    const idEmpresa = user.idEmpresa;
-    const now = new Date();
+    const idEmpresa = user.idEmpresa
+    const now = new Date()
 
     // --- CONTAS A RECEBER (Pagamentos de Vendas) ---
     const receivables = await db
@@ -24,7 +24,7 @@ export default defineEventHandler(async (event) => {
           isNull(pagamentos.deletedAt),
         ),
       )
-      .groupBy(pagamentos.status);
+      .groupBy(pagamentos.status)
 
     const lateReceivables = await db
       .select({
@@ -35,10 +35,10 @@ export default defineEventHandler(async (event) => {
         and(
           eq(pagamentos.idEmpresa, idEmpresa),
           isNull(pagamentos.deletedAt),
-          eq(pagamentos.status, "PENDENTE"),
+          eq(pagamentos.status, 'PENDENTE'),
           lt(pagamentos.dataVencimento, now),
         ),
-      );
+      )
 
     // --- CONTAS A PAGAR ---
     const payables = await db
@@ -54,7 +54,7 @@ export default defineEventHandler(async (event) => {
           isNull(contasPagar.deletedAt),
         ),
       )
-      .groupBy(contasPagar.status);
+      .groupBy(contasPagar.status)
 
     const latePayables = await db
       .select({
@@ -65,10 +65,10 @@ export default defineEventHandler(async (event) => {
         and(
           eq(contasPagar.idEmpresa, idEmpresa),
           isNull(contasPagar.deletedAt),
-          eq(contasPagar.status, "PENDENTE"),
+          eq(contasPagar.status, 'PENDENTE'),
           lt(contasPagar.dataVencimento, now),
         ),
-      );
+      )
 
     // Processamento de totais
     const summary = {
@@ -77,8 +77,8 @@ export default defineEventHandler(async (event) => {
           (acc, curr) => acc + (Number(curr.total) || 0),
           0,
         ),
-        pendente: receivables.find((r) => r.status === "PENDENTE")?.total || 0,
-        pago: receivables.find((r) => r.status === "PAGO")?.total || 0,
+        pendente: receivables.find(r => r.status === 'PENDENTE')?.total || 0,
+        pago: receivables.find(r => r.status === 'PAGO')?.total || 0,
         atrasado: Number(lateReceivables[0]?.total) || 0,
       },
       pagar: {
@@ -86,25 +86,26 @@ export default defineEventHandler(async (event) => {
           (acc, curr) => acc + (Number(curr.total) || 0),
           0,
         ),
-        pendente: payables.find((r) => r.status === "PENDENTE")?.total || 0,
-        pago: payables.find((r) => r.status === "PAGO")?.total || 0,
+        pendente: payables.find(r => r.status === 'PENDENTE')?.total || 0,
+        pago: payables.find(r => r.status === 'PAGO')?.total || 0,
         atrasado: Number(latePayables[0]?.total) || 0,
       },
       fluxoCaixa: 0,
       indiceInadimplencia: 0,
-    };
+    }
 
-    summary.fluxoCaixa = summary.receber.pago - summary.pagar.pago;
-    const totalExpected = summary.receber.pendente + summary.receber.pago;
-    summary.indiceInadimplencia =
-      totalExpected > 0 ? (summary.receber.atrasado / totalExpected) * 100 : 0;
+    summary.fluxoCaixa = summary.receber.pago - summary.pagar.pago
+    const totalExpected = summary.receber.pendente + summary.receber.pago
+    summary.indiceInadimplencia
+      = totalExpected > 0 ? (summary.receber.atrasado / totalExpected) * 100 : 0
 
-    return summary;
-  } catch (error: any) {
+    return summary
+  }
+  catch (error: any) {
     throw createError({
       statusCode: error.statusCode || 500,
       statusMessage: error.statusMessage || 'Erro Interno',
       message: error.message,
-    });
+    })
   }
-});
+})

@@ -25,7 +25,7 @@
               'w-2 h-2 rounded-full animate-pulse',
               form.ativo ? 'bg-emerald-500' : 'bg-slate-300',
             ]"
-          ></div>
+          />
           <span
             class="text-[8px] font-black uppercase tracking-widest text-secondary opacity-60"
           >
@@ -33,14 +33,24 @@
           </span>
         </div>
 
-        <div v-if="isAdmin" class="flex items-center gap-3">
+        <div
+          v-if="isAdmin"
+          class="flex items-center gap-3"
+        >
           <button
-            @click="saveChanges"
             :disabled="loading || !hasChanges"
             class="bg-[#25D366] text-white px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-3 shadow-xl shadow-[#25D366]/20 disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed outline-none"
+            @click="saveChanges"
           >
-            <Save size="20" v-if="!loading" />
-            <RefreshCw v-else size="20" class="animate-spin" />
+            <Save
+              v-if="!loading"
+              size="20"
+            />
+            <RefreshCw
+              v-else
+              size="20"
+              class="animate-spin"
+            />
             {{ loading ? "Processando" : "Salvar Alterações" }}
           </button>
         </div>
@@ -72,7 +82,7 @@
         <!-- API Connection -->
         <div class="space-y-4">
           <div class="flex items-center gap-2">
-            <div class="w-1 h-4 bg-[#25D366] rounded-full"></div>
+            <div class="w-1 h-4 bg-[#25D366] rounded-full" />
             <h3
               class="text-[10px] font-black uppercase tracking-[0.2em] text-primary"
             >
@@ -86,8 +96,7 @@
             <div class="space-y-3">
               <label
                 class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2"
-                >URL da Instância (Endpoint de Envio)</label
-              >
+              >URL da Instância (Endpoint de Envio)</label>
               <BaseInput
                 v-model="form.instanceUrl"
                 :disabled="!isAdmin"
@@ -99,8 +108,7 @@
             <div class="space-y-3">
               <label
                 class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40 ml-2"
-                >API Key / Secret Token</label
-              >
+              >API Key / Secret Token</label>
               <BaseInput
                 v-model="form.apiKey"
                 :disabled="!isAdmin"
@@ -142,7 +150,7 @@
         <!-- Notificações Automáticas -->
         <div class="space-y-4">
           <div class="flex items-center gap-2">
-            <div class="w-1 h-4 bg-brand rounded-full"></div>
+            <div class="w-1 h-4 bg-brand rounded-full" />
             <h3
               class="text-[10px] font-black uppercase tracking-[0.2em] text-primary"
             >
@@ -280,11 +288,8 @@
               <div class="flex items-center justify-between">
                 <span
                   class="text-[9px] font-black uppercase tracking-widest opacity-60"
-                  >Status</span
-                >
-                <span class="text-[10px] font-black uppercase"
-                  >Configurado</span
-                >
+                >Status</span>
+                <span class="text-[10px] font-black uppercase">Configurado</span>
               </div>
             </div>
           </div>
@@ -295,7 +300,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted } from 'vue'
 import {
   MessageSquare,
   Save,
@@ -308,83 +313,86 @@ import {
   AlertCircle,
   Activity,
   RefreshCw,
-} from "lucide-vue-next";
-import { useAuth, useToast } from "#imports";
+} from 'lucide-vue-next'
+import { useAuth, useToast } from '#imports'
 
 definePageMeta({
-  layout: "default",
-  middleware: ["admin"],
-});
+  layout: 'default',
+  middleware: ['admin'],
+})
 
-const { user } = useAuth();
-const { add: addToast } = useToast();
+const { user } = useAuth()
+const { add: addToast } = useToast()
 
-const loading = ref(false);
-const originalData = ref({});
+const loading = ref(false)
+const originalData = ref({})
 const form = ref({
-  instanceUrl: "",
-  apiKey: "",
+  instanceUrl: '',
+  apiKey: '',
   notificaContasPagar: false,
   notificaCobrancas: false,
   notificaNovosOrcamentos: false,
   ativo: false,
-});
+})
 
-const isAdmin = computed(() => user.value?.admin === 1);
+const isAdmin = computed(() => user.value?.admin === 1)
 
 const loadConfig = async () => {
   try {
-    const data = await $fetch("/api/configuracoes/whatsapp");
+    const data = await $fetch('/api/configuracoes/whatsapp')
     form.value = {
-      instanceUrl: data.instanceUrl || "",
-      apiKey: data.apiKey || "",
+      instanceUrl: data.instanceUrl || '',
+      apiKey: data.apiKey || '',
       notificaContasPagar: !!data.notificaContasPagar,
       notificaCobrancas: !!data.notificaCobrancas,
       notificaNovosOrcamentos: !!data.notificaNovosOrcamentos,
       ativo: !!data.ativo,
-    };
-    originalData.value = JSON.parse(JSON.stringify(form.value));
-  } catch (error) {
-    console.error("Erro ao carregar configurações:", error);
+    }
+    originalData.value = JSON.parse(JSON.stringify(form.value))
   }
-};
+  catch (error) {
+    console.error('Erro ao carregar configurações:', error)
+  }
+}
 
 onMounted(() => {
-  loadConfig();
-});
+  loadConfig()
+})
 
 const hasChanges = computed(() => {
-  return JSON.stringify(form.value) !== JSON.stringify(originalData.value);
-});
+  return JSON.stringify(form.value) !== JSON.stringify(originalData.value)
+})
 
 const saveChanges = async () => {
-  if (!isAdmin.value || loading.value) return;
+  if (!isAdmin.value || loading.value) return
 
-  loading.value = true;
+  loading.value = true
   try {
-    await $fetch("/api/configuracoes/whatsapp", {
-      method: "PUT",
+    await $fetch('/api/configuracoes/whatsapp', {
+      method: 'PUT',
       body: form.value,
-    });
+    })
 
     addToast({
-      title: "WhatsApp Atualizado",
-      description: "As configurações globais da API foram salvas.",
-      type: "success",
-    });
+      title: 'WhatsApp Atualizado',
+      description: 'As configurações globais da API foram salvas.',
+      type: 'success',
+    })
 
-    await loadConfig();
-  } catch (error) {
-    addToast({
-      title: "Falha na Configuração",
-      description:
-        error.data?.statusMessage || "Erro ao comunicar com a base de dados.",
-      type: "error",
-    });
-  } finally {
-    loading.value = false;
+    await loadConfig()
   }
-};
+  catch (error) {
+    addToast({
+      title: 'Falha na Configuração',
+      description:
+        error.data?.statusMessage || 'Erro ao comunicar com a base de dados.',
+      type: 'error',
+    })
+  }
+  finally {
+    loading.value = false
+  }
+}
 </script>
 
 <style scoped>

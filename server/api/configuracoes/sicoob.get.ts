@@ -1,17 +1,17 @@
-import { db } from "../../database/db";
-import { configuracoesSicoob } from "../../database/schema";
-import { requireAdmin } from "../../utils/auth";
-import { eq } from "drizzle-orm";
+import { db } from '../../database/db'
+import { configuracoesSicoob } from '../../database/schema'
+import { requireAdmin } from '../../utils/auth'
+import { eq } from 'drizzle-orm'
 
 export default defineEventHandler(async (event) => {
-  const user = requireAdmin(event);
+  const user = requireAdmin(event)
 
   try {
     const config = await db.query.configuracoesSicoob.findFirst({
       where: user.idEmpresa
         ? eq(configuracoesSicoob.idEmpresa, user.idEmpresa)
         : undefined,
-    });
+    })
 
     const response = config
       ? {
@@ -19,33 +19,34 @@ export default defineEventHandler(async (event) => {
           ativo: config.ativo === 1,
         }
       : {
-          clientId: "",
-          clientSecret: "",
-          certificate: "",
-          privateKey: "",
-          environment: "sandbox",
-          chavePix: "",
-          contaCorrente: "",
-          cooperativa: "",
+          clientId: '',
+          clientSecret: '',
+          certificate: '',
+          privateKey: '',
+          environment: 'sandbox',
+          chavePix: '',
+          contaCorrente: '',
+          cooperativa: '',
           ativo: false,
-        };
+        }
 
     // Mascarar campos sensíveis se não for admin master
     if (user.admin !== 1) {
       if (response.clientId)
-        response.clientId = response.clientId.substring(0, 5) + "...";
-      if (response.clientSecret) response.clientSecret = "********";
+        response.clientId = response.clientId.substring(0, 5) + '...'
+      if (response.clientSecret) response.clientSecret = '********'
       if (response.certificate)
-        response.certificate = "[Certificado Configurado]";
+        response.certificate = '[Certificado Configurado]'
       if (response.privateKey)
-        response.privateKey = "[Chave Privada Configurada]";
+        response.privateKey = '[Chave Privada Configurada]'
     }
 
-    return response;
-  } catch (error: any) {
+    return response
+  }
+  catch (error: any) {
     throw createError({
       statusCode: error.statusCode || 500,
       message: error.message,
-    });
+    })
   }
-});
+})

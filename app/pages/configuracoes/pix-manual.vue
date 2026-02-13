@@ -16,14 +16,24 @@
         </p>
       </div>
 
-      <div v-if="user?.admin === 1" class="flex items-center gap-3">
+      <div
+        v-if="user?.admin === 1"
+        class="flex items-center gap-3"
+      >
         <button
-          @click="saveConfig"
           :disabled="saving"
           class="bg-brand text-white px-8 py-4 rounded-2xl text-xs font-black uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-3 shadow-xl shadow-brand/20 disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed"
+          @click="saveConfig"
         >
-          <Save size="20" v-if="!saving" />
-          <RefreshCw v-else size="20" class="animate-spin" />
+          <Save
+            v-if="!saving"
+            size="20"
+          />
+          <RefreshCw
+            v-else
+            size="20"
+            class="animate-spin"
+          />
           {{ saving ? "Processando" : "Salvar Alterações" }}
         </button>
       </div>
@@ -47,19 +57,25 @@
       </div>
     </div>
 
-    <div v-if="pending" class="flex justify-center py-20">
+    <div
+      v-if="pending"
+      class="flex justify-center py-20"
+    >
       <div
         class="w-10 h-10 border-4 border-brand/20 border-t-brand rounded-full animate-spin"
-      ></div>
+      />
     </div>
 
-    <div v-else class="grid grid-cols-1 xl:grid-cols-12 gap-8">
+    <div
+      v-else
+      class="grid grid-cols-1 xl:grid-cols-12 gap-8"
+    >
       <div class="xl:col-span-8 space-y-8">
         <!-- Credenciais -->
         <div class="space-y-4">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
-              <div class="w-1.5 h-4 bg-brand rounded-full"></div>
+              <div class="w-1.5 h-4 bg-brand rounded-full" />
               <h3
                 class="text-[10px] font-black uppercase tracking-[0.2em] text-primary"
               >
@@ -75,7 +91,7 @@
                   'w-2 h-2 rounded-full animate-pulse',
                   config.ativo ? 'bg-emerald-500' : 'bg-slate-300',
                 ]"
-              ></div>
+              />
               <span
                 class="text-[8px] font-black uppercase tracking-widest text-secondary opacity-60"
               >
@@ -92,8 +108,7 @@
                 <div class="flex items-center gap-2 ml-2">
                   <label
                     class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40"
-                    >Chave Pix</label
-                  >
+                  >Chave Pix</label>
                   <BaseTooltip
                     text="Pode ser CPF, CNPJ, E-mail, Telefone ou Chave Aleatória."
                   >
@@ -115,8 +130,7 @@
                 <div class="flex items-center gap-2 ml-2">
                   <label
                     class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40"
-                    >Beneficiário</label
-                  >
+                  >Beneficiário</label>
                   <BaseTooltip
                     text="Nome completo do titular da conta ou nome fantasia da empresa."
                   >
@@ -140,8 +154,7 @@
                 <div class="flex items-center gap-2 ml-2">
                   <label
                     class="text-[9px] font-black uppercase tracking-widest text-secondary opacity-40"
-                    >Cidade</label
-                  >
+                  >Cidade</label>
                   <BaseTooltip text="Cidade da conta bancária (ex: CUIABA).">
                     <HelpCircle
                       size="12"
@@ -279,59 +292,61 @@ import {
   Info,
   User,
   MapPin,
-} from "lucide-vue-next";
+} from 'lucide-vue-next'
 
 definePageMeta({
-  middleware: ["admin"],
-});
+  middleware: ['admin'],
+})
 
-const { user } = useAuth();
-const toast = useToast();
+const { user } = useAuth()
+const toast = useToast()
 
-const saving = ref(false);
+const saving = ref(false)
 
 const {
   data: config,
   pending,
   refresh,
-} = await useAsyncData("pix-manual-config", () =>
-  $fetch("/api/configuracoes/pix-manual"),
-);
+} = await useAsyncData('pix-manual-config', () =>
+  $fetch('/api/configuracoes/pix-manual'),
+)
 
 const saveConfig = async () => {
-  if (saving.value) return;
-  saving.value = true;
+  if (saving.value) return
+  saving.value = true
 
   try {
     const payload = {
       ...config.value,
       ativo: !!config.value.ativo,
       idEmpresa: user.value.idEmpresa,
-    };
+    }
 
-    await $fetch("/api/configuracoes/pix-manual", {
-      method: "PUT",
+    await $fetch('/api/configuracoes/pix-manual', {
+      method: 'PUT',
       body: payload,
-    });
+    })
 
     toast.add({
-      title: "Configurações Salvas",
+      title: 'Configurações Salvas',
       description:
-        "As configurações do Pix Manual foram atualizadas com sucesso.",
-      type: "success",
-    });
+        'As configurações do Pix Manual foram atualizadas com sucesso.',
+      type: 'success',
+    })
 
-    refresh();
-  } catch (error) {
-    toast.add({
-      title: "Erro ao Salvar",
-      description:
-        error.data?.message ||
-        "Ocorreu um erro ao tentar salvar as configurações.",
-      type: "error",
-    });
-  } finally {
-    saving.value = false;
+    refresh()
   }
-};
+  catch (error) {
+    toast.add({
+      title: 'Erro ao Salvar',
+      description:
+        error.data?.message
+        || 'Ocorreu um erro ao tentar salvar as configurações.',
+      type: 'error',
+    })
+  }
+  finally {
+    saving.value = false
+  }
+}
 </script>
