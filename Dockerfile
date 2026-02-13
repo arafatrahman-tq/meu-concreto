@@ -1,5 +1,5 @@
 # Usar a imagem oficial do Bun
-FROM oven/bun:1.2.4-slim AS base
+FROM oven/bun:latest AS base
 WORKDIR /app
 
 # Instalar dependências (cacheable)
