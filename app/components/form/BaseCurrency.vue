@@ -228,7 +228,14 @@ const handleInput = (event) => {
 
 const handleFocus = (event) => {
   isFocused.value = true
-  rawValue.value = displayValue.value.replace(/[^\d.,]/g, '')
+  // Se trabalha com centavos, divide por 100 ao focar para edição decimal
+  const value = props.modelValue
+  if (props.centavos && value !== null && value !== undefined && value !== '') {
+    rawValue.value = (Number(value) / 100).toString().replace('.', ',')
+  }
+  else {
+    rawValue.value = displayValue.value.replace(/[^\d.,]/g, '')
+  }
   emit('focus', event)
 }
 
